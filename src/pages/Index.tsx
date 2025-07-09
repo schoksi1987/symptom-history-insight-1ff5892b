@@ -5,259 +5,235 @@ import { Link } from "react-router-dom";
 import { 
   Brain,
   Users,
-  Shield,
   Activity,
   ArrowRight,
-  Building,
   Heart,
   Stethoscope,
   TrendingUp,
   Database,
-  Cloud,
-  BarChart3,
-  Clock,
+  Shield,
   CheckCircle2,
-  Star
+  Star,
+  BarChart3,
+  UserCheck,
+  Globe,
+  Dna,
+  Home,
+  Target
 } from "lucide-react";
 
 const Index = () => {
-  const services = [
+  const dataSourceCards = [
     {
-      title: "AI Disease Prediction",
-      description: "Advanced machine learning algorithms to predict Type 2 diabetes risk at primary care settings",
-      icon: Brain,
-      buttonText: "Get Risk Assessment",
-      buttonLink: "/recommendations"
+      title: "Clinical Data",
+      description: "Lab results, vitals, medical history, and diagnostic markers",
+      icon: Stethoscope,
+      stats: "15+ clinical markers",
+      color: "bg-blue-500"
     },
     {
-      title: "Patient Monitoring",
-      description: "Comprehensive tracking of symptoms, vitals, and health metrics for better outcomes",
+      title: "Lifestyle Factors",
+      description: "Diet, exercise, sleep patterns, and behavioral indicators",
       icon: Activity,
-      buttonText: "View Dashboard",
-      buttonLink: "/recommendations"
+      stats: "25+ lifestyle metrics",
+      color: "bg-green-500"
+    },
+    {
+      title: "Family History",
+      description: "Genetic predisposition and hereditary risk factors",
+      icon: Dna,
+      stats: "3-generation analysis",
+      color: "bg-purple-500"
+    },
+    {
+      title: "Social Forum Data",
+      description: "Community health insights and peer behavior patterns",
+      icon: Users,
+      stats: "Real-time insights",
+      color: "bg-orange-500"
+    },
+    {
+      title: "SDOH Data",
+      description: "Social determinants: housing, income, education, food security",
+      icon: Home,
+      stats: "12 SDOH factors",
+      color: "bg-teal-500"
+    },
+    {
+      title: "Research Data",
+      description: "Latest medical research and population health studies",
+      icon: Database,
+      stats: "1000+ studies",
+      color: "bg-indigo-500"
     }
   ];
 
-  const specialties = [
-    { name: "Endocrinology", icon: Heart },
-    { name: "General Practice", icon: Stethoscope },
-    { name: "Internal Medicine", icon: Activity },
-    { name: "Preventive Care", icon: Shield },
-    { name: "Chronic Disease", icon: TrendingUp },
-    { name: "Primary Care", icon: Users }
+  const keyFeatures = [
+    {
+      title: "Patient Journey Mapping",
+      description: "Visualize patient progression and identify intervention points",
+      icon: TrendingUp
+    },
+    {
+      title: "Similar Patient Matching",
+      description: "Find patients with similar characteristics and outcomes",
+      icon: UserCheck
+    },
+    {
+      title: "Risk Stratification",
+      description: "Categorize patients by diabetes risk levels",
+      icon: Target
+    },
+    {
+      title: "Personalized Treatment",
+      description: "Evidence-based recommendations for individual patients",
+      icon: Heart
+    }
   ];
 
-  const partners = [
-    { name: "Healthcare Providers", icon: Building, description: "Hospitals and clinics" },
-    { name: "Medical Practices", icon: Stethoscope, description: "Primary care physicians" },
-    { name: "Health Plans", icon: Shield, description: "Insurance companies" },
-    { name: "Research Institutions", icon: Database, description: "Medical research" },
-    { name: "Government", icon: Building, description: "Public health agencies" },
-    { name: "Individuals", icon: Users, description: "Patients and families" }
-  ];
-
-  const features = [
-    { name: "Big Data Analytics", icon: Database, description: "Process vast amounts of health data" },
-    { name: "Cloud Infrastructure", icon: Cloud, description: "Secure and scalable platform" },
-    { name: "Real-time Analytics", icon: BarChart3, description: "Instant insights and predictions" },
-    { name: "Continuous Monitoring", icon: Clock, description: "24/7 patient health tracking" }
+  const outcomes = [
+    { metric: "Early Detection Rate", value: "85%", improvement: "+40%" },
+    { metric: "Risk Prediction Accuracy", value: "92%", improvement: "+25%" },
+    { metric: "Patient Engagement", value: "78%", improvement: "+60%" },
+    { metric: "Treatment Adherence", value: "73%", improvement: "+35%" }
   ];
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b bg-card/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Brain className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold">DiabetesPredict AI</h1>
+              <div>
+                <h1 className="text-xl font-bold">T2D Predict</h1>
+                <p className="text-xs text-muted-foreground">Primary Care AI</p>
+              </div>
             </div>
             <nav className="hidden md:flex items-center space-x-6">
-              <Link to="#services" className="text-muted-foreground hover:text-primary transition-colors">Services</Link>
-              <Link to="#about" className="text-muted-foreground hover:text-primary transition-colors">About</Link>
-              <Link to="#partners" className="text-muted-foreground hover:text-primary transition-colors">Partners</Link>
-              <Button variant="outline" size="sm">Login</Button>
-              <Button size="sm">Request Demo</Button>
+              <Link to="#platform" className="text-muted-foreground hover:text-primary transition-colors">Platform</Link>
+              <Link to="#outcomes" className="text-muted-foreground hover:text-primary transition-colors">Outcomes</Link>
+              <Link to="#demo" className="text-muted-foreground hover:text-primary transition-colors">Demo</Link>
+              <Button variant="outline" size="sm">Provider Login</Button>
+              <Button size="sm">Request Access</Button>
             </nav>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-primary/5 to-accent/5">
+      <section className="relative py-16 bg-gradient-to-br from-primary/5 via-background to-accent/5">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <Badge variant="secondary" className="mb-4">
-                  <Star className="h-4 w-4 mr-2" />
-                  AI-Powered Healthcare
-                </Badge>
-                <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-                  Predict Type 2 Diabetes Risk with 
-                  <span className="text-primary"> AI Precision</span>
-                </h1>
-                <p className="text-xl text-muted-foreground leading-relaxed">
-                  Advanced machine learning platform for early diabetes detection at primary care settings. 
-                  Empowering healthcare providers with predictive insights for better patient outcomes.
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span>95% Accuracy Rate</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span>Real-time Analysis</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span>HIPAA Compliant</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span>Easy Integration</span>
-                </div>
-              </div>
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <Badge variant="secondary" className="mb-4">
+              <Star className="h-4 w-4 mr-2" />
+              AI-Powered Primary Care Solution
+            </Badge>
+            
+            <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
+              Predict Type 2 Diabetes Risk
+              <span className="text-primary"> Before It's Too Late</span>
+            </h1>
+            
+            <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
+              Comprehensive AI platform that integrates clinical data, lifestyle factors, family history, 
+              social determinants, and research insights to help primary care physicians identify 
+              at-risk patients and provide personalized treatment recommendations.
+            </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/recommendations">
-                  <Button size="lg" className="w-full sm:w-auto">
-                    Try Demo Dashboard
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-                <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                  Request Demo
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/recommendations">
+                <Button size="lg" className="w-full sm:w-auto">
+                  <Stethoscope className="mr-2 h-5 w-5" />
+                  View Patient Demo
                 </Button>
-              </div>
+              </Link>
+              <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                Schedule Demo Call
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
             </div>
 
-            <div className="relative">
-              <div className="bg-card rounded-2xl shadow-2xl p-8 border">
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Patient Risk Analysis</h3>
-                    <Badge variant="destructive">HIGH RISK</Badge>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">Diabetes Risk Score</span>
-                      <span className="text-2xl font-bold text-destructive">71%</span>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      {[
-                        { label: "Lifestyle Factors", value: 72, color: "bg-red-500" },
-                        { label: "Genetic Predisposition", value: 45, color: "bg-yellow-500" },
-                        { label: "Clinical Markers", value: 68, color: "bg-red-500" },
-                        { label: "Social Determinants", value: 30, color: "bg-green-500" }
-                      ].map((item, index) => (
-                        <div key={index} className="space-y-1">
-                          <div className="flex justify-between text-sm">
-                            <span>{item.label}</span>
-                            <span className="font-medium">{item.value}%</span>
-                          </div>
-                          <div className="w-full bg-muted rounded-full h-2">
-                            <div 
-                              className={`${item.color} h-2 rounded-full transition-all duration-300`}
-                              style={{ width: `${item.value}%` }}
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+              {outcomes.map((outcome, index) => (
+                <Card key={index} className="text-center p-4">
+                  <div className="text-2xl font-bold text-primary">{outcome.value}</div>
+                  <div className="text-sm font-medium">{outcome.metric}</div>
+                  <div className="text-xs text-green-600 font-medium">{outcome.improvement}</div>
+                </Card>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section id="services" className="py-20">
+      {/* Data Sources Section */}
+      <section id="platform" className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Our Healthcare Solutions</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Comprehensive Data Integration</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Comprehensive AI-powered tools for diabetes prediction and patient care management
+              Our AI platform analyzes multiple data sources to provide the most accurate 
+              diabetes risk assessment for primary care decision making
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-            {services.map((service, index) => {
-              const IconComponent = service.icon;
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {dataSourceCards.map((source, index) => {
+              const IconComponent = source.icon;
               return (
-                <Card key={index} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300">
+                <Card key={index} className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
                   <CardHeader className="pb-4">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="p-3 rounded-lg bg-primary/10">
-                        <IconComponent className="h-8 w-8 text-primary" />
+                    <div className="flex items-start justify-between mb-3">
+                      <div className={`p-3 rounded-lg ${source.color}/10`}>
+                        <IconComponent className={`h-6 w-6 text-white`} style={{color: source.color.replace('bg-', '').replace('-500', '')}} />
                       </div>
-                      <CardTitle className="text-xl">{service.title}</CardTitle>
+                      <Badge variant="secondary" className="text-xs">
+                        {source.stats}
+                      </Badge>
                     </div>
+                    <CardTitle className="text-lg">{source.title}</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    <p className="text-muted-foreground text-lg leading-relaxed">
-                      {service.description}
+                  <CardContent>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {source.description}
                     </p>
-                    <Link to={service.buttonLink}>
-                      <Button className="w-full group-hover:scale-105 transition-transform">
-                        {service.buttonText}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </Link>
                   </CardContent>
                 </Card>
               );
             })}
           </div>
-
-          {/* Specialties */}
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold mb-4">Medical Specialties Coverage</h3>
-            <p className="text-muted-foreground">In our platform we support multiple medical specialties</p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {specialties.map((specialty, index) => {
-              const IconComponent = specialty.icon;
-              return (
-                <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
-                  <IconComponent className="h-8 w-8 text-primary mx-auto mb-3" />
-                  <p className="font-medium text-sm">{specialty.name}</p>
-                </Card>
-              );
-            })}
-          </div>
         </div>
       </section>
 
-      {/* Partners Section */}
-      <section id="partners" className="py-20 bg-muted/30">
+      {/* Key Features */}
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">We Partner Across The Whole Health System</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Advanced Clinical Intelligence</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Our comprehensive platform serves diverse healthcare stakeholders
+              Identify patient journey patterns, find similar cases, and deliver personalized care recommendations
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {partners.map((partner, index) => {
-              const IconComponent = partner.icon;
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {keyFeatures.map((feature, index) => {
+              const IconComponent = feature.icon;
               return (
-                <Card key={index} className="text-center p-8 hover:shadow-lg transition-all duration-300 group">
-                  <div className="mx-auto mb-6 p-4 rounded-full bg-primary/10 w-20 h-20 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <IconComponent className="h-10 w-10 text-primary" />
+                <Card key={index} className="p-8 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-start space-x-4">
+                    <div className="p-3 rounded-lg bg-primary/10 flex-shrink-0">
+                      <IconComponent className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {feature.description}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{partner.name}</h3>
-                  <p className="text-muted-foreground">{partner.description}</p>
                 </Card>
               );
             })}
@@ -265,29 +241,86 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Technology Section */}
+      {/* Clinical Workflow */}
       <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Powered By Advanced Technology</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Seamless Clinical Workflow</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Our holistic approach combines behavior sciences, medicine, physical fitness, nutrition and social determinants of health with advanced data science to predict patient risk scores.
+              Designed specifically for primary care physicians to enhance patient care without disrupting existing workflows
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => {
-              const IconComponent = feature.icon;
-              return (
-                <div key={index} className="text-center space-y-4">
-                  <div className="mx-auto p-6 rounded-full bg-primary/10 w-24 h-24 flex items-center justify-center">
-                    <IconComponent className="h-12 w-12 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-bold">{feature.name}</h3>
-                  <p className="text-muted-foreground text-sm">{feature.description}</p>
-                </div>
-              );
-            })}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center space-y-4">
+              <div className="mx-auto p-6 rounded-full bg-primary/10 w-20 h-20 flex items-center justify-center">
+                <Database className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold">Data Collection</h3>
+              <p className="text-muted-foreground">
+                Automatically integrates with existing EHR systems and collects comprehensive patient data
+              </p>
+            </div>
+
+            <div className="text-center space-y-4">
+              <div className="mx-auto p-6 rounded-full bg-primary/10 w-20 h-20 flex items-center justify-center">
+                <Brain className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold">AI Analysis</h3>
+              <p className="text-muted-foreground">
+                Advanced algorithms process multiple data sources to generate accurate risk predictions
+              </p>
+            </div>
+
+            <div className="text-center space-y-4">
+              <div className="mx-auto p-6 rounded-full bg-primary/10 w-20 h-20 flex items-center justify-center">
+                <Target className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold">Actionable Insights</h3>
+              <p className="text-muted-foreground">
+                Delivers personalized recommendations and identifies similar patient cases for informed decisions
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo Section */}
+      <section id="demo" className="py-20 bg-primary/5">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <h2 className="text-3xl lg:text-4xl font-bold">See T2D Predict in Action</h2>
+            <p className="text-xl text-muted-foreground">
+              Experience how our platform transforms diabetes risk assessment in primary care settings
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+              <Card className="p-8 text-center hover:shadow-lg transition-shadow">
+                <Activity className="h-12 w-12 text-primary mx-auto mb-4" />
+                <h3 className="text-xl font-bold mb-3">Patient Dashboard</h3>
+                <p className="text-muted-foreground mb-6">
+                  View comprehensive patient health metrics, symptom tracking, and risk indicators
+                </p>
+                <Link to="/recommendations">
+                  <Button className="w-full">
+                    View Demo Dashboard
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </Card>
+
+              <Card className="p-8 text-center hover:shadow-lg transition-shadow">
+                <BarChart3 className="h-12 w-12 text-primary mx-auto mb-4" />
+                <h3 className="text-xl font-bold mb-3">Clinical Analytics</h3>
+                <p className="text-muted-foreground mb-6">
+                  Explore population health insights and patient journey analytics
+                </p>
+                <Button variant="outline" className="w-full">
+                  Request Demo Call
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
@@ -299,43 +332,46 @@ const Index = () => {
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <Brain className="h-6 w-6 text-primary" />
-                <span className="font-bold text-lg">DiabetesPredict AI</span>
+                <div>
+                  <span className="font-bold text-lg">T2D Predict</span>
+                  <p className="text-xs text-muted-foreground">Primary Care AI</p>
+                </div>
               </div>
               <p className="text-muted-foreground text-sm">
-                Advancing healthcare through AI-powered diabetes prediction and patient monitoring.
+                Empowering primary care physicians with AI-driven diabetes prediction and personalized patient care.
               </p>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">Services</h4>
+              <h4 className="font-semibold mb-4">Platform</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Link to="#" className="hover:text-primary transition-colors">Risk Assessment</Link></li>
-                <li><Link to="#" className="hover:text-primary transition-colors">Patient Monitoring</Link></li>
-                <li><Link to="#" className="hover:text-primary transition-colors">Analytics Platform</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Patient Analytics</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Clinical Integration</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
+              <h4 className="font-semibold mb-4">Resources</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="#" className="hover:text-primary transition-colors">About Us</Link></li>
-                <li><Link to="#" className="hover:text-primary transition-colors">Contact</Link></li>
-                <li><Link to="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Clinical Evidence</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Implementation Guide</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Support Center</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">Support</h4>
+              <h4 className="font-semibold mb-4">Contact</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="#" className="hover:text-primary transition-colors">Documentation</Link></li>
-                <li><Link to="#" className="hover:text-primary transition-colors">Help Center</Link></li>
-                <li><Link to="#" className="hover:text-primary transition-colors">Request Demo</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Schedule Demo</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Provider Support</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Partnership</Link></li>
               </ul>
             </div>
           </div>
           
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 DiabetesPredict AI. All rights reserved.</p>
+            <p>&copy; 2024 T2D Predict. Advancing primary care through AI-powered diabetes prediction.</p>
           </div>
         </div>
       </footer>
