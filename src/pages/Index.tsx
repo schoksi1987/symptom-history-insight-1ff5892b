@@ -1,335 +1,344 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { 
-  Activity, 
-  Thermometer, 
-  Heart, 
-  Droplets, 
-  Scale, 
-  Pill,
-  CalendarDays,
+  Brain,
+  Users,
+  Shield,
+  Activity,
+  ArrowRight,
+  Building,
+  Heart,
+  Stethoscope,
   TrendingUp,
-  AlertCircle,
+  Database,
+  Cloud,
+  BarChart3,
   Clock,
-  Brain
+  CheckCircle2,
+  Star
 } from "lucide-react";
 
 const Index = () => {
-  // Sample health vitals data
-  const healthVitals = [
-    { 
-      label: "Blood Sugar", 
-      value: "76 mg/dl", 
-      icon: Droplets, 
-      status: "normal",
-      color: "text-green-600" 
+  const services = [
+    {
+      title: "AI Disease Prediction",
+      description: "Advanced machine learning algorithms to predict Type 2 diabetes risk at primary care settings",
+      icon: Brain,
+      buttonText: "Get Risk Assessment",
+      buttonLink: "/recommendations"
     },
-    { 
-      label: "HbA1c", 
-      value: "6.7 mg/dl", 
-      icon: Activity, 
-      status: "elevated",
-      color: "text-yellow-600" 
-    },
-    { 
-      label: "Weight", 
-      value: "67 KG", 
-      icon: Scale, 
-      status: "normal",
-      color: "text-blue-600" 
-    },
-    { 
-      label: "Body Mass Index(BMI)", 
-      value: "27 kg/cm2", 
-      icon: Scale, 
-      status: "overweight",
-      color: "text-orange-600" 
-    },
-    { 
-      label: "Blood Pressure", 
-      value: "Systolic 124, Diastolic 76", 
-      icon: Heart, 
-      status: "normal",
-      color: "text-green-600" 
-    },
-    { 
-      label: "Body Temperature", 
-      value: "67°C", 
-      icon: Thermometer, 
-      status: "normal",
-      color: "text-blue-600" 
-    },
-    { 
-      label: "Pulse", 
-      value: "90 BPM", 
-      icon: Heart, 
-      status: "normal",
-      color: "text-green-600" 
-    },
-    { 
-      label: "Glucose", 
-      value: "67 mg/dl", 
-      icon: Droplets, 
-      status: "normal",
-      color: "text-green-600" 
+    {
+      title: "Patient Monitoring",
+      description: "Comprehensive tracking of symptoms, vitals, and health metrics for better outcomes",
+      icon: Activity,
+      buttonText: "View Dashboard",
+      buttonLink: "/recommendations"
     }
   ];
 
-  // Sample symptoms tracking data from previous visits
-  const symptomsHistory = [
-    {
-      date: "2023-12-27",
-      visit: "Today's Visit",
-      symptoms: [
-        { name: "Fatigue", severity: "Moderate", duration: "3 days" },
-        { name: "Headache", severity: "Mild", duration: "1 day" },
-        { name: "Joint Pain", severity: "Severe", duration: "1 week" }
-      ],
-      score: 13
-    },
-    {
-      date: "2023-12-20",
-      visit: "Last Visit",
-      symptoms: [
-        { name: "Dizziness", severity: "Mild", duration: "2 days" },
-        { name: "Nausea", severity: "Moderate", duration: "1 day" },
-        { name: "Back Pain", severity: "Mild", duration: "3 days" }
-      ],
-      score: 8
-    },
-    {
-      date: "2023-12-13",
-      visit: "Previous Visit",
-      symptoms: [
-        { name: "Chest Pain", severity: "Mild", duration: "1 day" },
-        { name: "Shortness of Breath", severity: "Moderate", duration: "2 days" }
-      ],
-      score: 5
-    },
-    {
-      date: "2023-12-06",
-      visit: "Previous Visit",
-      symptoms: [
-        { name: "Fever", severity: "Moderate", duration: "2 days" },
-        { name: "Cough", severity: "Severe", duration: "5 days" },
-        { name: "Sore Throat", severity: "Mild", duration: "3 days" }
-      ],
-      score: 12
-    },
-    {
-      date: "2023-11-29",
-      visit: "Previous Visit",
-      symptoms: [
-        { name: "Muscle Aches", severity: "Moderate", duration: "4 days" },
-        { name: "Fatigue", severity: "Severe", duration: "1 week" }
-      ],
-      score: 9
-    }
+  const specialties = [
+    { name: "Endocrinology", icon: Heart },
+    { name: "General Practice", icon: Stethoscope },
+    { name: "Internal Medicine", icon: Activity },
+    { name: "Preventive Care", icon: Shield },
+    { name: "Chronic Disease", icon: TrendingUp },
+    { name: "Primary Care", icon: Users }
   ];
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity.toLowerCase()) {
-      case "mild": return "bg-green-100 text-green-800";
-      case "moderate": return "bg-yellow-100 text-yellow-800";
-      case "severe": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
-    }
-  };
+  const partners = [
+    { name: "Healthcare Providers", icon: Building, description: "Hospitals and clinics" },
+    { name: "Medical Practices", icon: Stethoscope, description: "Primary care physicians" },
+    { name: "Health Plans", icon: Shield, description: "Insurance companies" },
+    { name: "Research Institutions", icon: Database, description: "Medical research" },
+    { name: "Government", icon: Building, description: "Public health agencies" },
+    { name: "Individuals", icon: Users, description: "Patients and families" }
+  ];
+
+  const features = [
+    { name: "Big Data Analytics", icon: Database, description: "Process vast amounts of health data" },
+    { name: "Cloud Infrastructure", icon: Cloud, description: "Secure and scalable platform" },
+    { name: "Real-time Analytics", icon: BarChart3, description: "Instant insights and predictions" },
+    { name: "Continuous Monitoring", icon: Clock, description: "24/7 patient health tracking" }
+  ];
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b bg-card">
+      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Avatar className="h-16 w-16">
-                <AvatarImage src="/lovable-uploads/b851c275-b12a-4121-9e3f-1f76d80b4d1f.png" />
-                <AvatarFallback>PH</AvatarFallback>
-              </Avatar>
-              <div>
-                <h1 className="text-2xl font-bold">Patient: Pooja Shah</h1>
-                <div className="flex space-x-4 text-sm text-muted-foreground">
-                  <span>Gender: Female</span>
-                  <span>Age: 35</span>
-                  <span>Height: 157</span>
+            <div className="flex items-center space-x-3">
+              <Brain className="h-8 w-8 text-primary" />
+              <h1 className="text-2xl font-bold">DiabetesPredict AI</h1>
+            </div>
+            <nav className="hidden md:flex items-center space-x-6">
+              <Link to="#services" className="text-muted-foreground hover:text-primary transition-colors">Services</Link>
+              <Link to="#about" className="text-muted-foreground hover:text-primary transition-colors">About</Link>
+              <Link to="#partners" className="text-muted-foreground hover:text-primary transition-colors">Partners</Link>
+              <Button variant="outline" size="sm">Login</Button>
+              <Button size="sm">Request Demo</Button>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative py-20 bg-gradient-to-br from-primary/5 to-accent/5">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <Badge variant="secondary" className="mb-4">
+                  <Star className="h-4 w-4 mr-2" />
+                  AI-Powered Healthcare
+                </Badge>
+                <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
+                  Predict Type 2 Diabetes Risk with 
+                  <span className="text-primary"> AI Precision</span>
+                </h1>
+                <p className="text-xl text-muted-foreground leading-relaxed">
+                  Advanced machine learning platform for early diabetes detection at primary care settings. 
+                  Empowering healthcare providers with predictive insights for better patient outcomes.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                  <span>95% Accuracy Rate</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                  <span>Real-time Analysis</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                  <span>HIPAA Compliant</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                  <span>Easy Integration</span>
                 </div>
               </div>
-            </div>
-            <div className="text-right space-y-2">
-              <h2 className="text-lg font-semibold">Patient Dashboard</h2>
-              <Link to="/recommendations">
-                <Button className="flex items-center space-x-2">
-                  <Brain className="h-4 w-4" />
-                  <span>View AI Recommendations</span>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/recommendations">
+                  <Button size="lg" className="w-full sm:w-auto">
+                    Try Demo Dashboard
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                  Request Demo
                 </Button>
-              </Link>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div className="container mx-auto px-6 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          {/* Health Vitals */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Health Vitals</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {healthVitals.map((vital, index) => {
-                    const IconComponent = vital.icon;
-                    return (
-                      <div key={index} className="flex items-center space-x-3 p-3 rounded-lg border">
-                        <IconComponent className={`h-6 w-6 ${vital.color}`} />
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">{vital.label}</p>
-                          <p className="text-lg font-bold">{vital.value}</p>
-                        </div>
-                        <Badge 
-                          variant={vital.status === 'normal' ? 'secondary' : 'destructive'}
-                          className="text-xs"
-                        >
-                          {vital.status}
-                        </Badge>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Visit Summary */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <CalendarDays className="h-5 w-5" />
-                  <span>Last Visit</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center">
-                  <div className="text-3xl font-bold">50</div>
-                  <div className="text-sm text-muted-foreground">Score 0</div>
-                  <Progress value={0} className="mt-4" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Clock className="h-5 w-5" />
-                  <span>Today's Visit</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center">
-                  <div className="text-sm text-muted-foreground">December 27, 2023</div>
-                  <div className="text-3xl font-bold">50</div>
-                  <div className="text-sm text-muted-foreground">Score 13</div>
-                  <div className="text-xs text-muted-foreground mt-1">Change in score: 0</div>
-                  <Progress value={26} className="mt-4" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Active Medication</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center space-x-2 text-muted-foreground">
-                  <Pill className="h-4 w-4" />
-                  <span>No Medication</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Next Visit</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center text-muted-foreground">
-                  No Appointment
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Track My Symptoms */}
-        <div className="mt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <TrendingUp className="h-5 w-5" />
-                <span>Track My Symptoms</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {symptomsHistory.map((visit, index) => (
-                  <div key={index} className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <h3 className="font-semibold">{visit.visit}</h3>
-                        <p className="text-sm text-muted-foreground">{visit.date}</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm text-muted-foreground">Symptom Score</div>
-                        <div className="text-xl font-bold">{visit.score}</div>
-                      </div>
+            <div className="relative">
+              <div className="bg-card rounded-2xl shadow-2xl p-8 border">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Patient Risk Analysis</h3>
+                    <Badge variant="destructive">HIGH RISK</Badge>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Diabetes Risk Score</span>
+                      <span className="text-2xl font-bold text-destructive">71%</span>
                     </div>
                     
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium text-muted-foreground">Reported Symptoms:</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {visit.symptoms.map((symptom, symptomIndex) => (
-                          <div key={symptomIndex} className="border rounded-md p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-medium text-sm">{symptom.name}</span>
-                              <Badge 
-                                variant="outline" 
-                                className={getSeverityColor(symptom.severity)}
-                              >
-                                {symptom.severity}
-                              </Badge>
-                            </div>
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <Clock className="h-3 w-3 mr-1" />
-                              <span>Duration: {symptom.duration}</span>
-                            </div>
+                    <div className="space-y-3">
+                      {[
+                        { label: "Lifestyle Factors", value: 72, color: "bg-red-500" },
+                        { label: "Genetic Predisposition", value: 45, color: "bg-yellow-500" },
+                        { label: "Clinical Markers", value: 68, color: "bg-red-500" },
+                        { label: "Social Determinants", value: 30, color: "bg-green-500" }
+                      ].map((item, index) => (
+                        <div key={index} className="space-y-1">
+                          <div className="flex justify-between text-sm">
+                            <span>{item.label}</span>
+                            <span className="font-medium">{item.value}%</span>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {index === 0 && (
-                      <div className="mt-3 p-2 bg-blue-50 rounded-md">
-                        <div className="flex items-center text-sm text-blue-700">
-                          <AlertCircle className="h-4 w-4 mr-2" />
-                          <span>Current visit - symptoms being tracked</span>
+                          <div className="w-full bg-muted rounded-full h-2">
+                            <div 
+                              className={`${item.color} h-2 rounded-full transition-all duration-300`}
+                              style={{ width: `${item.value}%` }}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      ))}
+                    </div>
                   </div>
-                ))}
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Our Healthcare Solutions</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Comprehensive AI-powered tools for diabetes prediction and patient care management
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            {services.map((service, index) => {
+              const IconComponent = service.icon;
+              return (
+                <Card key={index} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="p-3 rounded-lg bg-primary/10">
+                        <IconComponent className="h-8 w-8 text-primary" />
+                      </div>
+                      <CardTitle className="text-xl">{service.title}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <p className="text-muted-foreground text-lg leading-relaxed">
+                      {service.description}
+                    </p>
+                    <Link to={service.buttonLink}>
+                      <Button className="w-full group-hover:scale-105 transition-transform">
+                        {service.buttonText}
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Specialties */}
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold mb-4">Medical Specialties Coverage</h3>
+            <p className="text-muted-foreground">In our platform we support multiple medical specialties</p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {specialties.map((specialty, index) => {
+              const IconComponent = specialty.icon;
+              return (
+                <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
+                  <IconComponent className="h-8 w-8 text-primary mx-auto mb-3" />
+                  <p className="font-medium text-sm">{specialty.name}</p>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Partners Section */}
+      <section id="partners" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">We Partner Across The Whole Health System</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Our comprehensive platform serves diverse healthcare stakeholders
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {partners.map((partner, index) => {
+              const IconComponent = partner.icon;
+              return (
+                <Card key={index} className="text-center p-8 hover:shadow-lg transition-all duration-300 group">
+                  <div className="mx-auto mb-6 p-4 rounded-full bg-primary/10 w-20 h-20 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <IconComponent className="h-10 w-10 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">{partner.name}</h3>
+                  <p className="text-muted-foreground">{partner.description}</p>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Technology Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Powered By Advanced Technology</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Our holistic approach combines behavior sciences, medicine, physical fitness, nutrition and social determinants of health with advanced data science to predict patient risk scores.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => {
+              const IconComponent = feature.icon;
+              return (
+                <div key={index} className="text-center space-y-4">
+                  <div className="mx-auto p-6 rounded-full bg-primary/10 w-24 h-24 flex items-center justify-center">
+                    <IconComponent className="h-12 w-12 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-bold">{feature.name}</h3>
+                  <p className="text-muted-foreground text-sm">{feature.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-card border-t py-12">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <Brain className="h-6 w-6 text-primary" />
+                <span className="font-bold text-lg">DiabetesPredict AI</span>
+              </div>
+              <p className="text-muted-foreground text-sm">
+                Advancing healthcare through AI-powered diabetes prediction and patient monitoring.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Services</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link to="#" className="hover:text-primary transition-colors">Risk Assessment</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Patient Monitoring</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Analytics Platform</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link to="#" className="hover:text-primary transition-colors">About Us</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Contact</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link to="#" className="hover:text-primary transition-colors">Documentation</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Help Center</Link></li>
+                <li><Link to="#" className="hover:text-primary transition-colors">Request Demo</Link></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
+            <p>&copy; 2024 DiabetesPredict AI. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
