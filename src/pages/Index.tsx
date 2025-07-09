@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { 
   Activity, 
   Thermometer, 
@@ -12,7 +14,8 @@ import {
   CalendarDays,
   TrendingUp,
   AlertCircle,
-  Clock
+  Clock,
+  Brain
 } from "lucide-react";
 
 const Index = () => {
@@ -157,8 +160,14 @@ const Index = () => {
                 </div>
               </div>
             </div>
-            <div className="text-right">
+            <div className="text-right space-y-2">
               <h2 className="text-lg font-semibold">Patient Dashboard</h2>
+              <Link to="/recommendations">
+                <Button className="flex items-center space-x-2">
+                  <Brain className="h-4 w-4" />
+                  <span>View AI Recommendations</span>
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
