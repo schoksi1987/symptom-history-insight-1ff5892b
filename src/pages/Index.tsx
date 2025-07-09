@@ -107,7 +107,7 @@ const Index = () => {
             <div className="flex items-center space-x-3">
               <Brain className="h-8 w-8 text-primary" />
               <div>
-                <h1 className="text-xl font-bold">T2D Predict</h1>
+                <h1 className="text-xl font-bold">Predict Disease</h1>
                 <p className="text-xs text-muted-foreground">Primary Care AI</p>
               </div>
             </div>
@@ -289,7 +289,7 @@ const Index = () => {
       <section id="demo" className="py-20 bg-primary/5">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-3xl lg:text-4xl font-bold">See T2D Predict in Action</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold">See Predict Disease in Action</h2>
             <p className="text-xl text-muted-foreground">
               Experience how our platform transforms diabetes risk assessment in primary care settings
             </p>
@@ -333,7 +333,7 @@ const Index = () => {
               <div className="flex items-center space-x-3">
                 <Brain className="h-6 w-6 text-primary" />
                 <div>
-                  <span className="font-bold text-lg">T2D Predict</span>
+                  <span className="font-bold text-lg">Predict Disease</span>
                   <p className="text-xs text-muted-foreground">Primary Care AI</p>
                 </div>
               </div>
@@ -371,7 +371,7 @@ const Index = () => {
           </div>
           
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 T2D Predict. Advancing primary care through AI-powered diabetes prediction.</p>
+            <p>&copy; 2024 Predict Disease. Advancing primary care through AI-powered diabetes prediction.</p>
           </div>
         </div>
       </footer>
