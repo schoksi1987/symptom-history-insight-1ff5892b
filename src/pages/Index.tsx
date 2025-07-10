@@ -311,14 +311,16 @@ const Index = () => {
 
               <Card className="p-8 text-center hover:shadow-lg transition-shadow">
                 <BarChart3 className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-3">Clinical Analytics</h3>
+                <h3 className="text-xl font-bold mb-3">Physician Dashboard</h3>
                 <p className="text-muted-foreground mb-6">
-                  Explore population health insights and patient journey analytics
+                  Explore population health insights and patient management tools
                 </p>
-                <Button variant="outline" className="w-full">
-                  Request Demo Call
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <Link to="/dashboard">
+                  <Button variant="outline" className="w-full">
+                    View Physician Dashboard
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </Card>
             </div>
           </div>

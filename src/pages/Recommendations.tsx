@@ -220,10 +220,24 @@ const Recommendations = () => {
                   <CardTitle className="text-base">Personalized Facts</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="link" className="p-0 h-auto text-blue-600">
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add First
-                  </Button>
+                  <div className="space-y-3 text-xs">
+                    <div className="flex items-start space-x-2">
+                      <span className="text-primary">•</span>
+                      <span>BMI of 28.5 indicates overweight status</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <span className="text-primary">•</span>
+                      <span>Family history: Mother diagnosed at age 52</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <span className="text-primary">•</span>
+                      <span>Sedentary job with minimal physical activity</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <span className="text-primary">•</span>
+                      <span>Irregular meal patterns affecting glucose levels</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -258,10 +272,24 @@ const Recommendations = () => {
                   <CardTitle className="text-base">Goals</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="link" className="p-0 h-auto text-blue-600">
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add First
-                  </Button>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-green-600">✓</span>
+                      <span>Lose 5kg in next 6 months</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-blue-600">○</span>
+                      <span>Exercise 30min daily</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-blue-600">○</span>
+                      <span>Reduce refined sugar intake</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-blue-600">○</span>
+                      <span>Monitor blood glucose monthly</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -270,10 +298,20 @@ const Recommendations = () => {
                   <CardTitle className="text-base">Preventive Measures</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="link" className="p-0 h-auto text-blue-600">
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add First
-                  </Button>
+                  <div className="space-y-2 text-xs">
+                    <div className="p-2 bg-blue-50 rounded text-blue-800">
+                      <strong>Diet:</strong> Mediterranean diet with reduced carbs
+                    </div>
+                    <div className="p-2 bg-green-50 rounded text-green-800">
+                      <strong>Exercise:</strong> 150min moderate activity/week
+                    </div>
+                    <div className="p-2 bg-purple-50 rounded text-purple-800">
+                      <strong>Monitoring:</strong> HbA1c every 3 months
+                    </div>
+                    <div className="p-2 bg-orange-50 rounded text-orange-800">
+                      <strong>Lifestyle:</strong> Stress management & quality sleep
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
