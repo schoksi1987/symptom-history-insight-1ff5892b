@@ -169,7 +169,7 @@ const Dashboard = () => {
                       <SelectItem value="pooja-shah">Pooja Shah</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button>Search</Button>
+                  <Button onClick={() => window.location.href = '/patient/22'}>Search</Button>
                   <Button variant="outline">
                     <UserPlus className="h-4 w-4 mr-2" />
                     Add New Patient
