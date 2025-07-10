@@ -21,8 +21,11 @@ import {
   Edit,
   Plus
 } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PatientDashboard = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
   // Patient Information
   const patientInfo = {
     name: "Pooja Shah",
@@ -373,7 +376,13 @@ const PatientDashboard = () => {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <span className="font-medium">Next Visit: July 10, 2025</span>
-                    <Button size="sm" className="bg-primary">Recommendation</Button>
+                    <Button 
+                      size="sm" 
+                      className="bg-primary"
+                      onClick={() => navigate(`/patient/${id}/examination`)}
+                    >
+                      Start Examination
+                    </Button>
                   </div>
                 </div>
                 <div>
