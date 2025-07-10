@@ -776,10 +776,10 @@ const PatientExamination = () => {
                   </Button>
                 ) : (
                   <Button 
-                    onClick={() => navigate(`/recommendations/${id}`)}
+                    onClick={() => navigate(`/patient/${id}/sdoh`)}
                     className="bg-primary hover:bg-primary/90"
                   >
-                    Generate Recommendations
+                    SDOH Assessment
                   </Button>
                 )}
               </div>
