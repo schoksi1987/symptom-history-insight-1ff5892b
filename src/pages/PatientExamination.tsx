@@ -7,7 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MapPin, AlertTriangle, TrendingUp, Users } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { ArrowLeft, MapPin, AlertTriangle, TrendingUp, Users, Edit, Trash2, Plus } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const PatientExamination = () => {
@@ -48,6 +49,45 @@ const PatientExamination = () => {
     grandFather: true
   });
 
+  const [familyDetails, setFamilyDetails] = useState({
+    father: {
+      conditions: ['Diabetes'],
+      conditionAges: { 'Diabetes': 45 },
+      lifestyleFactors: ['Poor eating habits/Smoking/Drinking', 'Inactive lifestyle/Lack of Exercise'],
+      symptoms: ['Frequent urination', 'Increased thirst', 'Fatigue']
+    }
+  });
+
+  const [selectedFamilyMember, setSelectedFamilyMember] = useState(null);
+  const [showFamilyDialog, setShowFamilyDialog] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+
+  const [bodySystemExam, setBodySystemExam] = useState({
+    eyes: { normal: true, comments: '' },
+    ears: { normal: true, comments: '' },
+    nose: { normal: true, comments: '' },
+    mouthThroat: { normal: true, comments: '' },
+    headFaceNeck: { normal: true, comments: '' },
+    breasts: { normal: true, comments: '' },
+    lungs: { normal: true, comments: '' },
+    cardiovascular: { normal: true, comments: '' },
+    extremities: { normal: true, comments: '' },
+    abdomen: { normal: true, comments: '' },
+    gastrointestinal: { normal: true, comments: '' },
+    endocrine: { normal: true, comments: '' },
+    reproductive: { normal: true, comments: '' },
+    lymphatic: { normal: true, comments: '' },
+    nervousSystem: { normal: true, comments: '' },
+    visionScreening: { normal: true, comments: '' },
+    hearingScreening: { normal: true, comments: '' }
+  });
+
+  const [medications, setMedications] = useState([
+    { name: 'Metformin', dosage: '500mg twice daily', reason: 'Blood sugar control' }
+  ]);
+
+  const [physicianFindings, setPhysicianFindings] = useState('');
+
   const [patientNotes, setPatientNotes] = useState(
     "Patient reports increased fatigue over the past 3 months, especially after meals. Experiencing frequent urination (polyuria) - approximately 8-10 times daily, including 2-3 times at night (nocturia). Patient mentions increased thirst and has been drinking more water than usual. Complains of occasional blurred vision, particularly when reading. Reports mild tingling sensation in feet during evening hours. Patient states she has been under increased stress at work and admits to irregular eating patterns. No chest pain or shortness of breath reported. Sleep quality has decreased due to frequent nighttime urination. Patient is concerned about family history of diabetes and requests screening."
   );
@@ -86,6 +126,47 @@ const PatientExamination = () => {
 
   const handleFamilyHistoryChange = (member: string, checked: boolean) => {
     setFamilyHistory(prev => ({ ...prev, [member]: checked }));
+    if (checked) {
+      setSelectedFamilyMember(member);
+      setShowFamilyDialog(true);
+    }
+  };
+
+  const handleBodySystemChange = (system: string, field: string, value: boolean | string) => {
+    setBodySystemExam(prev => ({
+      ...prev,
+      [system]: { ...prev[system], [field]: value }
+    }));
+  };
+
+  const addMedication = () => {
+    setMedications([...medications, { name: '', dosage: '', reason: '' }]);
+  };
+
+  const updateMedication = (index: number, field: string, value: string) => {
+    const updated = [...medications];
+    updated[index] = { ...updated[index], [field]: value };
+    setMedications(updated);
+  };
+
+  const removeMedication = (index: number) => {
+    setMedications(medications.filter((_, i) => i !== index));
+  };
+
+  const nextStep = () => {
+    if (currentStep < 3) setCurrentStep(currentStep + 1);
+  };
+
+  const previousStep = () => {
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
+  };
+
+  const familyMemberNames = {
+    mother: 'Mother',
+    father: 'Father',
+    sibling: 'Brother/Sister',
+    grandMother: 'Grand Mother',
+    grandFather: 'Grand Father'
   };
 
   return (
@@ -107,7 +188,7 @@ const PatientExamination = () => {
             </div>
           </div>
           <Badge variant="outline" className="text-sm">
-            Examination in Progress
+            Step {currentStep} of 3
           </Badge>
         </div>
 
@@ -340,6 +421,19 @@ const PatientExamination = () => {
                       onCheckedChange={(checked) => handleFamilyHistoryChange('grandFather', checked as boolean)}
                     />
                   </div>
+                  
+                  {/* Show family member details */}
+                  {familyHistory.father && (
+                    <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                      <h4 className="font-medium text-blue-900 mb-2">Father's Diabetes History</h4>
+                      <div className="text-sm space-y-1">
+                        <div><strong>Diagnosed at:</strong> Age 45</div>
+                        <div><strong>Symptoms before diagnosis:</strong> Frequent urination, increased thirst, fatigue</div>
+                        <div><strong>Lifestyle factors:</strong> Poor eating habits, smoking, inactive lifestyle</div>
+                        <div><strong>Current status:</strong> Managed with medication and diet</div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -417,54 +511,279 @@ const PatientExamination = () => {
               </CardContent>
             </Card>
 
+            {/* Medications */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Medications (including OTC & herbs)</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {medications.map((med, index) => (
+                  <div key={index} className="grid grid-cols-3 gap-4 p-3 border rounded-lg">
+                    <div>
+                      <Label>Name</Label>
+                      <Input 
+                        value={med.name}
+                        onChange={(e) => updateMedication(index, 'name', e.target.value)}
+                        placeholder="Medication name"
+                      />
+                    </div>
+                    <div>
+                      <Label>Mg./Dosage</Label>
+                      <Input 
+                        value={med.dosage}
+                        onChange={(e) => updateMedication(index, 'dosage', e.target.value)}
+                        placeholder="Dosage"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <Label>Reason why you are taking</Label>
+                      <div className="flex gap-2">
+                        <Input 
+                          value={med.reason}
+                          onChange={(e) => updateMedication(index, 'reason', e.target.value)}
+                          placeholder="Reason"
+                        />
+                        <Button 
+                          variant="outline" 
+                          size="icon"
+                          onClick={() => removeMedication(index)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <Button variant="outline" onClick={addMedication} className="w-full">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add
+                </Button>
+              </CardContent>
+            </Card>
+
             {/* Patient Notes */}
             <Card>
               <CardHeader>
                 <CardTitle>Patient Notes</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Document patient's concerns, symptoms, and observations for NLP analysis
+                  Describe patient concerns, symptoms, and observations in detail for NLP analysis
                 </p>
               </CardHeader>
               <CardContent>
-                <Textarea
+                <Textarea 
                   value={patientNotes}
                   onChange={(e) => setPatientNotes(e.target.value)}
+                  className="min-h-[200px]"
                   placeholder="Enter detailed patient notes, symptoms, and observations..."
-                  className="min-h-[300px] text-sm"
                 />
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium text-blue-900">NLP Analysis Active</span>
+                
+                {/* NLP Analysis Results */}
+                <div className="mt-4 p-4 bg-green-50 rounded-lg">
+                  <h4 className="font-medium text-green-800 mb-2">🤖 NLP Analysis - Identified Symptoms</h4>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline" className="bg-green-100">Polyuria (Frequent Urination)</Badge>
+                    <Badge variant="outline" className="bg-green-100">Polydipsia (Increased Thirst)</Badge>
+                    <Badge variant="outline" className="bg-green-100">Fatigue</Badge>
+                    <Badge variant="outline" className="bg-green-100">Blurred Vision</Badge>
+                    <Badge variant="outline" className="bg-green-100">Nocturia</Badge>
+                    <Badge variant="outline" className="bg-green-100">Peripheral Neuropathy</Badge>
                   </div>
-                  <div className="text-xs text-blue-700">
-                    Identified symptoms: Polyuria, Polydipsia, Fatigue, Blurred Vision, Neuropathy
-                  </div>
+                  <p className="text-sm text-green-700 mt-2">
+                    ✓ High confidence diabetes-related symptoms detected
+                  </p>
                 </div>
-                <Button variant="outline" size="sm" className="mt-2">
-                  + Add Document
-                </Button>
               </CardContent>
             </Card>
-          </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-between mt-8">
-          <Button 
-            variant="outline"
-            onClick={() => navigate(`/patient/${id}`)}
-          >
-            Back to Patient Dashboard
-          </Button>
-          <div className="flex gap-4">
-            <Button variant="outline">Save Draft</Button>
-            <Button 
-              onClick={() => navigate('/recommendations')}
-              className="bg-primary hover:bg-primary/90"
-            >
-              Generate Recommendations
-            </Button>
+            {/* Body System Examination */}
+            {currentStep >= 2 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Body System Examination</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Complete physical examination findings for each body system
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-4 gap-4 text-sm font-medium border-b pb-2">
+                      <span>Symptom Name</span>
+                      <span>Normal Findings</span>
+                      <span>Comments/Description</span>
+                      <span>Action</span>
+                    </div>
+                    
+                    {Object.entries(bodySystemExam).map(([system, data]) => (
+                      <div key={system} className="grid grid-cols-4 gap-4 items-center py-2 border-b">
+                        <span className="capitalize font-medium">
+                          {system.replace(/([A-Z])/g, ' $1').trim()}
+                        </span>
+                        <div className="flex items-center">
+                          <span className={data.normal ? "text-green-600" : "text-red-600"}>
+                            {data.normal ? "Yes" : "No"}
+                          </span>
+                        </div>
+                        <Input 
+                          value={data.comments}
+                          onChange={(e) => handleBodySystemChange(system, 'comments', e.target.value)}
+                          placeholder="Add comments..."
+                          className="text-sm"
+                        />
+                        <div className="flex gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="icon"
+                            onClick={() => handleBodySystemChange(system, 'normal', !data.normal)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="outline" size="icon">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    <Button variant="outline" className="w-full mt-4 bg-primary text-white">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add System
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Physician Examination Findings */}
+            {currentStep >= 3 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Physician Examination Findings:</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Textarea 
+                    value={physicianFindings}
+                    onChange={(e) => setPhysicianFindings(e.target.value)}
+                    className="min-h-[150px]"
+                    placeholder="Enter detailed physician examination findings, observations, and clinical impressions..."
+                  />
+                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <h4 className="text-sm font-medium mb-2">Additional Comments</h4>
+                    <Textarea 
+                      placeholder="Additional clinical observations, recommendations, or notes..."
+                      className="min-h-[100px]"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Family History Dialog */}
+          <Dialog open={showFamilyDialog} onOpenChange={setShowFamilyDialog}>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>
+                  Family Relation - {selectedFamilyMember && familyMemberNames[selectedFamilyMember]}
+                </DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-6">
+                {/* Conditions */}
+                <div>
+                  <h3 className="font-medium mb-3">Conditions</h3>
+                  <div className="space-y-2">
+                    {['Obesity', 'High Cholesterol', 'High Blood Pressure', 'High Triglyceride', 'Depression'].map((condition) => (
+                      <div key={condition} className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox />
+                          <Label>{condition}</Label>
+                        </div>
+                        <Input placeholder="Age" className="w-20" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Lifestyle Factors */}
+                <div>
+                  <h3 className="font-medium mb-3">LifeStyle Factors</h3>
+                  <div className="space-y-2">
+                    {[
+                      'Poor eating habits/Smoking/Drinking',
+                      'Stress',
+                      'Inactive lifestyle/Lack of Exercise',
+                      'Poor Sleep Habits',
+                      'Lower Income/Poor Living Conditions'
+                    ].map((factor) => (
+                      <div key={factor} className="flex items-center space-x-2">
+                        <Checkbox />
+                        <Label>{factor}</Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Symptoms */}
+                <div>
+                  <h3 className="font-medium mb-3">Symptoms</h3>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="frequent-urination">Frequent urination</SelectItem>
+                      <SelectItem value="increased-thirst">Increased thirst</SelectItem>
+                      <SelectItem value="fatigue">Fatigue</SelectItem>
+                      <SelectItem value="weight-loss">Unexplained weight loss</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setShowFamilyDialog(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={() => setShowFamilyDialog(false)}>
+                  Save
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Navigation Steps */}
+          <div className="lg:col-span-2 mt-8">
+            <div className="flex justify-between items-center">
+              <Button variant="outline" onClick={previousStep} disabled={currentStep === 1}>
+                Back
+              </Button>
+              
+              <div className="flex gap-2">
+                {[1, 2, 3].map((step) => (
+                  <div 
+                    key={step}
+                    className={`w-3 h-3 rounded-full ${
+                      step <= currentStep ? 'bg-primary' : 'bg-gray-300'
+                    }`}
+                  />
+                ))}
+              </div>
+              
+              <div className="flex gap-4">
+                {currentStep < 3 ? (
+                  <Button onClick={nextStep} className="bg-primary hover:bg-primary/90">
+                    Next
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={() => navigate(`/recommendations/${id}`)}
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    Generate Recommendations
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
