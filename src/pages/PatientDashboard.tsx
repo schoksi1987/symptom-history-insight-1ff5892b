@@ -19,7 +19,9 @@ import {
   Gauge,
   TrendingUp,
   Edit,
-  Plus
+  Plus,
+  AlertTriangle,
+  CheckCircle
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -468,14 +470,214 @@ const PatientDashboard = () => {
           </Card>
         </div>
 
-        {/* Track My Symptoms */}
+        {/* Track My Symptoms - Enhanced */}
         <Card className="mt-6">
-          <CardHeader>
-            <CardTitle>Track My Symptoms</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center">
+              <Activity className="h-5 w-5 mr-2" />
+              Track My Symptoms
+            </CardTitle>
+            <Button size="sm" variant="outline">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Symptom
+            </Button>
           </CardHeader>
           <CardContent>
-            <div className="h-40 border-2 border-dashed border-muted rounded-lg flex items-center justify-center">
-              <p className="text-muted-foreground">No symptoms tracked yet</p>
+            {/* Symptom Timeline */}
+            <div className="space-y-6">
+              {/* Recent Symptoms Summary */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">0</div>
+                  <div className="text-sm text-green-700">Severe Symptoms</div>
+                </div>
+                <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                  <div className="text-2xl font-bold text-yellow-600">2</div>
+                  <div className="text-sm text-yellow-700">Mild Symptoms</div>
+                </div>
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">14</div>
+                  <div className="text-sm text-blue-700">Symptom-Free Days</div>
+                </div>
+                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                  <div className="text-2xl font-bold text-purple-600">5.8</div>
+                  <div className="text-sm text-purple-700">Avg. Wellness Score</div>
+                </div>
+              </div>
+
+              {/* Symptom History Timeline */}
+              <div>
+                <h4 className="font-semibold mb-4">Symptom History (Last 30 Days)</h4>
+                <div className="space-y-4">
+                  {/* Timeline Entry 1 */}
+                  <div className="flex items-start space-x-4 p-4 border rounded-lg bg-yellow-50/50">
+                    <div className="w-2 h-2 rounded-full bg-yellow-500 mt-2"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium">Mild Fatigue</span>
+                        <span className="text-sm text-muted-foreground">August 20, 2024 - 2:30 PM</span>
+                      </div>
+                      <div className="text-sm text-muted-foreground mb-2">
+                        Experienced mild fatigue after lunch, possibly related to blood sugar fluctuation
+                      </div>
+                      <div className="flex items-center space-x-4 text-xs">
+                        <Badge variant="secondary">Severity: 3/10</Badge>
+                        <Badge variant="outline">Duration: 2 hours</Badge>
+                        <Badge variant="outline">Glucose: 145 mg/dL</Badge>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Timeline Entry 2 */}
+                  <div className="flex items-start space-x-4 p-4 border rounded-lg bg-blue-50/50">
+                    <div className="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium">Increased Thirst</span>
+                        <span className="text-sm text-muted-foreground">August 18, 2024 - 9:15 AM</span>
+                      </div>
+                      <div className="text-sm text-muted-foreground mb-2">
+                        Noticed increased thirst in the morning, resolved after hydration
+                      </div>
+                      <div className="flex items-center space-x-4 text-xs">
+                        <Badge variant="secondary">Severity: 2/10</Badge>
+                        <Badge variant="outline">Duration: 30 minutes</Badge>
+                        <Badge variant="outline">Glucose: 88 mg/dL</Badge>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Timeline Entry 3 */}
+                  <div className="flex items-start space-x-4 p-4 border rounded-lg bg-green-50/50">
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium">Wellness Check</span>
+                        <span className="text-sm text-muted-foreground">August 15, 2024 - 8:00 AM</span>
+                      </div>
+                      <div className="text-sm text-muted-foreground mb-2">
+                        Feeling great! Good energy levels, completed morning exercise routine
+                      </div>
+                      <div className="flex items-center space-x-4 text-xs">
+                        <Badge variant="default">Wellness Score: 8/10</Badge>
+                        <Badge variant="outline">Exercise: 45 min</Badge>
+                        <Badge variant="outline">Glucose: 76 mg/dL</Badge>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Timeline Entry 4 */}
+                  <div className="flex items-start space-x-4 p-4 border rounded-lg bg-yellow-50/50">
+                    <div className="w-2 h-2 rounded-full bg-yellow-500 mt-2"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium">Sleep Quality Issues</span>
+                        <span className="text-sm text-muted-foreground">August 12, 2024 - 11:00 PM</span>
+                      </div>
+                      <div className="text-sm text-muted-foreground mb-2">
+                        Had difficulty falling asleep, possibly stress-related. Woke up feeling less rested
+                      </div>
+                      <div className="flex items-center space-x-4 text-xs">
+                        <Badge variant="secondary">Sleep Quality: 4/10</Badge>
+                        <Badge variant="outline">Sleep Duration: 5.5 hours</Badge>
+                        <Badge variant="outline">Stress Level: 7/10</Badge>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Timeline Entry 5 */}
+                  <div className="flex items-start space-x-4 p-4 border rounded-lg bg-green-50/50">
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium">Post-Exercise Energy</span>
+                        <span className="text-sm text-muted-foreground">August 10, 2024 - 7:30 AM</span>
+                      </div>
+                      <div className="text-sm text-muted-foreground mb-2">
+                        Great energy levels after morning workout. Mediterranean diet breakfast
+                      </div>
+                      <div className="flex items-center space-x-4 text-xs">
+                        <Badge variant="default">Energy Level: 9/10</Badge>
+                        <Badge variant="outline">Exercise: Mediterranean diet compliance</Badge>
+                        <Badge variant="outline">Glucose: 74 mg/dL</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Symptom Pattern Analysis */}
+              <div className="border-t pt-6">
+                <h4 className="font-semibold mb-4">Pattern Analysis & Insights</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Common Triggers */}
+                  <div className="p-4 bg-muted/30 rounded-lg">
+                    <h5 className="font-medium mb-3 flex items-center">
+                      <AlertTriangle className="h-4 w-4 mr-2 text-yellow-600" />
+                      Common Triggers Identified
+                    </h5>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Post-meal glucose spikes</span>
+                        <span className="text-yellow-600">2 occurrences</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Stress-related sleep issues</span>
+                        <span className="text-yellow-600">1 occurrence</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Morning dehydration</span>
+                        <span className="text-blue-600">1 occurrence</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Positive Patterns */}
+                  <div className="p-4 bg-green-50 rounded-lg">
+                    <h5 className="font-medium mb-3 flex items-center">
+                      <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                      Positive Patterns
+                    </h5>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Exercise improving energy</span>
+                        <span className="text-green-600">Consistent</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Mediterranean diet benefits</span>
+                        <span className="text-green-600">Ongoing</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Stable glucose readings</span>
+                        <span className="text-green-600">Improving</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="border-t pt-6">
+                <h4 className="font-semibold mb-4">Quick Symptom Logging</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <Button variant="outline" size="sm" className="h-auto py-3 flex flex-col space-y-1">
+                    <Droplets className="h-4 w-4" />
+                    <span className="text-xs">Thirst</span>
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-auto py-3 flex flex-col space-y-1">
+                    <Activity className="h-4 w-4" />
+                    <span className="text-xs">Fatigue</span>
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-auto py-3 flex flex-col space-y-1">
+                    <Heart className="h-4 w-4" />
+                    <span className="text-xs">Wellness</span>
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-auto py-3 flex flex-col space-y-1">
+                    <Plus className="h-4 w-4" />
+                    <span className="text-xs">Other</span>
+                  </Button>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
