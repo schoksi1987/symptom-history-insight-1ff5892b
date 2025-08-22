@@ -26,82 +26,119 @@ import { useNavigate, useParams } from "react-router-dom";
 const PatientDashboard = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  // Patient Information
+  // Patient Information - Anonymized Case Study Patient
   const patientInfo = {
-    name: "Pooja Shah",
+    name: "Patient #A-2024-001",
     gender: "Female",
     age: 35,
     height: 157,
     patientId: "22"
   };
 
-  // Risk Analysis Data
+  // Overall Risk Score
+  const overallRisk = {
+    percentage: 71,
+    level: "High Risk",
+    description: "High probability of developing Type 2 diabetes within 5 years despite normal current glucose levels"
+  };
+
+  // Risk Analysis Data - Based on Case Study
   const riskData = [
     {
-      category: "Lifestyle",
+      category: "Lifestyle Risk",
       percentage: 72,
       riskLevel: "High",
-      description: "Poor diet, sedentary lifestyle, irregular sleep patterns affecting metabolic health",
-      contribution: "10% of lifestyle risk score contributes to overall risk prediction",
+      description: "Poor sleep quality (82%), sedentary habits, high stress levels (78%), irregular meal patterns",
+      contribution: "Primary driver of diabetes risk - lifestyle factors significantly increase metabolic strain",
       color: "bg-destructive",
-      icon: Activity
+      icon: Activity,
+      details: [
+        "Sleep Quality: 82% risk factor",
+        "Stress Levels: 78% risk factor", 
+        "Physical Activity: Sedentary lifestyle",
+        "Meal Patterns: Irregular timing"
+      ]
     },
     {
-      category: "Signs & Symptoms",
+      category: "Clinical Markers",
       percentage: 15,
       riskLevel: "Low",
-      description: "Mild fatigue, occasional increased thirst, no significant symptoms reported",
-      contribution: "10% of lifestyle risk score contributes to overall risk prediction",
+      description: "Normal fasting glucose (76 mg/dL), no active symptoms, no current medication required",
+      contribution: "Current clinical status appears normal - early intervention window",
       color: "bg-green-500",
-      icon: Heart
+      icon: Heart,
+      details: [
+        "Fasting Glucose: 76 mg/dL (Normal)",
+        "Active Symptoms: None reported",
+        "Current Medication: None",
+        "Physical Exam: Normal"
+      ]
     },
     {
-      category: "Historical Medical Data",
+      category: "Historical Risk",
       percentage: 30,
       riskLevel: "Medium",
-      description: "Family history of Type 2 diabetes, previous gestational diabetes, BMI trending upward",
-      contribution: "10% of lifestyle risk score contributes to overall risk prediction",
+      description: "Elevated HbA1c (8.2%), strong family history of Type 2 diabetes, metabolic trends concerning",
+      contribution: "Historical data indicates progressive metabolic dysfunction over time",
       color: "bg-yellow-500",
-      icon: FileText
+      icon: FileText,
+      details: [
+        "HbA1c: 8.2% (Elevated)",
+        "Family History: Type 2 diabetes",
+        "BMI Trend: Gradual increase",
+        "Previous Labs: Borderline values"
+      ]
     },
     {
-      category: "Social Media",
-      percentage: 2,
-      riskLevel: "Low",
-      description: "Limited social media activity, no health-related discussions or patterns identified",
-      contribution: "10% of lifestyle risk score contributes to overall risk prediction",
-      color: "bg-green-500",
-      icon: MessageSquare
+      category: "SDOH Factors",
+      percentage: 25,
+      riskLevel: "Medium",
+      description: "Poor air quality exposure, irregular meal patterns, environmental stressors affecting health",
+      contribution: "Social determinants creating metabolic strain and limiting healthy behaviors",
+      color: "bg-yellow-500",
+      icon: MessageSquare,
+      details: [
+        "Air Quality: Poor exposure",
+        "Meal Access: Irregular patterns",
+        "Environmental Stress: Multiple factors",
+        "Geographic Risk: Urban metabolic challenges"
+      ]
     }
   ];
 
-  // Health Vitals
+  // Health Vitals - Case Study Data
   const healthVitals = [
-    { label: "Blood Sugar", value: "76 mg/dl", icon: Droplets, status: "normal" },
-    { label: "HbA1c", value: "6.7 mg/dl", icon: Activity, status: "borderline" },
-    { label: "Weight", value: "67 KG", icon: Weight, status: "normal" },
-    { label: "Body Mass Index(BMI)", value: "27 kg/cm2", icon: Ruler, status: "overweight" },
-    { label: "Blood Pressure", value: "Systolic 124, Diastolic 76", icon: Heart, status: "normal" },
-    { label: "Body Temperature", value: "67°C", icon: Thermometer, status: "normal" },
-    { label: "Pulse", value: "90 BPM", icon: Activity, status: "normal" },
-    { label: "Glucose", value: "67 mg/dl", icon: Droplets, status: "normal" },
-    { label: "Cholesterol (mg/dl)", value: "Total 128, HDL 76, LDL 66, VLDL 77", icon: Activity, status: "borderline" },
-    { label: "Triglycerides", value: "66 mg/dl", icon: Droplets, status: "normal" },
-    { label: "Waist Circumference", value: "35 CM", icon: Ruler, status: "normal" }
+    { label: "Fasting Blood Sugar", value: "76 mg/dL", icon: Droplets, status: "normal", note: "Normal range despite high risk" },
+    { label: "HbA1c", value: "8.2%", icon: Activity, status: "elevated", note: "Concerning historical trend" },
+    { label: "Weight", value: "67 KG", icon: Weight, status: "normal", note: "Stable but trending upward" },
+    { label: "Body Mass Index(BMI)", value: "27 kg/m²", icon: Ruler, status: "overweight", note: "Gradual increase over time" },
+    { label: "Blood Pressure", value: "124/76 mmHg", icon: Heart, status: "normal", note: "Within normal limits" },
+    { label: "Body Temperature", value: "98.6°F", icon: Thermometer, status: "normal", note: "Normal" },
+    { label: "Pulse", value: "72 BPM", icon: Activity, status: "normal", note: "Resting heart rate normal" },
+    { label: "Sleep Quality Score", value: "32/100", icon: Activity, status: "poor", note: "82% risk factor for diabetes" },
+    { label: "Stress Level Score", value: "78/100", icon: Heart, status: "high", note: "78% risk contribution" },
+    { label: "Physical Activity", value: "2 hrs/week", icon: Activity, status: "low", note: "Well below recommended 150 min/week" },
+    { label: "Air Quality Exposure", value: "Poor AQI 150+", icon: Activity, status: "concerning", note: "Environmental SDOH factor" }
   ];
 
-  // Visit Data
+  // Visit Data - Case Study Timeline
   const visitData = {
-    lastVisit: {
-      date: "December 27, 2023",
-      score: 13,
-      status: "Low Risk"
+    initialAssessment: {
+      date: "March 15, 2024",
+      score: 71,
+      status: "High Risk"
     },
-    todayVisit: {
-      date: "July 10, 2025",
-      score: 29,
-      change: 16,
-      status: "Medium Risk"
+    currentStatus: {
+      date: "August 22, 2024",
+      score: 71,
+      change: 0,
+      status: "High Risk - Intervention Started"
+    },
+    projectedOutcome: {
+      date: "3-6 Months Post-Intervention",
+      projectedScore: 45,
+      expectedChange: -26,
+      status: "Projected: Medium Risk"
     }
   };
 
@@ -113,20 +150,24 @@ const PatientDashboard = () => {
     "Monitor Blood Sugar Levels"
   ];
 
-  // Recommendations
+  // AI-Generated Personalized Recommendations
   const recommendations = [
-    "Follow Mediterranean diet pattern",
-    "Exercise 150 minutes per week",
-    "Monitor blood glucose weekly",
-    "Maintain healthy sleep schedule"
+    "Initiate Metformin therapy (500 mg BID) - Preventive medication",
+    "Enroll in stress management program (yoga + mindfulness)",
+    "Implement structured Mediterranean diet with meal timing",
+    "Exercise routine: 150 minutes per week structured program",
+    "Install continuous glucose monitoring (CGM) system",
+    "Schedule quarterly HbA1c monitoring tests"
   ];
 
-  // Preventive Care Steps
+  // Preventive Care Implementation Plan
   const preventiveCare = [
-    "Run for 30 minutes for 6 months",
-    "Reduce sugar intake by 50%",
-    "Schedule quarterly HbA1c tests",
-    "Join diabetes prevention program"
+    "Week 1-2: Begin Metformin 500mg twice daily with meals",
+    "Week 2-4: Start stress management program enrollment",
+    "Month 1: Implement Mediterranean diet with nutrition counseling", 
+    "Month 1: Begin supervised exercise program 150 min/week",
+    "Month 1: Install CGM and train on monitoring",
+    "Month 3: First follow-up HbA1c and progress assessment"
   ];
 
   return (
@@ -174,7 +215,13 @@ const PatientDashboard = () => {
               <div className="flex items-center space-x-4">
                 <Button size="sm" variant="outline">Set a Reminder</Button>
                 <Button size="sm" variant="outline">Patient Documents</Button>
-                <Button size="sm" variant="outline">Patient Communication</Button>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => navigate(`/patient/${id}/history`)}
+                >
+                  View Patient History
+                </Button>
                 <Button size="sm" variant="ghost" className="text-muted-foreground">Reserve Next Appointment</Button>
                 <Button size="sm" variant="outline">Share Dashboard with patient</Button>
               </div>
@@ -321,10 +368,10 @@ const PatientDashboard = () => {
           <Card className="lg:col-span-2">
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                {/* Last Visit */}
+                {/* Initial Assessment */}
                 <div className="text-center">
-                  <h3 className="font-semibold mb-2">Last Visit</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{visitData.lastVisit.date}</p>
+                  <h3 className="font-semibold mb-2">Initial Assessment</h3>
+                  <p className="text-sm text-muted-foreground mb-4">{visitData.initialAssessment.date}</p>
                   <div className="relative w-32 h-32 mx-auto mb-4">
                     <svg className="w-full h-full transform -rotate-90">
                       <circle cx="64" cy="64" r="48" fill="none" stroke="#e5e7eb" strokeWidth="8" />
@@ -333,22 +380,23 @@ const PatientDashboard = () => {
                         cy="64" 
                         r="48" 
                         fill="none" 
-                        stroke="#22c55e" 
+                        stroke="#ef4444" 
                         strokeWidth="8"
-                        strokeDasharray={`${(visitData.lastVisit.score / 100) * 301.6} 301.6`}
+                        strokeDasharray={`${(visitData.initialAssessment.score / 100) * 301.6} 301.6`}
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-2xl font-bold">{visitData.lastVisit.score}</span>
+                      <span className="text-2xl font-bold">{visitData.initialAssessment.score}</span>
                     </div>
                   </div>
-                  <p className="text-sm font-medium">Score {visitData.lastVisit.score}</p>
+                  <p className="text-sm font-medium">Risk Score: {visitData.initialAssessment.score}%</p>
+                  <Badge variant="destructive" className="text-xs mt-1">{visitData.initialAssessment.status}</Badge>
                 </div>
 
-                {/* Today Visit */}
+                {/* Current Status */}
                 <div className="text-center">
-                  <h3 className="font-semibold mb-2">Today Visit</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{visitData.todayVisit.date}</p>
+                  <h3 className="font-semibold mb-2">Current Status</h3>
+                  <p className="text-sm text-muted-foreground mb-4">{visitData.currentStatus.date}</p>
                   <div className="relative w-32 h-32 mx-auto mb-4">
                     <svg className="w-full h-full transform -rotate-90">
                       <circle cx="64" cy="64" r="48" fill="none" stroke="#e5e7eb" strokeWidth="8" />
@@ -357,25 +405,51 @@ const PatientDashboard = () => {
                         cy="64" 
                         r="48" 
                         fill="none" 
-                        stroke="#eab308" 
+                        stroke="#ef4444" 
                         strokeWidth="8"
-                        strokeDasharray={`${(visitData.todayVisit.score / 100) * 301.6} 301.6`}
+                        strokeDasharray={`${(visitData.currentStatus.score / 100) * 301.6} 301.6`}
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-2xl font-bold">{visitData.todayVisit.score}</span>
+                      <span className="text-2xl font-bold">{visitData.currentStatus.score}</span>
                     </div>
                   </div>
-                  <p className="text-sm font-medium">Score {visitData.todayVisit.score}</p>
-                  <p className="text-sm text-muted-foreground">Change in score: {visitData.todayVisit.change}</p>
+                  <p className="text-sm font-medium">Risk Score: {visitData.currentStatus.score}%</p>
+                  <Badge variant="destructive" className="text-xs mt-1">{visitData.currentStatus.status}</Badge>
                 </div>
               </div>
 
-              {/* Next Visit and Medication */}
+              {/* Projected Outcome */}
+              <div className="mb-8 text-center">
+                <h3 className="font-semibold mb-2">Projected Outcome</h3>
+                <p className="text-sm text-muted-foreground mb-4">{visitData.projectedOutcome.date}</p>
+                <div className="relative w-32 h-32 mx-auto mb-4">
+                  <svg className="w-full h-full transform -rotate-90">
+                    <circle cx="64" cy="64" r="48" fill="none" stroke="#e5e7eb" strokeWidth="8" />
+                    <circle 
+                      cx="64" 
+                      cy="64" 
+                      r="48" 
+                      fill="none" 
+                      stroke="#22c55e" 
+                      strokeWidth="8"
+                      strokeDasharray={`${(visitData.projectedOutcome.projectedScore / 100) * 301.6} 301.6`}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-2xl font-bold">{visitData.projectedOutcome.projectedScore}</span>
+                  </div>
+                </div>
+                <p className="text-sm font-medium">Projected Risk: {visitData.projectedOutcome.projectedScore}%</p>
+                <p className="text-sm text-muted-foreground">Expected change: {visitData.projectedOutcome.expectedChange}%</p>
+                <Badge variant="default" className="text-xs mt-1">{visitData.projectedOutcome.status}</Badge>
+              </div>
+
+              {/* Next Steps and Medication */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="font-medium">Next Visit: July 10, 2025</span>
+                    <span className="font-medium">Intervention Status: Active</span>
                     <Button 
                       size="sm" 
                       className="bg-primary"
@@ -387,7 +461,7 @@ const PatientDashboard = () => {
                 </div>
                 <div>
                   <h4 className="font-medium mb-2">Active Medication</h4>
-                  <p className="text-sm text-muted-foreground">No Medication</p>
+                  <p className="text-sm text-muted-foreground">Metformin 500mg BID (Preventive)</p>
                 </div>
               </div>
             </CardContent>
