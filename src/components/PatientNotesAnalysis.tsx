@@ -288,4 +288,6 @@ export function PatientNotesAnalysis({ patientId }: PatientNotesAnalysisProps) {
       </Card>
     </div>
   );
-}
+};
+
+export default PatientNotesAnalysis;

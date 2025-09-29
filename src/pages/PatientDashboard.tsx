@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { PatientNotesAnalysis } from "@/components/PatientNotesAnalysis";
+import PatientNotesAnalysis from "@/components/PatientNotesAnalysis";
 import { 
   ArrowLeft,
   Bell,
