@@ -35,7 +35,7 @@ const PatientDashboard = () => {
     gender: "Female",
     age: 35,
     height: 157,
-    patientId: "22"
+    patientId: "550e8400-e29b-41d4-a716-446655440001" // Valid UUID for demo
   };
 
   // Overall Risk Score
