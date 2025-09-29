@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { PatientNotesAnalysis } from "@/components/PatientNotesAnalysis";
 import { 
   ArrowLeft,
   Bell,
@@ -681,6 +682,9 @@ const PatientDashboard = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* AI-Powered Notes Analysis */}
+        <PatientNotesAnalysis patientId={patientInfo.patientId} />
 
         {/* Subscription Notice */}
         <div className="mt-6 text-center">

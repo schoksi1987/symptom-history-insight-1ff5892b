@@ -48,11 +48,16 @@ export type Database = {
       }
       patient_notes: {
         Row: {
+          ai_summary: string | null
+          analysis_status: string | null
           attachments: Json | null
+          confidence_score: number | null
           created_at: string
+          diabetes_insights: Json | null
           email_from: string | null
           email_subject: string | null
           id: string
+          identified_symptoms: Json | null
           metadata: Json | null
           note_text: string
           note_type: string | null
@@ -61,11 +66,16 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ai_summary?: string | null
+          analysis_status?: string | null
           attachments?: Json | null
+          confidence_score?: number | null
           created_at?: string
+          diabetes_insights?: Json | null
           email_from?: string | null
           email_subject?: string | null
           id?: string
+          identified_symptoms?: Json | null
           metadata?: Json | null
           note_text: string
           note_type?: string | null
@@ -74,11 +84,16 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ai_summary?: string | null
+          analysis_status?: string | null
           attachments?: Json | null
+          confidence_score?: number | null
           created_at?: string
+          diabetes_insights?: Json | null
           email_from?: string | null
           email_subject?: string | null
           id?: string
+          identified_symptoms?: Json | null
           metadata?: Json | null
           note_text?: string
           note_type?: string | null
@@ -89,6 +104,66 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "patient_notes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      patient_symptoms: {
+        Row: {
+          created_at: string
+          first_reported: string | null
+          frequency: string | null
+          id: string
+          last_reported: string | null
+          metadata: Json | null
+          note_id: string | null
+          patient_id: string
+          severity: string | null
+          source: string | null
+          symptom_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          first_reported?: string | null
+          frequency?: string | null
+          id?: string
+          last_reported?: string | null
+          metadata?: Json | null
+          note_id?: string | null
+          patient_id: string
+          severity?: string | null
+          source?: string | null
+          symptom_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          first_reported?: string | null
+          frequency?: string | null
+          id?: string
+          last_reported?: string | null
+          metadata?: Json | null
+          note_id?: string | null
+          patient_id?: string
+          severity?: string | null
+          source?: string | null
+          symptom_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_symptoms_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "patient_notes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_symptoms_patient_id_fkey"
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "profiles"

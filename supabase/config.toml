@@ -1,1 +1,4 @@
 project_id = "hcwvalwioskpzttqefwu"
+
+[functions.analyze-patient-notes]
+verify_jwt = false
