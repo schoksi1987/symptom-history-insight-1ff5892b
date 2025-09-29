@@ -35,6 +35,30 @@ import { useNavigate, useParams } from "react-router-dom";
 const Recommendations = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+
+  // AI-powered insights from physician and patient notes
+  const aiInsights = {
+    riskAnalysis: "Based on comprehensive analysis of physician findings and patient-reported symptoms, this case demonstrates classic pre-diabetic progression with strong familial correlation. The combination of elevated HbA1c (8.2%), metabolic syndrome markers, and SDOH stressors creates a 71% risk profile for T2DM development within 12 months without intervention.",
+    peerComparisons: [
+      {
+        cohort: "Similar Age Group (30-40, Female)",
+        riskFactors: "BMI >25, Family History, SDOH Stress",
+        outcomes: "68% developed T2DM within 18 months without intervention",
+        interventions: "Metformin + lifestyle modification reduced risk by 58%"
+      },
+      {
+        cohort: "Geographic Cohort (Springfield, MO)",
+        riskFactors: "Food desert, elevated diabetes prevalence (12.8%)",
+        outcomes: "Regional risk 2.3x higher than national average",
+        interventions: "Community-based nutrition programs showed 45% improvement"
+      }
+    ],
+    clinicalPatterns: [
+      "Patient's symptom progression matches 89% of similar cases that developed T2DM",
+      "Work stress + irregular eating pattern found in 76% of high-risk cohort",
+      "Family history pattern (father at 45) correlates with 15-year earlier onset in offspring"
+    ]
+  };
   
   // Comprehensive risk factors based on all assessments
   const riskFactors = [
@@ -98,61 +122,84 @@ const Recommendations = () => {
       matchedSymptoms: "Frequent Urination, Stress, Work-Life Balance",
       unmatchedSymptoms: "Increased Thirst, Blurred Vision, Weight Loss",
       riskScore: 20,
-      outcome: "Prediabetes reversed in 8 months",
-      intervention: "HIIT training + intermittent fasting"
+      outcome: "Pre-diabetes reversed within 6 months",
+      intervention: "Stress management + dietary changes"
     },
     {
-      name: "Sarah_M",
+      name: "Maria",
       age: "35-44",
-      matchedSymptoms: "Sleep Issues, Family History, Stress Eating",
-      unmatchedSymptoms: "Joint Pain",
-      riskScore: 28,
-      outcome: "HbA1c reduced from 8.1 to 6.2",
-      intervention: "Sleep therapy + nutritional counseling"
+      matchedSymptoms: "Family History, Irregular Eating, Sleep Issues",
+      unmatchedSymptoms: "Tingling in Feet",
+      riskScore: 45,
+      outcome: "Ongoing management with medication",
+      intervention: "Metformin + continuous glucose monitoring"
     }
   ];
 
-  // Physician examination findings
+  // Enhanced physician findings with detailed assessments
   const physicianFindings = {
-    overallAssessment: "Patient presents with multiple diabetes risk factors requiring immediate intervention",
+    overallAssessment: "Patient presents with classical signs of metabolic dysfunction and pre-diabetic state. Immediate intervention required to prevent progression to Type 2 diabetes. Strong familial predisposition combined with current lifestyle factors creates high-risk profile.",
     keyFindings: [
-      "Elevated HbA1c (8.2%) indicating poor glycemic control",
-      "BMI 28.4 - overweight category with central adiposity",
-      "Blood pressure 142/88 - stage 1 hypertension",
-      "Lipid panel shows dyslipidemia pattern",
-      "Family history strongly positive for T2DM"
+      "HbA1c 8.2% indicates poor glycemic control over past 2-3 months",
+      "BMI 28.4 with central adiposity - metabolic syndrome pattern",
+      "Blood pressure 142/88 suggests early hypertensive changes",
+      "Lipid profile shows diabetic dyslipidemia pattern",
+      "Early diabetic retinopathy changes detected on fundoscopy"
     ],
     bodySystemFindings: [
-      { system: "Cardiovascular", finding: "Mild hypertension, no murmurs", risk: "Medium" },
-      { system: "Endocrine", finding: "Insulin resistance markers present", risk: "High" },
-      { system: "Nervous System", finding: "Early peripheral neuropathy signs", risk: "Medium" },
-      { system: "Eyes", finding: "No diabetic retinopathy detected", risk: "Low" }
+      { system: "Cardiovascular", finding: "Elevated BP, dyslipidemia", risk: "Medium" },
+      { system: "Endocrine", finding: "Insulin resistance, pre-diabetes", risk: "High" },
+      { system: "Ophthalmologic", finding: "Early retinopathy changes", risk: "Medium" },
+      { system: "Neurologic", finding: "Mild peripheral neuropathy symptoms", risk: "Low" },
+      { system: "Dermatologic", finding: "Acanthosis nigricans present", risk: "Medium" },
+      { system: "Renal", finding: "No current dysfunction", risk: "Low" }
     ]
   };
 
-  // Comprehensive symptom analysis
+  // Symptom analysis with NLP confidence scores
   const symptomAnalysis = [
-    { symptom: "Frequent urination", score: 15, riskLevel: "Low", frequency: "8-10 times daily", nlpConfidence: "95%" },
-    { symptom: "Increased thirst", score: 12, riskLevel: "Low", frequency: "Throughout day", nlpConfidence: "92%" },
-    { symptom: "Fatigue", score: 18, riskLevel: "Medium", frequency: "Post-meal", nlpConfidence: "88%" },
-    { symptom: "Blurred vision", score: 10, riskLevel: "Low", frequency: "Occasional", nlpConfidence: "85%" },
-    { symptom: "Tingling in feet", score: 14, riskLevel: "Medium", frequency: "Evening hours", nlpConfidence: "90%" }
+    {
+      symptom: "Polyuria (Frequent Urination)",
+      confidence: 94,
+      riskLevel: "High",
+      correlation: "Strong correlation with hyperglycemia",
+      timeframe: "3 months"
+    },
+    {
+      symptom: "Polydipsia (Increased Thirst)",
+      confidence: 91,
+      riskLevel: "High",
+      correlation: "Direct response to fluid loss",
+      timeframe: "3 months"
+    },
+    {
+      symptom: "Fatigue",
+      confidence: 87,
+      riskLevel: "Medium",
+      correlation: "Related to glucose dysregulation",
+      timeframe: "3 months"
+    },
+    {
+      symptom: "Blurred Vision",
+      confidence: 82,
+      riskLevel: "Medium",
+      correlation: "Osmotic lens changes",
+      timeframe: "2 months"
+    }
   ];
 
-  // Personalized recommendations based on all data
+  // Personalized facts based on all data
   const personalizedFacts = [
-    "BMI of 28.4 puts you in overweight category - 5kg weight loss would significantly reduce diabetes risk",
-    "Father's diabetes diagnosis at 45 with similar symptoms increases your genetic risk by 40%",
-    "Current stress levels (78% risk score) are contributing to elevated cortisol and insulin resistance",
-    "Sleep quality issues (82% risk) are affecting glucose metabolism and hormone regulation",
-    "Geographic area (Springfield, MO) has 12.8% diabetes prevalence - higher than national average",
-    "Work environment (sedentary) combined with irregular meals creates metabolic stress",
-    "Mental health indicators suggest need for stress management and emotional support"
+    "Your family history increases diabetes risk by 2.5x compared to general population",
+    "Springfield, MO has 12.8% diabetes prevalence - 40% higher than national average",
+    "Your current HbA1c (8.2%) indicates pre-diabetic state requiring immediate intervention",
+    "Work-related stress contributes to 78% of your current risk profile",
+    "Similar patients with early intervention reduced risk by 58% within 6 months"
   ];
 
-  // Evidence-based goals with timelines
+  // Evidence-based treatment goals
   const treatmentGoals = [
-    { goal: "Reduce HbA1c to <7.0%", timeline: "3-6 months", status: "In Progress", priority: "Critical" },
+    { goal: "Reduce HbA1c to <7%", timeline: "3 months", status: "Priority", priority: "Critical" },
     { goal: "Lose 5kg (to BMI <25)", timeline: "6 months", status: "Not Started", priority: "High" },
     { goal: "Exercise 150min/week", timeline: "4 weeks", status: "Planning", priority: "High" },
     { goal: "Reduce stress score <50%", timeline: "8 weeks", status: "Not Started", priority: "High" },
@@ -194,163 +241,226 @@ const Recommendations = () => {
     }
   ];
 
-  const [editMode, setEditMode] = useState({});
-  const [newItem, setNewItem] = useState({ type: '', content: '' });
-
-  const getRiskLevelColor = (level) => {
-    switch (level.toLowerCase()) {
-      case "critical": return "bg-red-600 text-white";
-      case "high": return "bg-red-500 text-white";
-      case "medium": return "bg-yellow-500 text-white";
-      case "low": return "bg-green-500 text-white";
-      default: return "bg-gray-500 text-white";
+  const getRiskLevelColor = (level: string) => {
+    switch (level?.toLowerCase()) {
+      case 'critical': return 'bg-red-100 text-red-800 border-red-200';
+      case 'high': return 'bg-red-100 text-red-800 border-red-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low': return 'bg-green-100 text-green-800 border-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
-  const getPriorityIcon = (priority) => {
-    switch (priority.toLowerCase()) {
-      case "critical": return <AlertTriangle className="h-4 w-4 text-red-600" />;
-      case "high": return <TrendingUp className="h-4 w-4 text-orange-600" />;
-      case "medium": return <Target className="h-4 w-4 text-yellow-600" />;
-      default: return <Target className="h-4 w-4 text-green-600" />;
+  const getPriorityIcon = (priority: string) => {
+    switch (priority?.toLowerCase()) {
+      case 'critical': return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      case 'high': return <TrendingUp className="h-4 w-4 text-orange-500" />;
+      case 'medium': return <Clock className="h-4 w-4 text-yellow-500" />;
+      case 'low': return <Target className="h-4 w-4 text-green-500" />;
+      default: return <Target className="h-4 w-4 text-gray-500" />;
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
-      {/* Header */}
-      <div className="border-b bg-card shadow-sm">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => navigate(`/patient/${id}/sdoh`)}
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <Avatar className="h-16 w-16">
-                <AvatarImage src="/lovable-uploads/b851c275-b12a-4121-9e3f-1f76d80b4d1f.png" />
-                <AvatarFallback>PS</AvatarFallback>
-              </Avatar>
-              <div>
-                <h1 className="text-2xl font-bold">Patient: Pooja Shah</h1>
-                <div className="flex space-x-4 text-sm text-muted-foreground">
-                  <span>Gender: Female</span>
-                  <span>Age: 35</span>
-                  <span>Height: 157cm</span>
-                  <span>BMI: 28.4</span>
-                </div>
-              </div>
-            </div>
-            <div className="text-right">
-              <h2 className="text-lg font-semibold">Comprehensive Recommendations & Insights</h2>
-              <p className="text-sm text-muted-foreground">
-                Based on clinical examination, family history, lifestyle assessment & social determinants
-              </p>
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold">AI-Powered Clinical Recommendations</h1>
+              <p className="text-muted-foreground">Insights from physician findings, patient notes, and peer comparison data</p>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="container mx-auto px-6 py-6">
-        {/* Risk Factors Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {riskFactors.map((factor, index) => {
-            const IconComponent = factor.icon;
-            return (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <IconComponent className="h-8 w-8 text-primary" />
-                    <Badge className={factor.color}>{factor.level}</Badge>
+        {/* AI Insights Summary */}
+        <Card className="mb-6 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Brain className="h-6 w-6 text-blue-600" />
+              AI Clinical Analysis Summary
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="text-center p-4 bg-white rounded-lg">
+                <div className="text-2xl font-bold text-red-600">71%</div>
+                <div className="text-sm text-muted-foreground">Risk Score</div>
+              </div>
+              <div className="text-center p-4 bg-white rounded-lg">
+                <div className="text-2xl font-bold text-orange-600">89%</div>
+                <div className="text-sm text-muted-foreground">Pattern Match</div>
+              </div>
+              <div className="text-center p-4 bg-white rounded-lg">
+                <div className="text-2xl font-bold text-green-600">58%</div>
+                <div className="text-sm text-muted-foreground">Risk Reduction Potential</div>
+              </div>
+            </div>
+            <p className="mt-4 text-sm text-muted-foreground bg-white p-3 rounded border-l-4 border-l-blue-500">
+              {aiInsights.riskAnalysis}
+            </p>
+          </CardContent>
+        </Card>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Column */}
+          <div className="space-y-6">
+            {/* AI-Powered Clinical Insights */}
+            <Card className="border-blue-200 bg-blue-50/30">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="h-5 w-5 text-blue-600" />
+                  AI-Powered Clinical Analysis
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Insights generated from physician findings, patient notes, and similar patient data
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="font-medium mb-2">Clinical Pattern Recognition</h4>
+                  <div className="space-y-2">
+                    {aiInsights.clinicalPatterns.map((pattern, index) => (
+                      <div key={index} className="flex items-start gap-2 text-sm">
+                        <TrendingUp className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                        <span>{pattern}</span>
+                      </div>
+                    ))}
                   </div>
-                  <h3 className="font-semibold mb-2">{factor.title}</h3>
-                  <div className="text-3xl font-bold mb-2">{factor.percentage}%</div>
-                  <p className="text-xs text-muted-foreground">{factor.details}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                </div>
+              </CardContent>
+            </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* SDOH Lifestyle Assessment */}
+            {/* Peer Comparison Analysis */}
+            <Card className="border-purple-200 bg-purple-50/30">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart className="h-5 w-5 text-purple-600" />
+                  Similar Patient Cohort Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {aiInsights.peerComparisons.map((comparison, index) => (
+                    <div key={index} className="p-4 bg-white rounded border-l-4 border-l-purple-500">
+                      <h4 className="font-medium text-purple-900 mb-2">{comparison.cohort}</h4>
+                      <div className="space-y-1 text-sm">
+                        <div><strong>Risk Factors:</strong> {comparison.riskFactors}</div>
+                        <div><strong>Outcomes:</strong> {comparison.outcomes}</div>
+                        <div><strong>Effective Interventions:</strong> {comparison.interventions}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Risk Assessment Cards */}
+            <div className="grid grid-cols-2 gap-4">
+              {riskFactors.map((factor, index) => (
+                <Card key={index} className="bg-gradient-to-br from-background to-secondary/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <factor.icon className="h-6 w-6 text-primary" />
+                      <Badge variant="outline" className={getRiskLevelColor(factor.level)}>
+                        {factor.level}
+                      </Badge>
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2">{factor.title}</h3>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className={`h-2 w-full rounded-full bg-muted`}>
+                        <div 
+                          className={`h-2 rounded-full ${factor.color}`}
+                          style={{ width: `${factor.percentage}%` }}
+                        />
+                      </div>
+                      <span className="text-sm font-medium">{factor.percentage}%</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{factor.details}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Lifestyle Assessment */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Activity className="h-5 w-5" />
-                  SDOH Lifestyle Assessment
+                  Lifestyle Risk Assessment
                 </CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Prioritized intervention areas based on social determinants of health
-                </p>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {lifestyleFactors.map((item, index) => (
-                    <div key={index} className="p-4 border rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
+                  {lifestyleFactors.map((factor, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">{factor.factor}</span>
                         <div className="flex items-center gap-2">
-                          {getPriorityIcon(item.priority)}
-                          <span className="font-medium">{item.factor}</span>
-                          <Badge variant="outline" className={getRiskLevelColor(item.priority)}>
-                            {item.priority}
+                          <span className="text-sm">{factor.score}%</span>
+                          <Badge variant="outline" className={getRiskLevelColor(factor.priority)}>
+                            {factor.priority}
                           </Badge>
                         </div>
-                        <span className="text-lg font-bold">{item.score}%</span>
                       </div>
-                      <Progress value={item.score} className="h-2 mb-2" />
-                      <p className="text-sm text-muted-foreground">
-                        <strong>Intervention:</strong> {item.intervention}
-                      </p>
+                      <Progress value={factor.score} className="h-2" />
+                      <p className="text-sm text-muted-foreground">{factor.intervention}</p>
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Social Insights & Similar Patient Journeys */}
+            {/* Social Insights */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  Social Insights & Similar Patient Journeys
+                  Similar Patient Journeys
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Learning from patients with similar profiles and outcomes
+                  Insights from patients with similar profiles and outcomes
                 </p>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {socialInsights.map((patient, index) => (
-                    <div key={index} className="p-4 border rounded-lg bg-blue-50/50">
-                      <div className="grid grid-cols-6 gap-4 text-sm">
+                  {socialInsights.map((insight, index) => (
+                    <div key={index} className="p-4 border rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback>{insight.name.slice(0, 2)}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <span className="font-medium">{insight.name}</span>
+                            <span className="text-sm text-muted-foreground ml-2">Age: {insight.age}</span>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className={getRiskLevelColor(insight.riskScore > 50 ? 'high' : insight.riskScore > 30 ? 'medium' : 'low')}>
+                          {insight.riskScore}% Risk
+                        </Badge>
+                      </div>
+                      
+                      <div className="space-y-2 text-sm">
                         <div>
-                          <div className="font-medium">{patient.name}</div>
-                          <div className="text-muted-foreground">{patient.age}</div>
+                          <span className="font-medium text-green-600">Matched:</span> {insight.matchedSymptoms}
                         </div>
                         <div>
-                          <div className="text-green-700 font-medium">Matched</div>
-                          <div>{patient.matchedSymptoms}</div>
+                          <span className="font-medium text-orange-600">Different:</span> {insight.unmatchedSymptoms}
                         </div>
                         <div>
-                          <div className="text-orange-700 font-medium">Different</div>
-                          <div>{patient.unmatchedSymptoms}</div>
+                          <span className="font-medium">Outcome:</span> {insight.outcome}
                         </div>
                         <div>
-                          <div className="font-medium">Risk: {patient.riskScore}</div>
-                        </div>
-                        <div>
-                          <div className="text-green-800 font-medium">Outcome</div>
-                          <div>{patient.outcome}</div>
-                        </div>
-                        <div>
-                          <div className="text-primary font-medium">Strategy</div>
-                          <div>{patient.intervention}</div>
+                          <span className="font-medium">Intervention:</span> {insight.intervention}
                         </div>
                       </div>
                     </div>
@@ -359,21 +469,23 @@ const Recommendations = () => {
               </CardContent>
             </Card>
 
-            {/* Physician Examination Findings */}
+            {/* Physician Findings */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Stethoscope className="h-5 w-5" />
-                  Physician Examination Findings
+                  Physician Assessment & Findings
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                    <h4 className="font-medium mb-2">Overall Clinical Assessment</h4>
-                    <p className="text-sm">{physicianFindings.overallAssessment}</p>
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="font-medium mb-3">Overall Assessment</h4>
+                    <p className="text-sm text-muted-foreground p-3 bg-blue-50 rounded border-l-4 border-l-blue-500">
+                      {physicianFindings.overallAssessment}
+                    </p>
                   </div>
-                  
+                   
                   <div>
                     <h4 className="font-medium mb-3">Key Clinical Findings</h4>
                     <div className="space-y-2">
@@ -477,46 +589,45 @@ const Recommendations = () => {
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center">
                         <div className="text-2xl font-bold">71%</div>
-                        <div className="text-xs text-muted-foreground">Risk Score</div>
+                        <div className="text-xs text-muted-foreground">HIGH RISK</div>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-center space-x-2 mb-4">
-                    <AlertTriangle className="h-5 w-5 text-orange-500" />
-                    <span className="text-lg font-semibold text-orange-600">HIGH RISK</span>
-                  </div>
                   <p className="text-sm text-muted-foreground">
-                    Immediate intervention recommended
+                    Probability of developing Type 2 diabetes within 12 months without intervention
                   </p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Detailed Symptom Analysis */}
+            {/* Symptom Analysis */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <BarChart className="h-5 w-5" />
-                  Symptom Analysis
+                  <Brain className="h-5 w-5" />
+                  AI Symptom Analysis
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  NLP-analyzed symptoms with risk scoring
+                  NLP-powered confidence scoring of reported symptoms
                 </p>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {symptomAnalysis.map((symptom, index) => (
                     <div key={index} className="p-3 border rounded">
-                      <div className="flex justify-between items-start mb-2">
+                      <div className="flex items-center justify-between mb-2">
                         <span className="font-medium text-sm">{symptom.symptom}</span>
-                        <Badge variant="outline" className={getRiskLevelColor(symptom.riskLevel)}>
-                          {symptom.riskLevel}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs">{symptom.confidence}%</span>
+                          <Badge variant="outline" className={getRiskLevelColor(symptom.riskLevel)}>
+                            {symptom.riskLevel}
+                          </Badge>
+                        </div>
                       </div>
+                      <Progress value={symptom.confidence} className="h-1 mb-2" />
                       <div className="text-xs text-muted-foreground space-y-1">
-                        <div>Score: {symptom.score}</div>
-                        <div>Frequency: {symptom.frequency}</div>
-                        <div>AI Confidence: {symptom.nlpConfidence}</div>
+                        <div>{symptom.correlation}</div>
+                        <div>Duration: {symptom.timeframe}</div>
                       </div>
                     </div>
                   ))}
@@ -528,43 +639,45 @@ const Recommendations = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Personalized Insights
+                  <Dna className="h-5 w-5" />
+                  Personalized Risk Insights
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {personalizedFacts.map((fact, index) => (
-                    <div key={index} className="flex items-start space-x-2 text-sm">
-                      <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                      <span>{fact}</span>
+                    <div key={index} className="flex items-start gap-2 p-3 bg-blue-50 rounded">
+                      <AlertTriangle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">{fact}</span>
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Comprehensive Preventive Measures */}
+            {/* Preventive Action Plan */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Heart className="h-5 w-5" />
+                  <Calendar className="h-5 w-5" />
                   Preventive Action Plan
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {preventiveMeasures.map((category, index) => (
-                    <div key={index} className={`p-3 rounded-lg ${category.color}`}>
-                      <h4 className="font-medium text-sm mb-2">{category.category}</h4>
-                      <ul className="space-y-1">
+                    <div key={index}>
+                      <div className={`p-3 rounded-lg ${category.color} mb-3`}>
+                        <h4 className="font-medium">{category.category}</h4>
+                      </div>
+                      <div className="space-y-2">
                         {category.measures.map((measure, measureIndex) => (
-                          <li key={measureIndex} className="text-xs flex items-start gap-1">
-                            <span className="mt-1">•</span>
+                          <div key={measureIndex} className="flex items-center gap-2 text-sm">
+                            <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
                             <span>{measure}</span>
-                          </li>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -574,25 +687,19 @@ const Recommendations = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-between items-center mt-8 pt-6 border-t">
-          <Button 
-            variant="outline"
-            onClick={() => navigate(`/patient/${id}/sdoh`)}
-          >
+        <div className="flex justify-center gap-4 mt-8">
+          <Button variant="outline" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Assessment
           </Button>
-          
-          <div className="flex gap-4">
-            <Button variant="outline">
-              <FileText className="h-4 w-4 mr-2" />
-              Generate Report
-            </Button>
-            <Button>
-              <Calendar className="h-4 w-4 mr-2" />
-              Schedule Follow-up
-            </Button>
-          </div>
+          <Button>
+            <FileText className="h-4 w-4 mr-2" />
+            Generate Report
+          </Button>
+          <Button variant="outline">
+            <Calendar className="h-4 w-4 mr-2" />
+            Schedule Follow-up
+          </Button>
         </div>
       </div>
     </div>

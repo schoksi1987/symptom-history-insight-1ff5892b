@@ -86,10 +86,12 @@ const PatientExamination = () => {
     { name: 'Metformin', dosage: '500mg twice daily', reason: 'Blood sugar control' }
   ]);
 
-  const [physicianFindings, setPhysicianFindings] = useState('');
+  const [physicianFindings, setPhysicianFindings] = useState(
+    "Initial Assessment: 35-year-old female presents with classic diabetic symptoms including polyuria, polydipsia, and fatigue over 3-month period. Physical examination reveals BMI of 28.4 (overweight), elevated BP 142/88, signs of metabolic syndrome. Laboratory findings significant for HbA1c 8.2% (elevated), fasting glucose 165 mg/dL, lipid panel showing dyslipidemia with total cholesterol 245, HDL 38 (low), LDL 165, triglycerides 285 (elevated). Patient demonstrates signs of insulin resistance with acanthosis nigricans noted. Fundoscopic exam shows early diabetic retinopathy changes. Peripheral sensation intact but reports intermittent paresthesias. Strong family history of T2DM (father diagnosed at 45). Patient exhibits multiple SDOH risk factors including work-related stress, irregular meal patterns, sedentary lifestyle. Immediate intervention required to prevent progression."
+  );
 
   const [patientNotes, setPatientNotes] = useState(
-    "Patient reports increased fatigue over the past 3 months, especially after meals. Experiencing frequent urination (polyuria) - approximately 8-10 times daily, including 2-3 times at night (nocturia). Patient mentions increased thirst and has been drinking more water than usual. Complains of occasional blurred vision, particularly when reading. Reports mild tingling sensation in feet during evening hours. Patient states she has been under increased stress at work and admits to irregular eating patterns. No chest pain or shortness of breath reported. Sleep quality has decreased due to frequent nighttime urination. Patient is concerned about family history of diabetes and requests screening."
+    "Patient reports increased fatigue over the past 3 months, especially after meals. Experiencing frequent urination (polyuria) - approximately 8-10 times daily, including 2-3 times at night (nocturia). Patient mentions increased thirst and has been drinking more water than usual. Complains of occasional blurred vision, particularly when reading. Reports mild tingling sensation in feet during evening hours. Patient states she has been under increased stress at work and admits to irregular eating patterns. No chest pain or shortness of breath reported. Sleep quality has decreased due to frequent nighttime urination. Patient is concerned about family history of diabetes and requests screening. Lifestyle factors: Works desk job with minimal physical activity, drinks 3-4 cups of coffee daily, skips breakfast frequently, eats lunch irregularly due to work demands. Lives in food desert area with limited access to fresh produce. Single mother managing household stress."
   );
 
   const [location] = useState({
@@ -195,6 +197,53 @@ const PatientExamination = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column */}
           <div className="space-y-6">
+            {/* Physician Findings - First Priority */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Edit className="h-5 w-5 text-primary" />
+                  Physician Examination & Initial Findings
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Record patient conversation, physical examination findings, and initial clinical assessment
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Clinical Findings & Assessment</Label>
+                    <Textarea
+                      value={physicianFindings}
+                      onChange={(e) => setPhysicianFindings(e.target.value)}
+                      placeholder="Record patient history, physical examination findings, clinical observations, and preliminary assessment..."
+                      className="min-h-[200px] bg-blue-50/50 border-blue-200"
+                    />
+                  </div>
+                  <Button variant="outline" size="sm" className="w-full">
+                    🎤 Start Voice Recording
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Patient Notes */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Patient Reported Information</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Patient's own description of symptoms, concerns, and lifestyle factors
+                </p>
+              </CardHeader>
+              <CardContent>
+                <Textarea
+                  value={patientNotes}
+                  onChange={(e) => setPatientNotes(e.target.value)}
+                  placeholder="Patient's description of symptoms, concerns, lifestyle factors, and personal observations..."
+                  className="min-h-[150px] bg-green-50/50 border-green-200"
+                />
+              </CardContent>
+            </Card>
+
             {/* Add Symptoms */}
             <Card>
               <CardHeader>
