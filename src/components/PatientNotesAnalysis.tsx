@@ -31,16 +31,34 @@ export function PatientNotesAnalysis({ patientId }: PatientNotesAnalysisProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState<string | null>(null);
 
+  // Use the actual logged-in user's ID instead of the patientId prop
+  const [actualPatientId, setActualPatientId] = useState<string | null>(null);
+
   useEffect(() => {
-    fetchNotes();
-  }, [patientId]);
+    // Get the current user's ID
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setActualPatientId(user.id);
+      }
+    };
+    getCurrentUser();
+  }, []);
+
+  useEffect(() => {
+    if (actualPatientId) {
+      fetchNotes();
+    }
+  }, [actualPatientId]);
 
   const fetchNotes = async () => {
+    if (!actualPatientId) return;
+    
     try {
       const { data, error } = await supabase
         .from('patient_notes')
         .select('*')
-        .eq('patient_id', patientId)
+        .eq('patient_id', actualPatientId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -52,14 +70,14 @@ export function PatientNotesAnalysis({ patientId }: PatientNotesAnalysisProps) {
   };
 
   const addNote = async () => {
-    if (!newNote.trim()) return;
+    if (!newNote.trim() || !actualPatientId) return;
 
     setIsLoading(true);
     try {
       const { data: insertedNote, error } = await supabase
         .from('patient_notes')
         .insert({
-          patient_id: patientId,
+          patient_id: actualPatientId,
           note_text: newNote,
           note_type: 'general'
         })
@@ -90,7 +108,7 @@ export function PatientNotesAnalysis({ patientId }: PatientNotesAnalysisProps) {
         body: {
           noteId,
           noteText,
-          patientId
+          patientId: actualPatientId
         }
       });
 
