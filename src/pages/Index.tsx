@@ -51,11 +51,11 @@ const Index = () => {
             and personalized diabetes care insights powered by artificial intelligence.
           </p>
           <div className="space-x-4">
-            <Button onClick={() => navigate("/auth")} size="lg" className="px-8">
-              Get Started
+            <Button onClick={() => navigate("/predict")} size="lg" className="px-8">
+              Predict Disease Risk
             </Button>
             <Button onClick={() => navigate("/auth")} variant="outline" size="lg" className="px-8">
-              Learn More
+              Sign In
             </Button>
           </div>
         </div>
