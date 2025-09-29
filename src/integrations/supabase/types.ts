@@ -14,7 +14,124 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      email_processors: {
+        Row: {
+          created_at: string
+          email_address: string
+          id: string
+          is_active: boolean | null
+          patient_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_address: string
+          id?: string
+          is_active?: boolean | null
+          patient_id: string
+        }
+        Update: {
+          created_at?: string
+          email_address?: string
+          id?: string
+          is_active?: boolean | null
+          patient_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_processors_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      patient_notes: {
+        Row: {
+          attachments: Json | null
+          created_at: string
+          email_from: string | null
+          email_subject: string | null
+          id: string
+          metadata: Json | null
+          note_text: string
+          note_type: string | null
+          patient_id: string
+          source: string | null
+          updated_at: string
+        }
+        Insert: {
+          attachments?: Json | null
+          created_at?: string
+          email_from?: string | null
+          email_subject?: string | null
+          id?: string
+          metadata?: Json | null
+          note_text: string
+          note_type?: string | null
+          patient_id: string
+          source?: string | null
+          updated_at?: string
+        }
+        Update: {
+          attachments?: Json | null
+          created_at?: string
+          email_from?: string | null
+          email_subject?: string | null
+          id?: string
+          metadata?: Json | null
+          note_text?: string
+          note_type?: string | null
+          patient_id?: string
+          source?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_notes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          date_of_birth: string | null
+          email: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
