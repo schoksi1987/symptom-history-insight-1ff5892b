@@ -168,14 +168,7 @@ Respond with JSON in this exact format:
   } catch (error) {
     console.error('Analysis error:', error);
     
-    // Update note status to failed
-    if (req.json) {
-      const { noteId } = await req.json();
-      await supabase
-        .from('patient_notes')
-        .update({ analysis_status: 'failed' })
-        .eq('id', noteId);
-    }
+    // unable to mark note as failed because request body cannot be re-read here
 
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
