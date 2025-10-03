@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
+import { useState } from "react";
 import { 
   Heart, 
   Shield, 
@@ -18,10 +18,12 @@ import {
   Eye,
   ArrowRight
 } from "lucide-react";
+import { DemoRequestDialog } from "@/components/DemoRequestDialog";
 
 const Index = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const [demoDialogOpen, setDemoDialogOpen] = useState(false);
 
   if (loading) {
     return (
@@ -41,12 +43,14 @@ const Index = () => {
               <Brain className="h-7 w-7 text-primary" />
               <span className="text-xl font-bold">Predict Disease</span>
             </div>
-            <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-              <button className="hover:text-primary transition-colors">Platform</button>
-              <button className="hover:text-primary transition-colors">Solutions</button>
-              <button className="hover:text-primary transition-colors">Resources</button>
-            </nav>
             <div className="flex items-center gap-3">
+              <Button 
+                onClick={() => setDemoDialogOpen(true)} 
+                variant="outline"
+                size="lg"
+              >
+                Demo Request
+              </Button>
               {user ? (
                 <Button onClick={() => navigate("/dashboard")} size="lg">
                   Dashboard
@@ -608,6 +612,11 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      <DemoRequestDialog 
+        open={demoDialogOpen} 
+        onOpenChange={setDemoDialogOpen} 
+      />
     </div>
   );
 };
