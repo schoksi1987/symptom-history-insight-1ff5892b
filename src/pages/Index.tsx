@@ -104,6 +104,150 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Patient Journey Flow */}
+        <section className="py-20 bg-gradient-to-b from-background to-muted/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+                Complete Patient Journey
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                From initial symptoms to personalized recommendations through comprehensive AI analysis
+              </p>
+            </div>
+
+            <div className="relative">
+              {/* Vertical Timeline Line */}
+              <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-primary via-primary/50 to-primary/20 hidden lg:block" />
+
+              {/* Journey Steps */}
+              <div className="space-y-16">
+                {/* Step 1: Patient Symptoms */}
+                <div className="relative flex flex-col lg:flex-row items-center gap-8">
+                  <div className="flex-1 lg:text-right">
+                    <Card className="p-6 hover:shadow-xl transition-all duration-300 border-2">
+                      <div className="flex lg:flex-row-reverse items-start gap-4">
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Stethoscope className="h-6 w-6 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold mb-2">Patient Symptoms Entry</h3>
+                          <p className="text-muted-foreground">
+                            Patients record their symptoms, health concerns, and daily experiences through our intuitive interface
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+                  </div>
+                  <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl z-10 shadow-lg">
+                    1
+                  </div>
+                  <div className="flex-1 hidden lg:block" />
+                </div>
+
+                {/* Step 2: Physician Input */}
+                <div className="relative flex flex-col lg:flex-row items-center gap-8">
+                  <div className="flex-1 hidden lg:block" />
+                  <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl z-10 shadow-lg">
+                    2
+                  </div>
+                  <div className="flex-1">
+                    <Card className="p-6 hover:shadow-xl transition-all duration-300 border-2">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Eye className="h-6 w-6 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold mb-2">Physician Examination</h3>
+                          <p className="text-muted-foreground">
+                            Healthcare providers add clinical observations, vital signs, and professional assessments
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+                  </div>
+                </div>
+
+                {/* Step 3: Data Collection */}
+                <div className="relative flex flex-col lg:flex-row items-center gap-8">
+                  <div className="flex-1 lg:text-right">
+                    <Card className="p-6 hover:shadow-xl transition-all duration-300 border-2 bg-primary/5">
+                      <div className="flex lg:flex-row-reverse items-start gap-4">
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Database className="h-6 w-6 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold mb-2">Comprehensive Data Integration</h3>
+                          <p className="text-muted-foreground mb-3">
+                            AI analyzes and blends multiple data sources:
+                          </p>
+                          <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                            <li>Historical patient data & medical records</li>
+                            <li>Family history & genetic factors</li>
+                            <li>Social determinants of health (SDOH)</li>
+                            <li>Patient lifestyle & behavioral patterns</li>
+                            <li>Social forum discussions & peer insights</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </Card>
+                  </div>
+                  <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl z-10 shadow-lg">
+                    3
+                  </div>
+                  <div className="flex-1 hidden lg:block" />
+                </div>
+
+                {/* Step 4: AI Processing */}
+                <div className="relative flex flex-col lg:flex-row items-center gap-8">
+                  <div className="flex-1 hidden lg:block" />
+                  <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl z-10 shadow-lg">
+                    4
+                  </div>
+                  <div className="flex-1">
+                    <Card className="p-6 hover:shadow-xl transition-all duration-300 border-2 bg-primary/5">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Brain className="h-6 w-6 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold mb-2">AI-Powered Analysis</h3>
+                          <p className="text-muted-foreground">
+                            Advanced machine learning algorithms process all data points, identify patterns, calculate risk scores, and find similar patient cases
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+                  </div>
+                </div>
+
+                {/* Step 5: Recommendations */}
+                <div className="relative flex flex-col lg:flex-row items-center gap-8">
+                  <div className="flex-1 lg:text-right">
+                    <Card className="p-6 hover:shadow-xl transition-all duration-300 border-2 border-primary shadow-primary/20">
+                      <div className="flex lg:flex-row-reverse items-start gap-4">
+                        <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                          <Target className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold mb-2">Personalized Recommendations</h3>
+                          <p className="text-muted-foreground">
+                            Receive evidence-based treatment plans, preventive measures, lifestyle modifications, and follow-up care tailored to each patient
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+                  </div>
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-white font-bold text-xl z-10 shadow-xl shadow-primary/30">
+                    5
+                  </div>
+                  <div className="flex-1 hidden lg:block" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Value Propositions */}
         <section className="py-20 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
