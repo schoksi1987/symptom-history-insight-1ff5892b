@@ -390,107 +390,199 @@ const Recommendations = () => {
 
         {/* AI-Powered Similarity Analysis (Real Data) */}
         {analysis && (
-          <Card className="mb-6 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Dna className="h-6 w-6 text-green-600" />
-                Patient Similarity Analysis (AI-Powered)
-              </CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Based on diabetes research, peer findings, and statistical trends
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-white rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">
-                    {analysis.similarity_score?.toFixed(0) || 0}%
+          <>
+            {/* Risk Score Card - Prominent Display */}
+            <Card className="mb-6 border-red-200 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertTriangle className="h-6 w-6 text-red-600" />
+                  Diabetes Risk Assessment
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center mb-4">
+                  <div className="inline-flex flex-col items-center justify-center w-32 h-32 rounded-full bg-white shadow-lg">
+                    <div className="text-5xl font-bold" style={{
+                      color: (analysis.risk_insights?.risk_score || 0) > 70 ? '#dc2626' :
+                             (analysis.risk_insights?.risk_score || 0) > 40 ? '#f59e0b' : '#22c55e'
+                    }}>
+                      {analysis.risk_insights?.risk_score || 0}
+                    </div>
+                    <div className="text-sm text-muted-foreground font-medium">Risk Score</div>
                   </div>
-                  <div className="text-sm text-muted-foreground">Similarity Score</div>
                 </div>
-                <div className="text-center p-4 bg-white rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {analysis.matching_factors?.length || 0}
+                <div className="flex justify-center gap-8 text-sm mb-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">
+                      {analysis.similarity_score?.toFixed(0) || 0}%
+                    </div>
+                    <div className="text-muted-foreground">Patient Match</div>
                   </div>
-                  <div className="text-sm text-muted-foreground">Matching Factors</div>
-                </div>
-                <div className="text-center p-4 bg-white rounded-lg">
-                  <div className="text-2xl font-bold text-orange-600">
-                    {analysis.risk_insights?.length || 0}
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-600">
+                      {analysis.matching_factors?.length || 0}
+                    </div>
+                    <div className="text-muted-foreground">Key Factors</div>
                   </div>
-                  <div className="text-sm text-muted-foreground">Risk Insights</div>
                 </div>
-              </div>
+                {(analysis.risk_insights?.risk_score || 0) > 50 && (
+                  <div className="mt-4 p-3 bg-white rounded-lg border-l-4 border-l-red-500">
+                    <p className="text-sm font-medium text-red-900">High Risk Detected</p>
+                    <p className="text-xs text-red-700 mt-1">
+                      Immediate lifestyle interventions and medical consultation recommended
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-              {analysis.similar_patient_profile && (
-                <div className="p-4 bg-white rounded border-l-4 border-l-green-500">
-                  <h4 className="font-medium mb-2">Similar Patient Profile</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {analysis.similar_patient_profile.description}
-                  </p>
-                  {analysis.similar_patient_profile.key_characteristics && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {analysis.similar_patient_profile.key_characteristics.map((char: string, idx: number) => (
-                        <Badge key={idx} variant="outline" className="bg-green-50">
-                          {char}
-                        </Badge>
+            {/* Targeted Patient Insights */}
+            <Card className="mb-6 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Dna className="h-6 w-6 text-green-600" />
+                  Targeted Clinical Insights for This Patient
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Analysis based on patient-specific demographics, symptoms, and matching clinical research
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {analysis.similar_patient_profile && (
+                  <div className="p-4 bg-white rounded border-l-4 border-l-green-500">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      Similar Patient Profile
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {analysis.similar_patient_profile.description}
+                    </p>
+                    {analysis.similar_patient_profile.outcomes && (
+                      <div className="mt-2 p-2 bg-blue-50 rounded">
+                        <p className="text-xs font-medium text-blue-900">Patient Outcomes:</p>
+                        <p className="text-xs text-blue-700">{analysis.similar_patient_profile.outcomes}</p>
+                      </div>
+                    )}
+                    {analysis.similar_patient_profile.key_characteristics && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {analysis.similar_patient_profile.key_characteristics.map((char: string, idx: number) => (
+                          <Badge key={idx} variant="outline" className="bg-green-50">
+                            {char}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {analysis.matching_factors && analysis.matching_factors.length > 0 && (
+                  <div>
+                    <h4 className="font-medium mb-3 flex items-center gap-2">
+                      <Target className="h-4 w-4" />
+                      Why This Research Applies to This Patient
+                    </h4>
+                    <div className="space-y-2">
+                      {analysis.matching_factors.map((factor: any, idx: number) => (
+                        <div key={idx} className="p-3 bg-white rounded border-l-4 border-l-blue-500">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-medium text-sm">{factor.factor}</span>
+                            <Badge variant={
+                              factor.confidence === 'high' ? 'default' : 
+                              factor.confidence === 'medium' ? 'secondary' : 
+                              'outline'
+                            }>
+                              {factor.confidence} match
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{factor.details}</p>
+                        </div>
                       ))}
                     </div>
-                  )}
-                </div>
-              )}
-
-              {analysis.matching_factors && analysis.matching_factors.length > 0 && (
-                <div>
-                  <h4 className="font-medium mb-3">Matching Factors</h4>
-                  <div className="space-y-2">
-                    {analysis.matching_factors.map((factor: any, idx: number) => (
-                      <div key={idx} className="p-3 bg-white rounded border-l-4 border-l-blue-500">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-medium text-sm">{factor.factor}</span>
-                          <Badge variant={
-                            factor.confidence === 'high' ? 'default' : 
-                            factor.confidence === 'medium' ? 'secondary' : 
-                            'outline'
-                          }>
-                            {factor.confidence} confidence
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground">{factor.details}</p>
-                      </div>
-                    ))}
                   </div>
-                </div>
-              )}
+                )}
 
-              {analysis.risk_insights && analysis.risk_insights.length > 0 && (
-                <div>
-                  <h4 className="font-medium mb-3">Risk Insights</h4>
-                  <div className="space-y-2">
-                    {analysis.risk_insights.map((risk: any, idx: number) => (
-                      <div key={idx} className={`p-3 rounded border-l-4 ${
-                        risk.severity === 'high' ? 'bg-red-50 border-l-red-500' :
-                        risk.severity === 'medium' ? 'bg-yellow-50 border-l-yellow-500' :
-                        'bg-green-50 border-l-green-500'
-                      }`}>
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-medium text-sm">{risk.risk}</span>
-                          <Badge variant={
-                            risk.severity === 'high' ? 'destructive' : 
-                            risk.severity === 'medium' ? 'secondary' : 
-                            'outline'
-                          }>
-                            {risk.severity} severity
-                          </Badge>
+                {analysis.risk_insights && analysis.risk_insights.length > 0 && (
+                  <div>
+                    <h4 className="font-medium mb-3 flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4" />
+                      Risk Factors Specific to This Patient
+                    </h4>
+                    <div className="space-y-2">
+                      {analysis.risk_insights.map((risk: any, idx: number) => (
+                        <div key={idx} className={`p-3 rounded border-l-4 ${
+                          risk.severity === 'high' ? 'bg-red-50 border-l-red-500' :
+                          risk.severity === 'medium' ? 'bg-yellow-50 border-l-yellow-500' :
+                          'bg-green-50 border-l-green-500'
+                        }`}>
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-medium text-sm">{risk.risk}</span>
+                            <Badge variant={
+                              risk.severity === 'high' ? 'destructive' : 
+                              risk.severity === 'medium' ? 'secondary' : 
+                              'outline'
+                            }>
+                              {risk.severity} risk
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-muted-foreground mb-1">{risk.evidence}</p>
+                          {risk.relevance && (
+                            <p className="text-xs text-blue-600 italic">Why relevant: {risk.relevance}</p>
+                          )}
                         </div>
-                        <p className="text-xs text-muted-foreground">{risk.evidence}</p>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                )}
+
+                {analysis.targeted_insights && (
+                  <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                    <h4 className="font-medium mb-3 flex items-center gap-2">
+                      <Brain className="h-4 w-4 text-purple-600" />
+                      AI-Generated Targeted Insights
+                    </h4>
+                    
+                    {analysis.targeted_insights.matching_research && (
+                      <div className="mb-3 p-2 bg-white rounded">
+                        <p className="text-xs font-medium text-purple-900">Research for This Patient Type:</p>
+                        <p className="text-xs text-gray-700">{analysis.targeted_insights.matching_research}</p>
+                      </div>
+                    )}
+                    
+                    {analysis.targeted_insights.similar_patient_outcomes && (
+                      <div className="mb-3 p-2 bg-white rounded">
+                        <p className="text-xs font-medium text-purple-900">Similar Patient Outcomes:</p>
+                        <p className="text-xs text-gray-700">{analysis.targeted_insights.similar_patient_outcomes}</p>
+                      </div>
+                    )}
+                    
+                    {analysis.targeted_insights.demographic_trends && (
+                      <div className="p-2 bg-white rounded">
+                        <p className="text-xs font-medium text-purple-900">Demographic-Specific Trends:</p>
+                        <p className="text-xs text-gray-700">{analysis.targeted_insights.demographic_trends}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {analysis.recommendations && analysis.recommendations.length > 0 && (
+                  <div className="p-4 bg-white rounded border-2 border-green-300">
+                    <h4 className="font-medium mb-2 flex items-center gap-2 text-green-700">
+                      <Stethoscope className="h-4 w-4" />
+                      Recommendations Based on Similar Patients
+                    </h4>
+                    <ul className="space-y-1">
+                      {analysis.recommendations.map((rec: string, idx: number) => (
+                        <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                          <span className="text-green-600 mt-0.5">•</span>
+                          <span>{rec}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </>
         )}
 
         {/* Latest Clinical News */}

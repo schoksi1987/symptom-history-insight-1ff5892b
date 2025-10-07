@@ -29,6 +29,29 @@ serve(async (req) => {
 
     console.log('Fetching patient data for:', patientId);
 
+    // Fetch patient profile
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', patientId)
+      .single();
+
+    if (profileError) {
+      console.error('Error fetching profile:', profileError);
+    }
+
+    // Calculate age from date_of_birth
+    let age = null;
+    if (profile?.date_of_birth) {
+      const birthDate = new Date(profile.date_of_birth);
+      const today = new Date();
+      age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+    }
+
     // Fetch patient symptoms
     const { data: symptoms, error: symptomsError } = await supabase
       .from('patient_symptoms')
@@ -79,42 +102,55 @@ serve(async (req) => {
 
     console.log('Fetched trends count:', trends?.length || 0);
 
-    // Prepare AI prompt
-    const prompt = `You are a clinical analytics AI analyzing a diabetes patient's data against clinical research, peer findings, and statistical trends.
+    // Prepare AI prompt with patient-specific focus
+    const patientProfile = {
+      age: age || 'unknown',
+      symptoms: symptoms?.map(s => `${s.symptom_name} (${s.severity})`).join(', '),
+      recentNotes: notes?.map(n => n.ai_summary || n.note_text).join('; ')
+    };
 
-PATIENT DATA:
-Symptoms: ${JSON.stringify(symptoms)}
-Recent Notes: ${JSON.stringify(notes?.map(n => ({ note_text: n.note_text, ai_summary: n.ai_summary })))}
+    const prompt = `You are a clinical analytics AI analyzing a diabetes patient's specific risk profile against targeted clinical research, peer findings, and statistical trends.
 
-CLINICAL NEWS:
-${JSON.stringify(news?.map(n => ({ title: n.title, content: n.content, category: n.category })))}
+PATIENT PROFILE:
+- Age: ${patientProfile.age} years old
+- Current Symptoms: ${patientProfile.symptoms || 'None reported'}
+- Recent Clinical Notes: ${patientProfile.recentNotes || 'None'}
 
-PEER FINDINGS:
-${JSON.stringify(peerFindings?.map(p => ({ title: p.finding_title, description: p.finding_description, demographics: p.patient_demographics, outcomes: p.outcome_data })))}
+YOUR TASK: Find ONLY the research, peer findings, and statistical trends that directly match THIS patient's profile (age: ${patientProfile.age}, symptoms: ${patientProfile.symptoms}).
 
-STATISTICAL TRENDS:
-${JSON.stringify(trends?.map(t => ({ name: t.trend_name, category: t.trend_category, data: t.data_points })))}
+AVAILABLE CLINICAL NEWS:
+${JSON.stringify(news?.map(n => ({ id: n.id, title: n.title, content: n.content, category: n.category })))}
 
-Based on this data, provide a comprehensive analysis with:
-1. Similarity Score (0-100): How similar is this patient to patterns in the data?
-2. Matching Factors: Which specific symptoms, demographics, or characteristics match the research/peer data?
-3. Risk Insights: What risks are indicated based on similar patient outcomes in the research?
-4. Predictions: What outcomes or progression patterns are likely based on similar cases?
-5. News References: Which news articles are most relevant?
-6. Peer Finding References: Which peer findings are most applicable?
-7. Statistical References: Which statistical trends apply?
+AVAILABLE PEER FINDINGS:
+${JSON.stringify(peerFindings?.map(p => ({ id: p.id, title: p.finding_title, description: p.finding_description, demographics: p.patient_demographics, outcomes: p.outcome_data })))}
 
-Return your analysis in this JSON format:
+AVAILABLE STATISTICAL TRENDS:
+${JSON.stringify(trends?.map(t => ({ id: t.id, name: t.trend_name, category: t.trend_category, data: t.data_points })))}
+
+CRITICAL INSTRUCTIONS:
+1. Calculate an overall diabetes risk score (0-100) based on patient age, symptoms, and matching research
+2. ONLY reference news/findings/trends that match the patient's age group and symptoms
+3. For each matching factor, explain WHY it matches this specific patient
+4. Identify what worked best for similar patients in peer findings
+5. Find statistical trends specific to the patient's demographic (e.g., "overweight 35-year-olds")
+
+Return your analysis in this EXACT JSON format:
 {
-  "similarity_score": <number>,
-  "matching_factors": [{"factor": "string", "confidence": "high|medium|low", "details": "string"}],
-  "risk_insights": [{"risk": "string", "severity": "high|medium|low", "evidence": "string"}],
-  "predictions": [{"prediction": "string", "likelihood": "high|medium|low", "timeframe": "string"}],
-  "news_references": [<array of news IDs from the provided data>],
-  "peer_finding_references": [<array of peer finding IDs>],
-  "statistical_references": [<array of statistical trend IDs>],
-  "similar_patient_profile": {"description": "string", "key_characteristics": ["string"]},
-  "recommendations": ["string"]
+  "risk_score": <number 0-100>,
+  "similarity_score": <number 0-100>,
+  "matching_factors": [{"factor": "string explaining specific match to this patient", "confidence": "high|medium|low", "details": "why this applies to age ${patientProfile.age} with these symptoms"}],
+  "risk_insights": [{"risk": "string", "severity": "high|medium|low", "evidence": "specific evidence from research matching this patient profile", "relevance": "explain why this applies to THIS patient"}],
+  "predictions": [{"prediction": "string", "likelihood": "high|medium|low", "timeframe": "string", "based_on": "which peer findings or studies with similar patients"}],
+  "news_references": [<IDs of news articles specifically relevant to patient age/symptoms>],
+  "peer_finding_references": [<IDs of peer findings with similar patient demographics>],
+  "statistical_references": [<IDs of trends matching patient age group and risk factors>],
+  "similar_patient_profile": {"description": "profile of similar patients from peer findings", "key_characteristics": ["specific matching characteristics"], "outcomes": "what happened to similar patients"},
+  "recommendations": ["specific actions based on what worked for similar patients"],
+  "targeted_insights": {
+    "matching_research": "summary of research specifically about patients like this one",
+    "similar_patient_outcomes": "what happened to patients with same age/symptoms in peer findings",
+    "demographic_trends": "statistical trends for this specific age group and risk profile"
+  }
 }`;
 
     console.log('Calling Lovable AI for analysis...');
@@ -184,7 +220,10 @@ Return your analysis in this JSON format:
         patient_id: patientId,
         similarity_score: analysis.similarity_score,
         matching_factors: analysis.matching_factors,
-        risk_insights: analysis.risk_insights,
+        risk_insights: {
+          ...analysis.risk_insights,
+          risk_score: analysis.risk_score
+        },
         similar_patient_profile: analysis.similar_patient_profile,
         news_references: analysis.news_references || [],
         peer_finding_references: analysis.peer_finding_references || [],
@@ -205,8 +244,10 @@ Return your analysis in this JSON format:
         success: true, 
         analysis: {
           ...savedAnalysis,
+          risk_score: analysis.risk_score,
           predictions: analysis.predictions,
-          recommendations: analysis.recommendations
+          recommendations: analysis.recommendations,
+          targeted_insights: analysis.targeted_insights
         }
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
