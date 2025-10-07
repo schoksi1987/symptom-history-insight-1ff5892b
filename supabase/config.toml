@@ -2,3 +2,6 @@ project_id = "hcwvalwioskpzttqefwu"
 
 [functions.analyze-patient-notes]
 verify_jwt = false
+
+[functions.generate-patient-insights]
+verify_jwt = false

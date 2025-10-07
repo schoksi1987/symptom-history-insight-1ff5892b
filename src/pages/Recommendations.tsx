@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -28,13 +28,103 @@ import {
   FileText,
   Stethoscope,
   Dna,
-  BarChart
+  BarChart,
+  Loader2
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Recommendations = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [analysis, setAnalysis] = useState<any>(null);
+  const [news, setNews] = useState<any[]>([]);
+  const [peerFindings, setPeerFindings] = useState<any[]>([]);
+  const [trends, setTrends] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        setLoading(true);
+
+        // Fetch existing analysis
+        const { data: existingAnalysis } = await supabase
+          .from('patient_similarity_analysis')
+          .select('*')
+          .eq('patient_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (existingAnalysis) {
+          setAnalysis(existingAnalysis);
+        }
+
+        // Fetch news, peer findings, and trends
+        const [newsData, peerData, trendsData] = await Promise.all([
+          supabase.from('clinical_news').select('*').order('published_date', { ascending: false }).limit(5),
+          supabase.from('peer_findings').select('*').order('publication_date', { ascending: false }).limit(5),
+          supabase.from('statistical_trends').select('*').limit(5)
+        ]);
+
+        if (newsData.data) setNews(newsData.data);
+        if (peerData.data) setPeerFindings(peerData.data);
+        if (trendsData.data) setTrends(trendsData.data);
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const generateInsights = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "Please log in to generate insights",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setLoading(true);
+
+      const { data, error } = await supabase.functions.invoke('generate-patient-insights', {
+        body: { patientId: user.id }
+      });
+
+      if (error) throw error;
+
+      if (data?.analysis) {
+        setAnalysis(data.analysis);
+        toast({
+          title: "Success",
+          description: "AI-powered insights generated successfully"
+        });
+      }
+    } catch (error: any) {
+      console.error('Error generating insights:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to generate insights",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // AI-powered insights from physician and patient notes
   const aiInsights = {
@@ -279,7 +369,192 @@ const Recommendations = () => {
               <p className="text-muted-foreground">Insights from physician findings, patient notes, and peer comparison data</p>
             </div>
           </div>
+          <Button 
+            onClick={generateInsights} 
+            disabled={loading}
+            className="flex items-center gap-2"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <Brain className="h-4 w-4" />
+                Generate AI Insights
+              </>
+            )}
+          </Button>
         </div>
+
+        {/* AI-Powered Similarity Analysis (Real Data) */}
+        {analysis && (
+          <Card className="mb-6 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Dna className="h-6 w-6 text-green-600" />
+                Patient Similarity Analysis (AI-Powered)
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Based on diabetes research, peer findings, and statistical trends
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-white rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">
+                    {analysis.similarity_score?.toFixed(0) || 0}%
+                  </div>
+                  <div className="text-sm text-muted-foreground">Similarity Score</div>
+                </div>
+                <div className="text-center p-4 bg-white rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {analysis.matching_factors?.length || 0}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Matching Factors</div>
+                </div>
+                <div className="text-center p-4 bg-white rounded-lg">
+                  <div className="text-2xl font-bold text-orange-600">
+                    {analysis.risk_insights?.length || 0}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Risk Insights</div>
+                </div>
+              </div>
+
+              {analysis.similar_patient_profile && (
+                <div className="p-4 bg-white rounded border-l-4 border-l-green-500">
+                  <h4 className="font-medium mb-2">Similar Patient Profile</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {analysis.similar_patient_profile.description}
+                  </p>
+                  {analysis.similar_patient_profile.key_characteristics && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {analysis.similar_patient_profile.key_characteristics.map((char: string, idx: number) => (
+                        <Badge key={idx} variant="outline" className="bg-green-50">
+                          {char}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {analysis.matching_factors && analysis.matching_factors.length > 0 && (
+                <div>
+                  <h4 className="font-medium mb-3">Matching Factors</h4>
+                  <div className="space-y-2">
+                    {analysis.matching_factors.map((factor: any, idx: number) => (
+                      <div key={idx} className="p-3 bg-white rounded border-l-4 border-l-blue-500">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-medium text-sm">{factor.factor}</span>
+                          <Badge variant={
+                            factor.confidence === 'high' ? 'default' : 
+                            factor.confidence === 'medium' ? 'secondary' : 
+                            'outline'
+                          }>
+                            {factor.confidence} confidence
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{factor.details}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {analysis.risk_insights && analysis.risk_insights.length > 0 && (
+                <div>
+                  <h4 className="font-medium mb-3">Risk Insights</h4>
+                  <div className="space-y-2">
+                    {analysis.risk_insights.map((risk: any, idx: number) => (
+                      <div key={idx} className={`p-3 rounded border-l-4 ${
+                        risk.severity === 'high' ? 'bg-red-50 border-l-red-500' :
+                        risk.severity === 'medium' ? 'bg-yellow-50 border-l-yellow-500' :
+                        'bg-green-50 border-l-green-500'
+                      }`}>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-medium text-sm">{risk.risk}</span>
+                          <Badge variant={
+                            risk.severity === 'high' ? 'destructive' : 
+                            risk.severity === 'medium' ? 'secondary' : 
+                            'outline'
+                          }>
+                            {risk.severity} severity
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{risk.evidence}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Latest Clinical News */}
+        {news.length > 0 && (
+          <Card className="mb-6 border-indigo-200 bg-indigo-50/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-indigo-600" />
+                Latest Diabetes Research & News
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {news.map((item) => (
+                  <div key={item.id} className="p-3 bg-white rounded border-l-4 border-l-indigo-500">
+                    <h4 className="font-medium text-sm mb-1">{item.title}</h4>
+                    <p className="text-xs text-muted-foreground line-clamp-2">{item.content}</p>
+                    <div className="flex items-center gap-2 mt-2">
+                      {item.category && (
+                        <Badge variant="outline" className="text-xs">{item.category}</Badge>
+                      )}
+                      {item.published_date && (
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(item.published_date).toLocaleDateString()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Peer Findings */}
+        {peerFindings.length > 0 && (
+          <Card className="mb-6 border-purple-200 bg-purple-50/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Stethoscope className="h-5 w-5 text-purple-600" />
+                Peer Physician Findings
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {peerFindings.map((finding) => (
+                  <div key={finding.id} className="p-3 bg-white rounded border-l-4 border-l-purple-500">
+                    <h4 className="font-medium text-sm mb-1">{finding.finding_title}</h4>
+                    <p className="text-xs text-muted-foreground line-clamp-2">
+                      {finding.finding_description}
+                    </p>
+                    {finding.outcome_data && (
+                      <div className="mt-2">
+                        <Badge variant="secondary" className="text-xs">
+                          Outcome Data Available
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* AI Insights Summary */}
         <Card className="mb-6 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">

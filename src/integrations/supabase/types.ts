@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      clinical_news: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          published_date: string | null
+          relevance_score: number | null
+          source: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          published_date?: string | null
+          relevance_score?: number | null
+          source?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          published_date?: string | null
+          relevance_score?: number | null
+          source?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_processors: {
         Row: {
           created_at: string
@@ -111,6 +150,48 @@ export type Database = {
           },
         ]
       }
+      patient_similarity_analysis: {
+        Row: {
+          analysis_date: string | null
+          created_at: string
+          id: string
+          matching_factors: Json | null
+          news_references: string[] | null
+          patient_id: string
+          peer_finding_references: string[] | null
+          risk_insights: Json | null
+          similar_patient_profile: Json | null
+          similarity_score: number | null
+          statistical_references: string[] | null
+        }
+        Insert: {
+          analysis_date?: string | null
+          created_at?: string
+          id?: string
+          matching_factors?: Json | null
+          news_references?: string[] | null
+          patient_id: string
+          peer_finding_references?: string[] | null
+          risk_insights?: Json | null
+          similar_patient_profile?: Json | null
+          similarity_score?: number | null
+          statistical_references?: string[] | null
+        }
+        Update: {
+          analysis_date?: string | null
+          created_at?: string
+          id?: string
+          matching_factors?: Json | null
+          news_references?: string[] | null
+          patient_id?: string
+          peer_finding_references?: string[] | null
+          risk_insights?: Json | null
+          similar_patient_profile?: Json | null
+          similarity_score?: number | null
+          statistical_references?: string[] | null
+        }
+        Relationships: []
+      }
       patient_symptoms: {
         Row: {
           created_at: string
@@ -171,6 +252,48 @@ export type Database = {
           },
         ]
       }
+      peer_findings: {
+        Row: {
+          clinical_context: string | null
+          created_at: string
+          finding_description: string
+          finding_title: string
+          id: string
+          outcome_data: Json | null
+          patient_demographics: Json | null
+          physician_id: string | null
+          publication_date: string | null
+          updated_at: string
+          verification_status: string | null
+        }
+        Insert: {
+          clinical_context?: string | null
+          created_at?: string
+          finding_description: string
+          finding_title: string
+          id?: string
+          outcome_data?: Json | null
+          patient_demographics?: Json | null
+          physician_id?: string | null
+          publication_date?: string | null
+          updated_at?: string
+          verification_status?: string | null
+        }
+        Update: {
+          clinical_context?: string | null
+          created_at?: string
+          finding_description?: string
+          finding_title?: string
+          id?: string
+          outcome_data?: Json | null
+          patient_demographics?: Json | null
+          physician_id?: string | null
+          publication_date?: string | null
+          updated_at?: string
+          verification_status?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -204,6 +327,45 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      statistical_trends: {
+        Row: {
+          confidence_level: number | null
+          created_at: string
+          data_points: Json
+          id: string
+          population_size: number | null
+          source: string | null
+          time_period: string | null
+          trend_category: string | null
+          trend_name: string
+          updated_at: string
+        }
+        Insert: {
+          confidence_level?: number | null
+          created_at?: string
+          data_points: Json
+          id?: string
+          population_size?: number | null
+          source?: string | null
+          time_period?: string | null
+          trend_category?: string | null
+          trend_name: string
+          updated_at?: string
+        }
+        Update: {
+          confidence_level?: number | null
+          created_at?: string
+          data_points?: Json
+          id?: string
+          population_size?: number | null
+          source?: string | null
+          time_period?: string | null
+          trend_category?: string | null
+          trend_name?: string
+          updated_at?: string
         }
         Relationships: []
       }
