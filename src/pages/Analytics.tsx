@@ -13,18 +13,19 @@ type Metric = { metric_key: string; data: any; snapshot_date: string };
 
 export default function Analytics() {
   const [metrics, setMetrics] = useState<Record<string, Metric>>({});
+  const [exams, setExams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from("population_metrics")
-        .select("*")
-        .order("snapshot_date", { ascending: false })
-        .limit(50);
+      const [{ data }, { data: e }] = await Promise.all([
+        supabase.from("population_metrics").select("*").order("snapshot_date", { ascending: false }).limit(50),
+        (supabase as any).from("examinations").select("bmi,hba1c,systolic_bp,fasting_glucose").limit(1000),
+      ]);
       const latest: Record<string, Metric> = {};
       for (const m of data ?? []) if (!latest[m.metric_key]) latest[m.metric_key] = m as Metric;
       setMetrics(latest);
+      setExams(e ?? []);
       setLoading(false);
     })();
   }, []);
@@ -34,6 +35,21 @@ export default function Analytics() {
   const prevalence = metrics.symptom_prevalence?.data?.items ?? [];
   const scatter = metrics.age_vs_risk?.data?.points ?? [];
   const cohorts = metrics.cohort_summary?.data?.cohorts ?? [];
+
+  const bin = (values: number[], edges: number[], labels: string[]) => {
+    const counts = labels.map((label) => ({ range: label, count: 0 }));
+    for (const v of values) {
+      if (!Number.isFinite(v)) continue;
+      let idx = edges.findIndex((e) => v < e);
+      if (idx === -1) idx = edges.length;
+      counts[idx].count++;
+    }
+    return counts;
+  };
+  const bmiHist = bin(exams.map((e) => Number(e.bmi)).filter(Number.isFinite),
+    [18.5, 25, 30, 35, 40], ["<18.5", "18.5–25", "25–30", "30–35", "35–40", "≥40"]);
+  const hba1cHist = bin(exams.map((e) => Number(e.hba1c)).filter(Number.isFinite),
+    [5.7, 6.5, 7.5, 9], ["<5.7 normal", "5.7–6.4 pre", "6.5–7.4", "7.5–8.9", "≥9"]);
 
   return (
     <div className="min-h-screen bg-background">
