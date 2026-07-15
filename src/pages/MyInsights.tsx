@@ -215,3 +215,12 @@ export default function MyInsights() {
     </div>
   );
 }
+
+function Vital({ label, value, unit, flag }: { label: string; value: any; unit?: string; flag?: any }) {
+  return (
+    <div className={`rounded-md border p-2 ${flag ? "border-destructive/40 bg-destructive/5" : "border-border"}`}>
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className="font-semibold">{value ?? "—"}{value != null && unit ? <span className="ml-1 text-xs text-muted-foreground">{unit}</span> : null}</div>
+    </div>
+  );
+}
