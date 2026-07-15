@@ -102,12 +102,49 @@ serve(async (req) => {
 
     console.log('Fetched trends count:', trends?.length || 0);
 
-    // Prepare AI prompt with patient-specific focus
+    // Fetch latest clinical examination
+    const { data: exam } = await supabase
+      .from('examinations')
+      .select('*')
+      .eq('patient_user_id', patientId)
+      .order('examined_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    // Fetch latest computed risk score (deterministic model)
+    const { data: modelRisk } = await supabase
+      .from('patient_risk_scores')
+      .select('*')
+      .eq('patient_id', patientId)
+      .order('computed_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    console.log('Exam present:', !!exam, 'Model risk:', modelRisk?.score);
+
     const patientProfile = {
       age: age || 'unknown',
       symptoms: symptoms?.map(s => `${s.symptom_name} (${s.severity})`).join(', '),
       recentNotes: notes?.map(n => n.ai_summary || n.note_text).join('; ')
     };
+
+    const examBlock = exam ? `
+CLINICAL EXAMINATION (most recent, ${new Date(exam.examined_at).toISOString().slice(0,10)}):
+- BMI: ${exam.bmi ?? 'n/a'}
+- Blood pressure: ${exam.systolic_bp ?? '?'} / ${exam.diastolic_bp ?? '?'}
+- HbA1c: ${exam.hba1c ?? 'n/a'} %
+- Fasting glucose: ${exam.fasting_glucose ?? 'n/a'} mg/dL
+- LDL / HDL / Triglycerides: ${exam.ldl ?? '?'} / ${exam.hdl ?? '?'} / ${exam.triglycerides ?? '?'}
+- Family history of diabetes: ${exam.family_history_diabetes ? 'yes' : 'no'}
+- Smoking: ${exam.smoking_status ?? 'unknown'} · Activity: ${exam.physical_activity_level ?? 'unknown'}
+- Physician findings: ${exam.physician_findings ?? '—'}
+` : 'CLINICAL EXAMINATION: none on file.';
+
+    const modelBlock = modelRisk ? `
+DETERMINISTIC MODEL RISK SCORE: ${modelRisk.score}/100 (probability ${modelRisk.probability}, ${modelRisk.model_version})
+Top contributing factors (from logistic model):
+${(modelRisk.contributions ?? []).slice(0,6).map((c: any) => `- ${c.label}: weight ${c.weight}`).join('\n')}
+` : 'DETERMINISTIC MODEL RISK SCORE: not computed yet.';
 
     const prompt = `You are a clinical analytics AI analyzing a diabetes patient's specific risk profile against targeted clinical research, peer findings, and statistical trends.
 
@@ -116,7 +153,11 @@ PATIENT PROFILE:
 - Current Symptoms: ${patientProfile.symptoms || 'None reported'}
 - Recent Clinical Notes: ${patientProfile.recentNotes || 'None'}
 
-YOUR TASK: Find ONLY the research, peer findings, and statistical trends that directly match THIS patient's profile (age: ${patientProfile.age}, symptoms: ${patientProfile.symptoms}).
+${examBlock}
+
+${modelBlock}
+
+YOUR TASK: Ground every recommendation in the actual examination values above. Cross-reference with the research/peer findings/trends provided.
 
 AVAILABLE CLINICAL NEWS:
 ${JSON.stringify(news?.map(n => ({ id: n.id, title: n.title, content: n.content, category: n.category })))}
@@ -128,28 +169,29 @@ AVAILABLE STATISTICAL TRENDS:
 ${JSON.stringify(trends?.map(t => ({ id: t.id, name: t.trend_name, category: t.trend_category, data: t.data_points })))}
 
 CRITICAL INSTRUCTIONS:
-1. Calculate an overall diabetes risk score (0-100) based on patient age, symptoms, and matching research
-2. ONLY reference news/findings/trends that match the patient's age group and symptoms
-3. For each matching factor, explain WHY it matches this specific patient
-4. Identify what worked best for similar patients in peer findings
-5. Find statistical trends specific to the patient's demographic (e.g., "overweight 35-year-olds")
+1. Use the DETERMINISTIC MODEL RISK SCORE as the authoritative risk_score — do not recompute. If missing, estimate 0–100 from exam + symptoms.
+2. Each recommendation MUST cite a specific exam value or symptom (e.g. "HbA1c 8.2% → intensify glycemic control", "LDL 165 → discuss statin therapy", "Systolic 142 → 4-week BP recheck").
+3. Only reference news/findings/trends that match this patient's age, vitals, or symptoms.
+4. For each matching factor, explain WHY it applies to THIS patient's numbers.
+5. Identify what worked best for similar patients in peer findings.
 
 Return your analysis in this EXACT JSON format:
 {
-  "risk_score": <number 0-100>,
+  "risk_score": <number>,
   "similarity_score": <number 0-100>,
-  "matching_factors": [{"factor": "string explaining specific match to this patient", "confidence": "high|medium|low", "details": "why this applies to age ${patientProfile.age} with these symptoms"}],
-  "risk_insights": [{"risk": "string", "severity": "high|medium|low", "evidence": "specific evidence from research matching this patient profile", "relevance": "explain why this applies to THIS patient"}],
-  "predictions": [{"prediction": "string", "likelihood": "high|medium|low", "timeframe": "string", "based_on": "which peer findings or studies with similar patients"}],
-  "news_references": [<IDs of news articles specifically relevant to patient age/symptoms>],
-  "peer_finding_references": [<IDs of peer findings with similar patient demographics>],
-  "statistical_references": [<IDs of trends matching patient age group and risk factors>],
-  "similar_patient_profile": {"description": "profile of similar patients from peer findings", "key_characteristics": ["specific matching characteristics"], "outcomes": "what happened to similar patients"},
-  "recommendations": ["specific actions based on what worked for similar patients"],
+  "matching_factors": [{"factor": "string", "confidence": "high|medium|low", "details": "why this applies to age ${patientProfile.age} with these vitals"}],
+  "risk_insights": [{"risk": "string", "severity": "high|medium|low", "evidence": "specific evidence + exam value", "relevance": "why this applies to THIS patient"}],
+  "predictions": [{"prediction": "string", "likelihood": "high|medium|low", "timeframe": "string", "based_on": "which peer findings/studies"}],
+  "news_references": [<IDs>],
+  "peer_finding_references": [<IDs>],
+  "statistical_references": [<IDs>],
+  "similar_patient_profile": {"description": "string", "key_characteristics": ["..."], "outcomes": "string"},
+  "recommendations": ["Each item must cite the exam value or symptom that triggered it."],
   "targeted_insights": {
-    "matching_research": "summary of research specifically about patients like this one",
-    "similar_patient_outcomes": "what happened to patients with same age/symptoms in peer findings",
-    "demographic_trends": "statistical trends for this specific age group and risk profile"
+    "matching_research": "string",
+    "similar_patient_outcomes": "string",
+    "demographic_trends": "string",
+    "examination_drivers": "one-sentence summary of which vitals drove the recommendations"
   }
 }`;
 
