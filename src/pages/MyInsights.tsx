@@ -15,18 +15,21 @@ export default function MyInsights() {
   const [cohort, setCohort] = useState<any>(null);
   const [assignment, setAssignment] = useState<any>(null);
   const [forecasts, setForecasts] = useState<any[]>([]);
+  const [exam, setExam] = useState<any>(null);
   const [busy, setBusy] = useState(false);
 
   const load = async () => {
     if (!user) return;
-    const [r, a, f] = await Promise.all([
+    const [r, a, f, e] = await Promise.all([
       supabase.from("patient_risk_scores").select("*").eq("patient_id", user.id).order("computed_at", { ascending: false }).limit(1).maybeSingle(),
       supabase.from("patient_cohort_assignments").select("*").eq("patient_id", user.id).order("computed_at", { ascending: false }).limit(1).maybeSingle(),
       supabase.from("symptom_forecasts").select("*").eq("patient_id", user.id).order("computed_at", { ascending: false }),
+      (supabase as any).from("examinations").select("*").eq("patient_user_id", user.id).order("examined_at", { ascending: false }).limit(1).maybeSingle(),
     ]);
     setRisk(r.data);
     setAssignment(a.data);
     setForecasts(f.data ?? []);
+    setExam(e.data);
     if (a.data?.cohort_id != null) {
       const { data: c } = await supabase.from("cohorts").select("*").eq("id", a.data.cohort_id).maybeSingle();
       setCohort(c);
@@ -111,6 +114,31 @@ export default function MyInsights() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Latest examination</CardTitle>
+            <CardDescription>
+              {exam ? `Recorded ${new Date(exam.examined_at).toLocaleDateString()}` : "No examination saved yet."}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {!exam ? (
+              <p className="text-sm text-muted-foreground">
+                Complete an examination to feed clinical vitals (BMI, HbA1c, blood pressure, lipids) into your risk model.
+              </p>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <Vital label="BMI" value={exam.bmi?.toFixed(1)} unit="kg/m²" flag={exam.bmi > 30} />
+                <Vital label="HbA1c" value={exam.hba1c} unit="%" flag={exam.hba1c > 6.5} />
+                <Vital label="Fasting glucose" value={exam.fasting_glucose} unit="mg/dL" flag={exam.fasting_glucose > 126} />
+                <Vital label="Blood pressure" value={exam.systolic_bp && exam.diastolic_bp ? `${exam.systolic_bp}/${exam.diastolic_bp}` : null} flag={exam.systolic_bp > 140} />
+                <Vital label="LDL" value={exam.ldl} unit="mg/dL" flag={exam.ldl > 130} />
+                <Vital label="HDL" value={exam.hdl} unit="mg/dL" flag={exam.hdl && exam.hdl < 40} />
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>Similar patients</CardTitle>
             <CardDescription>Cohort from k-means clustering across the population.</CardDescription>
           </CardHeader>
@@ -184,6 +212,15 @@ export default function MyInsights() {
           </CardContent>
         </Card>
       </div>
+    </div>
+  );
+}
+
+function Vital({ label, value, unit, flag }: { label: string; value: any; unit?: string; flag?: any }) {
+  return (
+    <div className={`rounded-md border p-2 ${flag ? "border-destructive/40 bg-destructive/5" : "border-border"}`}>
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className="font-semibold">{value ?? "—"}{value != null && unit ? <span className="ml-1 text-xs text-muted-foreground">{unit}</span> : null}</div>
     </div>
   );
 }

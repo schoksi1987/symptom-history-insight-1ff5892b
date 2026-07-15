@@ -8,12 +8,62 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { ArrowLeft, MapPin, AlertTriangle, TrendingUp, Users, Edit, Trash2, Plus } from "lucide-react";
+import { ArrowLeft, MapPin, AlertTriangle, TrendingUp, Users, Edit, Trash2, Plus, Loader2, Save } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const PatientExamination = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [saving, setSaving] = useState(false);
+
+  const handleSaveExamination = async () => {
+    setSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("You must be signed in to save an examination.");
+        return;
+      }
+      const height_cm = 157;
+      const weight_kg = parseFloat(vitals.weight) || null;
+      const payload: any = {
+        patient_user_id: user.id,
+        examined_by: user.id,
+        examined_at: new Date().toISOString(),
+        height_cm,
+        weight_kg,
+        waist_cm: parseFloat(vitals.waistCircumference) || null,
+        systolic_bp: parseFloat(vitals.bloodPressureHigh) || null,
+        diastolic_bp: parseFloat(vitals.bloodPressureLow) || null,
+        heart_rate: parseFloat(vitals.pulse) || null,
+        temperature_c: parseFloat(vitals.temperature) || null,
+        hba1c: parseFloat(vitals.hba1c) || null,
+        fasting_glucose: parseFloat(vitals.bloodSugar) || null,
+        random_glucose: parseFloat(vitals.glucose) || null,
+        ldl: parseFloat(vitals.ldl) || null,
+        hdl: parseFloat(vitals.hdl) || null,
+        triglycerides: parseFloat(vitals.triglyceride) || null,
+        total_cholesterol: parseFloat(vitals.totalCholesterol) || null,
+        family_history_diabetes: Object.values(familyHistory).some(Boolean),
+        body_systems: bodySystemExam,
+        medications,
+        physician_findings: physicianFindings,
+        patient_notes: patientNotes,
+      };
+      const { error } = await (supabase as any).from("examinations").insert(payload);
+      if (error) throw error;
+      // Trigger risk recompute
+      await supabase.functions.invoke("compute-risk-score", { body: { patientId: user.id } });
+      toast.success("Examination saved. Risk score recomputed.");
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed to save examination");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   
   // Pre-filled patient data for Pooja Shah
   const [vitals, setVitals] = useState({
@@ -819,6 +869,10 @@ const PatientExamination = () => {
               </div>
               
               <div className="flex gap-4">
+                <Button variant="outline" onClick={handleSaveExamination} disabled={saving}>
+                  {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+                  Save Examination
+                </Button>
                 {currentStep < 3 ? (
                   <Button onClick={nextStep} className="bg-primary hover:bg-primary/90">
                     Next

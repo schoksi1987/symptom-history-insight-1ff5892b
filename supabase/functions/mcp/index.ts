@@ -272,13 +272,37 @@ var get_population_metrics_default = defineTool9({
   }
 });
 
+// src/lib/mcp/tools/get-patient-examination.ts
+import { createClient as createClient9 } from "npm:@supabase/supabase-js@^2.58.0";
+import { defineTool as defineTool10 } from "npm:@lovable.dev/mcp-js@0.22.2";
+function sb5(ctx) {
+  return createClient9(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
+    global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+}
+var get_patient_examination_default = defineTool10({
+  name: "get_patient_examination",
+  title: "Get latest patient examination",
+  description: "Return the most recent clinical examination record (vitals, labs, family history, findings) for the signed-in user.",
+  inputSchema: {},
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async (_i, ctx) => {
+    if (!ctx.isAuthenticated()) return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    const { data, error } = await sb5(ctx).from("examinations").select("*").eq("patient_user_id", ctx.getUserId()).order("examined_at", { ascending: false }).limit(1).maybeSingle();
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    if (!data) return { content: [{ type: "text", text: "No examination recorded yet." }] };
+    return { content: [{ type: "text", text: JSON.stringify(data) }], structuredContent: { examination: data } };
+  }
+});
+
 // src/lib/mcp/index.ts
 var projectRef = "hcwvalwioskpzttqefwu";
 var mcp_default = defineMcp({
   name: "predict-disease-mcp",
   title: "Predict Disease MCP",
-  version: "0.2.0",
-  instructions: "Tools for the Predict Disease app. Patients can log notes/symptoms, retrieve their AI risk insights, get a computed diabetes risk score with feature contributions, find similar-patient cohorts, view symptom forecasts, and read aggregate population metrics. All tools act as the signed-in user.",
+  version: "0.3.0",
+  instructions: "Tools for the Predict Disease app. Patients can log notes/symptoms, retrieve their AI risk insights, get a computed diabetes risk score with feature contributions (now including BMI, HbA1c, glucose, BP, lipids from the latest examination), find similar-patient cohorts, view symptom forecasts, read aggregate population metrics, and fetch their latest clinical examination. All tools act as the signed-in user.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated"
@@ -292,7 +316,8 @@ var mcp_default = defineMcp({
     recompute_risk_score_default,
     get_similar_patients_default,
     get_symptom_forecast_default,
-    get_population_metrics_default
+    get_population_metrics_default,
+    get_patient_examination_default
   ]
 });
 
