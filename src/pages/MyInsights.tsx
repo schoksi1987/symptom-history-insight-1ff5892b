@@ -15,18 +15,21 @@ export default function MyInsights() {
   const [cohort, setCohort] = useState<any>(null);
   const [assignment, setAssignment] = useState<any>(null);
   const [forecasts, setForecasts] = useState<any[]>([]);
+  const [exam, setExam] = useState<any>(null);
   const [busy, setBusy] = useState(false);
 
   const load = async () => {
     if (!user) return;
-    const [r, a, f] = await Promise.all([
+    const [r, a, f, e] = await Promise.all([
       supabase.from("patient_risk_scores").select("*").eq("patient_id", user.id).order("computed_at", { ascending: false }).limit(1).maybeSingle(),
       supabase.from("patient_cohort_assignments").select("*").eq("patient_id", user.id).order("computed_at", { ascending: false }).limit(1).maybeSingle(),
       supabase.from("symptom_forecasts").select("*").eq("patient_id", user.id).order("computed_at", { ascending: false }),
+      (supabase as any).from("examinations").select("*").eq("patient_user_id", user.id).order("examined_at", { ascending: false }).limit(1).maybeSingle(),
     ]);
     setRisk(r.data);
     setAssignment(a.data);
     setForecasts(f.data ?? []);
+    setExam(e.data);
     if (a.data?.cohort_id != null) {
       const { data: c } = await supabase.from("cohorts").select("*").eq("id", a.data.cohort_id).maybeSingle();
       setCohort(c);
