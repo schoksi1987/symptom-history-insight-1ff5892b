@@ -12,7 +12,7 @@
   "mcp": {
     "server": {
       "name": "predict-disease-mcp",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "title": "Predict Disease MCP"
     },
     "tools": [
@@ -112,6 +112,111 @@
           "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
           "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_risk_score",
+        "title": "Get latest diabetes risk score",
+        "description": "Return the most recent computed diabetes risk score (0-100), probability, and per-feature contributions for the signed-in user.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "recompute_risk_score",
+        "title": "Recompute diabetes risk score",
+        "description": "Recompute the diabetes risk score for the signed-in user from their current symptoms, profile, and notes.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_similar_patients",
+        "title": "Get similar-patient cohort",
+        "description": "Return the cohort the signed-in user has been clustered into, its centroid features, size, average risk, and top interventions that worked for similar patients.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_symptom_forecast",
+        "title": "Get symptom forecast",
+        "description": "Return per-symptom weekly history, a 4-week forecast, trend label (improving/stable/worsening), and anomaly flag for the signed-in user.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "symptom_name": {
+              "type": "string",
+              "description": "Filter to a specific symptom."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "description": "Max rows (default 10)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_population_metrics",
+        "title": "Get population analytics snapshot",
+        "description": "Return the latest aggregate population metrics: risk histogram, symptom prevalence, age vs risk, cohort summary, or totals.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "metric": {
+              "type": "string",
+              "enum": [
+                "risk_histogram",
+                "symptom_prevalence",
+                "age_vs_risk",
+                "cohort_summary",
+                "totals"
+              ],
+              "description": "Which metric to return; omit for all."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
         },
         "outputSchema": null
       }

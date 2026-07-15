@@ -137,18 +137,163 @@ var get_latest_insights_default = defineTool4({
   }
 });
 
+// src/lib/mcp/tools/get-risk-score.ts
+import { createClient as createClient5 } from "npm:@supabase/supabase-js@^2.58.0";
+import { defineTool as defineTool5 } from "npm:@lovable.dev/mcp-js@0.22.2";
+function sb(ctx) {
+  return createClient5(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
+    global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+}
+var get_risk_score_default = defineTool5({
+  name: "get_risk_score",
+  title: "Get latest diabetes risk score",
+  description: "Return the most recent computed diabetes risk score (0-100), probability, and per-feature contributions for the signed-in user.",
+  inputSchema: {},
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async (_i, ctx) => {
+    if (!ctx.isAuthenticated()) return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    const { data, error } = await sb(ctx).from("patient_risk_scores").select("*").order("computed_at", { ascending: false }).limit(1).maybeSingle();
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    if (!data) return { content: [{ type: "text", text: "No risk score computed yet. Call recompute_risk_score first." }] };
+    return { content: [{ type: "text", text: JSON.stringify(data) }], structuredContent: { risk: data } };
+  }
+});
+
+// src/lib/mcp/tools/recompute-risk-score.ts
+import { defineTool as defineTool6 } from "npm:@lovable.dev/mcp-js@0.22.2";
+var recompute_risk_score_default = defineTool6({
+  name: "recompute_risk_score",
+  title: "Recompute diabetes risk score",
+  description: "Recompute the diabetes risk score for the signed-in user from their current symptoms, profile, and notes.",
+  inputSchema: {},
+  annotations: { readOnlyHint: false, idempotentHint: true, openWorldHint: false },
+  handler: async (_i, ctx) => {
+    if (!ctx.isAuthenticated()) return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    const res = await fetch(`${process.env.SUPABASE_URL}/functions/v1/compute-risk-score`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${ctx.getToken()}`
+      },
+      body: JSON.stringify({ patientId: ctx.getUserId() })
+    });
+    const body = await res.json();
+    if (!res.ok) return { content: [{ type: "text", text: body.error ?? "Compute failed" }], isError: true };
+    return { content: [{ type: "text", text: JSON.stringify(body.risk) }], structuredContent: { risk: body.risk } };
+  }
+});
+
+// src/lib/mcp/tools/get-similar-patients.ts
+import { createClient as createClient6 } from "npm:@supabase/supabase-js@^2.58.0";
+import { defineTool as defineTool7 } from "npm:@lovable.dev/mcp-js@0.22.2";
+function sb2(ctx) {
+  return createClient6(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
+    global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+}
+var get_similar_patients_default = defineTool7({
+  name: "get_similar_patients",
+  title: "Get similar-patient cohort",
+  description: "Return the cohort the signed-in user has been clustered into, its centroid features, size, average risk, and top interventions that worked for similar patients.",
+  inputSchema: {},
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async (_i, ctx) => {
+    if (!ctx.isAuthenticated()) return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    const client = sb2(ctx);
+    const { data: assign } = await client.from("patient_cohort_assignments").select("*").order("computed_at", { ascending: false }).limit(1).maybeSingle();
+    if (!assign) return { content: [{ type: "text", text: "No cohort assignment yet. Ask an admin to run compute-cohorts." }] };
+    const { data: cohort } = await client.from("cohorts").select("*").eq("id", assign.cohort_id).maybeSingle();
+    const payload = { assignment: assign, cohort };
+    return { content: [{ type: "text", text: JSON.stringify(payload) }], structuredContent: payload };
+  }
+});
+
+// src/lib/mcp/tools/get-symptom-forecast.ts
+import { createClient as createClient7 } from "npm:@supabase/supabase-js@^2.58.0";
+import { defineTool as defineTool8 } from "npm:@lovable.dev/mcp-js@0.22.2";
+import { z as z4 } from "npm:zod@^3.25.76";
+function sb3(ctx) {
+  return createClient7(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
+    global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+}
+var get_symptom_forecast_default = defineTool8({
+  name: "get_symptom_forecast",
+  title: "Get symptom forecast",
+  description: "Return per-symptom weekly history, a 4-week forecast, trend label (improving/stable/worsening), and anomaly flag for the signed-in user.",
+  inputSchema: {
+    symptom_name: z4.string().optional().describe("Filter to a specific symptom."),
+    limit: z4.number().int().min(1).max(50).optional().describe("Max rows (default 10).")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ symptom_name, limit }, ctx) => {
+    if (!ctx.isAuthenticated()) return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    let q = sb3(ctx).from("symptom_forecasts").select("*").order("computed_at", { ascending: false }).limit(limit ?? 10);
+    if (symptom_name) q = q.eq("symptom_name", symptom_name);
+    const { data, error } = await q;
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    return { content: [{ type: "text", text: JSON.stringify(data) }], structuredContent: { forecasts: data } };
+  }
+});
+
+// src/lib/mcp/tools/get-population-metrics.ts
+import { createClient as createClient8 } from "npm:@supabase/supabase-js@^2.58.0";
+import { defineTool as defineTool9 } from "npm:@lovable.dev/mcp-js@0.22.2";
+import { z as z5 } from "npm:zod@^3.25.76";
+function sb4(ctx) {
+  return createClient8(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
+    global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+}
+var KEYS = ["risk_histogram", "symptom_prevalence", "age_vs_risk", "cohort_summary", "totals"];
+var get_population_metrics_default = defineTool9({
+  name: "get_population_metrics",
+  title: "Get population analytics snapshot",
+  description: "Return the latest aggregate population metrics: risk histogram, symptom prevalence, age vs risk, cohort summary, or totals.",
+  inputSchema: {
+    metric: z5.enum(KEYS).optional().describe("Which metric to return; omit for all.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ metric }, ctx) => {
+    if (!ctx.isAuthenticated()) return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    let q = sb4(ctx).from("population_metrics").select("*").order("snapshot_date", { ascending: false }).limit(20);
+    if (metric) q = q.eq("metric_key", metric);
+    const { data, error } = await q;
+    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    const latest = /* @__PURE__ */ new Map();
+    for (const r of data ?? []) if (!latest.has(r.metric_key)) latest.set(r.metric_key, r);
+    const out = Array.from(latest.values());
+    return { content: [{ type: "text", text: JSON.stringify(out) }], structuredContent: { metrics: out } };
+  }
+});
+
 // src/lib/mcp/index.ts
 var projectRef = "hcwvalwioskpzttqefwu";
 var mcp_default = defineMcp({
   name: "predict-disease-mcp",
   title: "Predict Disease MCP",
-  version: "0.1.0",
-  instructions: "Tools for the Predict Disease app. Patients can add between-visit notes, list their tracked symptoms and notes, and read the latest AI risk insight. All tools act as the signed-in user.",
+  version: "0.2.0",
+  instructions: "Tools for the Predict Disease app. Patients can log notes/symptoms, retrieve their AI risk insights, get a computed diabetes risk score with feature contributions, find similar-patient cohorts, view symptom forecasts, and read aggregate population metrics. All tools act as the signed-in user.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated"
   }),
-  tools: [add_patient_note_default, list_patient_notes_default, list_patient_symptoms_default, get_latest_insights_default]
+  tools: [
+    add_patient_note_default,
+    list_patient_notes_default,
+    list_patient_symptoms_default,
+    get_latest_insights_default,
+    get_risk_score_default,
+    recompute_risk_score_default,
+    get_similar_patients_default,
+    get_symptom_forecast_default,
+    get_population_metrics_default
+  ]
 });
 
 // lovable-mcp-supabase-entry.ts
