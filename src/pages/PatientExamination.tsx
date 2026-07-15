@@ -869,6 +869,10 @@ const PatientExamination = () => {
               </div>
               
               <div className="flex gap-4">
+                <Button variant="outline" onClick={handleSaveExamination} disabled={saving}>
+                  {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+                  Save Examination
+                </Button>
                 {currentStep < 3 ? (
                   <Button onClick={nextStep} className="bg-primary hover:bg-primary/90">
                     Next
