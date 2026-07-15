@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -20,6 +20,10 @@ const authSchema = z.object({
 
 export default function Auth() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const rawNext = searchParams.get("next");
+  const nextPath = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : null;
+  const postAuthTarget = nextPath ?? "/dashboard";
   const [isLoading, setIsLoading] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const [formData, setFormData] = useState({
@@ -34,7 +38,8 @@ export default function Auth() {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        navigate("/dashboard");
+        if (nextPath) window.location.href = nextPath;
+        else navigate(postAuthTarget);
       }
     };
 
@@ -43,12 +48,13 @@ export default function Auth() {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        navigate("/dashboard");
+        if (nextPath) window.location.href = nextPath;
+        else navigate(postAuthTarget);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, nextPath, postAuthTarget]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -66,7 +72,7 @@ export default function Auth() {
         lastName: formData.lastName,
       });
 
-      const redirectUrl = `${window.location.origin}/dashboard`;
+      const redirectUrl = `${window.location.origin}${postAuthTarget}`;
 
       const { error } = await supabase.auth.signUp({
         email: validData.email,
