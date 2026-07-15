@@ -1092,4 +1092,14 @@ const Recommendations = () => {
   );
 };
 
+function Chip({ label, value, flag }: { label: string; value: string; flag?: boolean }) {
+  return (
+    <div className={`rounded px-2 py-1 border ${flag ? "border-destructive/40 bg-destructive/5 text-destructive" : "border-border bg-secondary/40"}`}>
+      <span className="text-muted-foreground mr-1">{label}:</span>
+      <span className="font-semibold">{value}</span>
+    </div>
+  );
+}
+
+
 export default Recommendations;
