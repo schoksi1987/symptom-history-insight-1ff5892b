@@ -39,6 +39,10 @@ const App = () => (
           <Route path="/patient/:id/sdoh" element={<SDOHAssessment />} />
           <Route path="/patient/:id/history" element={<PatientHistory />} />
           <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
+          <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/my-insights" element={<MyInsights />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
