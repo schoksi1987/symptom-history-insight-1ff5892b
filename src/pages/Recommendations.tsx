@@ -564,6 +564,25 @@ const Recommendations = () => {
                   </div>
                 )}
 
+                {analysis.examination && (
+                  <div className="p-4 bg-white rounded border-2 border-blue-300">
+                    <h4 className="font-medium mb-2 text-blue-700">Based on your examination</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                      {analysis.examination.bmi != null && <Chip label="BMI" value={Number(analysis.examination.bmi).toFixed(1)} flag={analysis.examination.bmi > 30} />}
+                      {analysis.examination.hba1c != null && <Chip label="HbA1c" value={`${analysis.examination.hba1c}%`} flag={analysis.examination.hba1c > 6.5} />}
+                      {analysis.examination.fasting_glucose != null && <Chip label="Fasting glucose" value={`${analysis.examination.fasting_glucose} mg/dL`} flag={analysis.examination.fasting_glucose > 126} />}
+                      {analysis.examination.systolic_bp != null && <Chip label="BP" value={`${analysis.examination.systolic_bp}/${analysis.examination.diastolic_bp ?? '?'}`} flag={analysis.examination.systolic_bp > 140} />}
+                      {analysis.examination.ldl != null && <Chip label="LDL" value={`${analysis.examination.ldl}`} flag={analysis.examination.ldl > 130} />}
+                      {analysis.examination.hdl != null && <Chip label="HDL" value={`${analysis.examination.hdl}`} flag={analysis.examination.hdl < 40} />}
+                    </div>
+                    {analysis.model_risk?.contributions?.length > 0 && (
+                      <p className="text-xs text-gray-600 mt-3">
+                        Top model drivers: {analysis.model_risk.contributions.slice(0,3).map((c: any) => c.label).join(' · ')}
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 {analysis.recommendations && analysis.recommendations.length > 0 && (
                   <div className="p-4 bg-white rounded border-2 border-green-300">
                     <h4 className="font-medium mb-2 flex items-center gap-2 text-green-700">
