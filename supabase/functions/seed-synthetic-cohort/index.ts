@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
   const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   const { count } = await supabase.from("profiles").select("*", { count: "exact", head: true });
-  if ((count ?? 0) > 250) {
+  if ((count ?? 0) > 120) {
     return new Response(JSON.stringify({ skipped: true, existing: count }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
