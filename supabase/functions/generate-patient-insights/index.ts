@@ -286,7 +286,9 @@ Return your analysis in this EXACT JSON format:
         success: true, 
         analysis: {
           ...savedAnalysis,
-          risk_score: analysis.risk_score,
+          risk_score: modelRisk?.score ?? analysis.risk_score,
+          model_risk: modelRisk ?? null,
+          examination: exam ?? null,
           predictions: analysis.predictions,
           recommendations: analysis.recommendations,
           targeted_insights: analysis.targeted_insights
