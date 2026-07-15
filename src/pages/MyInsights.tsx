@@ -114,6 +114,31 @@ export default function MyInsights() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Latest examination</CardTitle>
+            <CardDescription>
+              {exam ? `Recorded ${new Date(exam.examined_at).toLocaleDateString()}` : "No examination saved yet."}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {!exam ? (
+              <p className="text-sm text-muted-foreground">
+                Complete an examination to feed clinical vitals (BMI, HbA1c, blood pressure, lipids) into your risk model.
+              </p>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <Vital label="BMI" value={exam.bmi?.toFixed(1)} unit="kg/m²" flag={exam.bmi > 30} />
+                <Vital label="HbA1c" value={exam.hba1c} unit="%" flag={exam.hba1c > 6.5} />
+                <Vital label="Fasting glucose" value={exam.fasting_glucose} unit="mg/dL" flag={exam.fasting_glucose > 126} />
+                <Vital label="Blood pressure" value={exam.systolic_bp && exam.diastolic_bp ? `${exam.systolic_bp}/${exam.diastolic_bp}` : null} flag={exam.systolic_bp > 140} />
+                <Vital label="LDL" value={exam.ldl} unit="mg/dL" flag={exam.ldl > 130} />
+                <Vital label="HDL" value={exam.hdl} unit="mg/dL" flag={exam.hdl && exam.hdl < 40} />
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+
+          <CardHeader>
             <CardTitle>Similar patients</CardTitle>
             <CardDescription>Cohort from k-means clustering across the population.</CardDescription>
           </CardHeader>
