@@ -14,6 +14,9 @@ import PatientExamination from "./pages/PatientExamination";
 import SDOHAssessment from "./pages/SDOHAssessment";
 import PatientHistory from "./pages/PatientHistory";
 import OAuthConsent from "./pages/OAuthConsent";
+import Analytics from "./pages/Analytics";
+import Admin from "./pages/Admin";
+import MyInsights from "./pages/MyInsights";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
