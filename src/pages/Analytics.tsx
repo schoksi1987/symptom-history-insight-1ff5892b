@@ -130,6 +130,43 @@ export default function Analytics() {
               </Card>
             </div>
 
+              <Card>
+                <CardHeader>
+                  <CardTitle>BMI distribution</CardTitle>
+                  <CardDescription>WHO categories across the examined cohort.</CardDescription>
+                </CardHeader>
+                <CardContent className="h-72">
+                  <ResponsiveContainer>
+                    <BarChart data={bmiHist}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                      <XAxis dataKey="range" className="text-xs" />
+                      <YAxis className="text-xs" />
+                      <Tooltip />
+                      <Bar dataKey="count" fill="hsl(var(--primary))" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>HbA1c distribution</CardTitle>
+                  <CardDescription>ADA cutoffs: &lt;5.7 normal · 5.7–6.4 pre-diabetes · ≥6.5 diabetic.</CardDescription>
+                </CardHeader>
+                <CardContent className="h-72">
+                  <ResponsiveContainer>
+                    <BarChart data={hba1cHist}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                      <XAxis dataKey="range" className="text-xs" />
+                      <YAxis className="text-xs" />
+                      <Tooltip />
+                      <Bar dataKey="count" fill="hsl(var(--destructive))" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+
             <div>
               <h2 className="mb-3 text-lg font-semibold">Cohorts</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
