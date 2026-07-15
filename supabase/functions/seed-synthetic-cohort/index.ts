@@ -35,38 +35,42 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ skipped: true, existing: count }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
-  const N = 300;
+  const N = 150;
   const now = Date.now();
-  const profiles: any[] = [];
   const symptoms: any[] = [];
   const notes: any[] = [];
+  let created = 0;
 
   for (let i = 0; i < N; i++) {
-    const user_id = crypto.randomUUID();
     const age = Math.round(clamp(35 + randn() * 15, 18, 88));
     const bmi = +clamp(26 + randn() * 5, 17, 45).toFixed(1);
     const family_history = Math.random() < 0.3;
-    // Risk signal (0..1)
     const risk = clamp(
       0.02 * (age - 30) + 0.05 * (bmi - 22) + (family_history ? 0.25 : 0) + randn() * 0.15,
       0.02, 0.98
     );
-    const created = new Date(now - Math.random() * 540 * 86400_000).toISOString();
-    profiles.push({
-      user_id,
-      email: `demo+${i}@synthetic.local`,
-      first_name: rand(FIRST),
-      last_name: rand(LAST),
-      date_of_birth: new Date(Date.now() - age * 365.25 * 86400_000).toISOString().slice(0, 10),
-      created_at: created,
-      updated_at: created,
+    const first = rand(FIRST); const last = rand(LAST);
+    const email = `demo+${Date.now()}-${i}@synthetic.local`;
+
+    const { data: userRes, error: userErr } = await supabase.auth.admin.createUser({
+      email,
+      password: crypto.randomUUID(),
+      email_confirm: true,
+      user_metadata: { first_name: first, last_name: last, synthetic: true },
     });
+    if (userErr || !userRes?.user) continue;
+    const user_id = userRes.user.id;
+    created++;
+
+    // Backfill profile fields the trigger didn't set
+    await supabase.from("profiles").update({
+      date_of_birth: new Date(Date.now() - age * 365.25 * 86400_000).toISOString().slice(0, 10),
+    }).eq("user_id", user_id);
 
     const nSyms = Math.round(4 + risk * 8);
     const pool = [...SYMPTOMS].sort(() => Math.random() - 0.5).slice(0, nSyms);
     for (const s of pool) {
-      const active = Math.random() < 0.4 + risk * s.w * 0.6;
-      if (!active) continue;
+      if (Math.random() >= 0.4 + risk * s.w * 0.6) continue;
       const sevIdx = clamp(Math.round(risk * s.w * 3 + randn() * 0.6), 0, 2);
       const freqIdx = clamp(Math.round(risk * s.w * 3 + randn() * 0.6), 0, 3);
       symptoms.push({
@@ -99,12 +103,17 @@ Deno.serve(async (req) => {
   }
 
   const chunk = <T>(a: T[], n: number) => Array.from({ length: Math.ceil(a.length/n) }, (_, i) => a.slice(i*n, i*n+n));
-  for (const c of chunk(profiles, 100)) await supabase.from("profiles").insert(c);
-  for (const c of chunk(symptoms, 500)) await supabase.from("patient_symptoms").insert(c);
-  for (const c of chunk(notes, 500)) await supabase.from("patient_notes").insert(c);
+  for (const c of chunk(symptoms, 500)) {
+    const { error } = await supabase.from("patient_symptoms").insert(c);
+    if (error) console.error("symptom insert:", error.message);
+  }
+  for (const c of chunk(notes, 500)) {
+    const { error } = await supabase.from("patient_notes").insert(c);
+    if (error) console.error("note insert:", error.message);
+  }
 
   return new Response(
-    JSON.stringify({ ok: true, profiles: profiles.length, symptoms: symptoms.length, notes: notes.length }),
+    JSON.stringify({ ok: true, profiles: created, symptoms: symptoms.length, notes: notes.length }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
 });
