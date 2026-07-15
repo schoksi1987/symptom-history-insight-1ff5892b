@@ -128,7 +128,6 @@ export default function Analytics() {
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
-            </div>
 
               <Card>
                 <CardHeader>
