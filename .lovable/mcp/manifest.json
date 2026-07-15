@@ -12,7 +12,7 @@
   "mcp": {
     "server": {
       "name": "predict-disease-mcp",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "title": "Predict Disease MCP"
     },
     "tools": [
@@ -217,6 +217,22 @@
           },
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_patient_examination",
+        "title": "Get latest patient examination",
+        "description": "Return the most recent clinical examination record (vitals, labs, family history, findings) for the signed-in user.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
         },
         "outputSchema": null
       }
