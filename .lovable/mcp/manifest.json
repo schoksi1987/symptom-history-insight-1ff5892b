@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "sdk_version": "0.22.1",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://hcwvalwioskpzttqefwu.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "predict-disease-mcp",
+      "version": "0.1.0",
+      "title": "Predict Disease MCP"
+    },
+    "tools": [
+      {
+        "name": "add_patient_note",
+        "title": "Add patient note",
+        "description": "Add a between-visit patient note for the signed-in user. The note is stored with a timestamp and queued for AI symptom analysis.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "note_text": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Free-text note describing symptoms, feelings, or observations."
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "mcp",
+                "manual",
+                "email"
+              ],
+              "description": "Where the note came from (default 'mcp')."
+            }
+          },
+          "required": [
+            "note_text"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_patient_notes",
+        "title": "List patient notes",
+        "description": "List the signed-in user's patient notes, newest first.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "description": "Max number of notes to return (default 10)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_patient_symptoms",
+        "title": "List tracked symptoms",
+        "description": "List symptoms tracked for the signed-in user, most recent first.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "description": "Max number of symptom rows (default 25)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_latest_insights",
+        "title": "Get latest risk insights",
+        "description": "Return the most recent AI-generated similarity/risk insight for the signed-in user, including matching factors and recommendations.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

@@ -13,6 +13,7 @@ import PatientDashboard from "./pages/PatientDashboard";
 import PatientExamination from "./pages/PatientExamination";
 import SDOHAssessment from "./pages/SDOHAssessment";
 import PatientHistory from "./pages/PatientHistory";
+import OAuthConsent from "./pages/OAuthConsent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/patient/:id/examination" element={<PatientExamination />} />
           <Route path="/patient/:id/sdoh" element={<SDOHAssessment />} />
           <Route path="/patient/:id/history" element={<PatientHistory />} />
+          <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
