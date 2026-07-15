@@ -53,6 +53,45 @@ export type Database = {
         }
         Relationships: []
       }
+      cohorts: {
+        Row: {
+          avg_risk: number
+          centroid: Json
+          description: string | null
+          id: number
+          label: string
+          model_version: string
+          outcome_summary: Json
+          size: number
+          top_features: Json
+          updated_at: string
+        }
+        Insert: {
+          avg_risk?: number
+          centroid?: Json
+          description?: string | null
+          id: number
+          label: string
+          model_version?: string
+          outcome_summary?: Json
+          size?: number
+          top_features?: Json
+          updated_at?: string
+        }
+        Update: {
+          avg_risk?: number
+          centroid?: Json
+          description?: string | null
+          id?: number
+          label?: string
+          model_version?: string
+          outcome_summary?: Json
+          size?: number
+          top_features?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_processors: {
         Row: {
           created_at: string
@@ -82,6 +121,38 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      patient_cohort_assignments: {
+        Row: {
+          cohort_id: number
+          computed_at: string
+          distance: number
+          id: string
+          patient_id: string
+        }
+        Insert: {
+          cohort_id: number
+          computed_at?: string
+          distance: number
+          id?: string
+          patient_id: string
+        }
+        Update: {
+          cohort_id?: number
+          computed_at?: string
+          distance?: number
+          id?: string
+          patient_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_cohort_assignments_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -149,6 +220,42 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      patient_risk_scores: {
+        Row: {
+          computed_at: string
+          contributions: Json
+          created_at: string
+          features: Json
+          id: string
+          model_version: string
+          patient_id: string
+          probability: number
+          score: number
+        }
+        Insert: {
+          computed_at?: string
+          contributions?: Json
+          created_at?: string
+          features?: Json
+          id?: string
+          model_version?: string
+          patient_id: string
+          probability: number
+          score: number
+        }
+        Update: {
+          computed_at?: string
+          contributions?: Json
+          created_at?: string
+          features?: Json
+          id?: string
+          model_version?: string
+          patient_id?: string
+          probability?: number
+          score?: number
+        }
+        Relationships: []
       }
       patient_similarity_analysis: {
         Row: {
@@ -294,6 +401,30 @@ export type Database = {
         }
         Relationships: []
       }
+      population_metrics: {
+        Row: {
+          created_at: string
+          data: Json
+          id: string
+          metric_key: string
+          snapshot_date: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json
+          id?: string
+          metric_key: string
+          snapshot_date?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          id?: string
+          metric_key?: string
+          snapshot_date?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -369,15 +500,75 @@ export type Database = {
         }
         Relationships: []
       }
+      symptom_forecasts: {
+        Row: {
+          anomaly: boolean
+          computed_at: string
+          forecast: Json
+          history: Json
+          id: string
+          patient_id: string
+          symptom_name: string
+          trend: string
+        }
+        Insert: {
+          anomaly?: boolean
+          computed_at?: string
+          forecast?: Json
+          history?: Json
+          id?: string
+          patient_id: string
+          symptom_name: string
+          trend?: string
+        }
+        Update: {
+          anomaly?: boolean
+          computed_at?: string
+          forecast?: Json
+          history?: Json
+          id?: string
+          patient_id?: string
+          symptom_name?: string
+          trend?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "clinician" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -504,6 +695,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "clinician", "user"],
+    },
   },
 } as const
