@@ -3,11 +3,11 @@
 // supabase function: mcp
 // Bundled from src/lib/mcp/index.ts by @lovable.dev/mcp-js.
 // src/lib/mcp/index.ts
-import { auth, defineMcp } from "npm:@lovable.dev/mcp-js@0.22.1";
+import { auth, defineMcp } from "npm:@lovable.dev/mcp-js@0.22.2";
 
 // src/lib/mcp/tools/add-patient-note.ts
 import { createClient } from "npm:@supabase/supabase-js@^2.58.0";
-import { defineTool } from "npm:@lovable.dev/mcp-js@0.22.1";
+import { defineTool } from "npm:@lovable.dev/mcp-js@0.22.2";
 import { z } from "npm:zod@^3.25.76";
 function supabaseForUser(ctx) {
   return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
@@ -46,7 +46,7 @@ var add_patient_note_default = defineTool({
 
 // src/lib/mcp/tools/list-patient-notes.ts
 import { createClient as createClient2 } from "npm:@supabase/supabase-js@^2.58.0";
-import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.22.1";
+import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.22.2";
 import { z as z2 } from "npm:zod@^3.25.76";
 function supabaseForUser2(ctx) {
   return createClient2(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
@@ -77,7 +77,7 @@ var list_patient_notes_default = defineTool2({
 
 // src/lib/mcp/tools/list-patient-symptoms.ts
 import { createClient as createClient3 } from "npm:@supabase/supabase-js@^2.58.0";
-import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.22.1";
+import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.22.2";
 import { z as z3 } from "npm:zod@^3.25.76";
 function supabaseForUser3(ctx) {
   return createClient3(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
@@ -108,7 +108,7 @@ var list_patient_symptoms_default = defineTool3({
 
 // src/lib/mcp/tools/get-latest-insights.ts
 import { createClient as createClient4 } from "npm:@supabase/supabase-js@^2.58.0";
-import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.22.1";
+import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.22.2";
 function supabaseForUser4(ctx) {
   return createClient4(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
     global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
@@ -152,5 +152,5 @@ var mcp_default = defineMcp({
 });
 
 // lovable-mcp-supabase-entry.ts
-import { createSupabaseHandler } from "npm:@lovable.dev/mcp-js@0.22.1/stacks/supabase";
+import { createSupabaseHandler } from "npm:@lovable.dev/mcp-js@0.22.2/stacks/supabase";
 Deno.serve(createSupabaseHandler(mcp_default, { functionName: "mcp" }));
