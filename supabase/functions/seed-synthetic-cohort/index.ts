@@ -39,6 +39,7 @@ Deno.serve(async (req) => {
   const now = Date.now();
   const symptoms: any[] = [];
   const notes: any[] = [];
+  const exams: any[] = [];
   let created = 0;
 
   for (let i = 0; i < N; i++) {
@@ -62,10 +63,43 @@ Deno.serve(async (req) => {
     const user_id = userRes.user.id;
     created++;
 
-    // Backfill profile fields the trigger didn't set
     await supabase.from("profiles").update({
       date_of_birth: new Date(Date.now() - age * 365.25 * 86400_000).toISOString().slice(0, 10),
     }).eq("user_id", user_id);
+
+    // Clinical vitals correlated to risk band
+    const height_cm = +clamp(165 + randn() * 10, 145, 195).toFixed(1);
+    const weight_kg = +clamp(bmi * (height_cm / 100) * (height_cm / 100) + randn() * 2, 40, 160).toFixed(1);
+    const hba1c = +clamp(5.2 + risk * 3.2 + randn() * 0.4, 4.5, 12.5).toFixed(1);
+    const fasting_glucose = Math.round(clamp(85 + risk * 90 + randn() * 12, 70, 260));
+    const systolic_bp = Math.round(clamp(115 + risk * 30 + randn() * 8, 95, 190));
+    const diastolic_bp = Math.round(clamp(72 + risk * 15 + randn() * 6, 55, 115));
+    const ldl = Math.round(clamp(100 + risk * 60 + randn() * 15, 60, 220));
+    const hdl = Math.round(clamp(55 - risk * 18 + randn() * 6, 25, 90));
+    const triglycerides = Math.round(clamp(120 + risk * 180 + randn() * 30, 60, 500));
+    const total_cholesterol = Math.round(ldl + hdl + triglycerides / 5);
+    const smoking_status = Math.random() < 0.15 + risk * 0.15 ? "current" : "never";
+    const activity_bucket = risk > 0.6 ? "sedentary" : risk > 0.35 ? "low" : "moderate";
+
+    exams.push({
+      patient_user_id: user_id,
+      examined_at: new Date(now - Math.random() * 90 * 86400_000).toISOString(),
+      height_cm, weight_kg,
+      systolic_bp, diastolic_bp,
+      heart_rate: Math.round(clamp(72 + randn() * 8, 55, 110)),
+      temperature_c: 36.7,
+      hba1c, fasting_glucose,
+      ldl, hdl, triglycerides, total_cholesterol,
+      family_history_diabetes: family_history,
+      smoking_status,
+      alcohol_use: Math.random() < 0.4 ? "occasional" : "none",
+      physical_activity_level: activity_bucket,
+      physician_findings: risk > 0.6
+        ? "Metabolic syndrome features; HbA1c and fasting glucose elevated. Initiate lifestyle intervention and consider pharmacotherapy."
+        : risk > 0.35
+          ? "Borderline glycemic markers; recommend diet counseling and 3-month recheck."
+          : "Within normal limits; routine annual screening.",
+    });
 
     const nSyms = Math.round(4 + risk * 8);
     const pool = [...SYMPTOMS].sort(() => Math.random() - 0.5).slice(0, nSyms);
@@ -103,6 +137,10 @@ Deno.serve(async (req) => {
   }
 
   const chunk = <T>(a: T[], n: number) => Array.from({ length: Math.ceil(a.length/n) }, (_, i) => a.slice(i*n, i*n+n));
+  for (const c of chunk(exams, 500)) {
+    const { error } = await supabase.from("examinations").insert(c);
+    if (error) console.error("exam insert:", error.message);
+  }
   for (const c of chunk(symptoms, 500)) {
     const { error } = await supabase.from("patient_symptoms").insert(c);
     if (error) console.error("symptom insert:", error.message);
