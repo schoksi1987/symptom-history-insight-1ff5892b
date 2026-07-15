@@ -124,6 +124,102 @@ export type Database = {
           },
         ]
       }
+      examinations: {
+        Row: {
+          alcohol_use: string | null
+          bmi: number | null
+          body_systems: Json | null
+          created_at: string
+          diastolic_bp: number | null
+          examined_at: string
+          examined_by: string | null
+          family_history_diabetes: boolean | null
+          fasting_glucose: number | null
+          hba1c: number | null
+          hdl: number | null
+          heart_rate: number | null
+          height_cm: number | null
+          id: string
+          ldl: number | null
+          medications: Json | null
+          patient_notes: string | null
+          patient_user_id: string
+          physical_activity_level: string | null
+          physician_findings: string | null
+          random_glucose: number | null
+          smoking_status: string | null
+          systolic_bp: number | null
+          temperature_c: number | null
+          total_cholesterol: number | null
+          triglycerides: number | null
+          updated_at: string
+          waist_cm: number | null
+          weight_kg: number | null
+        }
+        Insert: {
+          alcohol_use?: string | null
+          bmi?: number | null
+          body_systems?: Json | null
+          created_at?: string
+          diastolic_bp?: number | null
+          examined_at?: string
+          examined_by?: string | null
+          family_history_diabetes?: boolean | null
+          fasting_glucose?: number | null
+          hba1c?: number | null
+          hdl?: number | null
+          heart_rate?: number | null
+          height_cm?: number | null
+          id?: string
+          ldl?: number | null
+          medications?: Json | null
+          patient_notes?: string | null
+          patient_user_id: string
+          physical_activity_level?: string | null
+          physician_findings?: string | null
+          random_glucose?: number | null
+          smoking_status?: string | null
+          systolic_bp?: number | null
+          temperature_c?: number | null
+          total_cholesterol?: number | null
+          triglycerides?: number | null
+          updated_at?: string
+          waist_cm?: number | null
+          weight_kg?: number | null
+        }
+        Update: {
+          alcohol_use?: string | null
+          bmi?: number | null
+          body_systems?: Json | null
+          created_at?: string
+          diastolic_bp?: number | null
+          examined_at?: string
+          examined_by?: string | null
+          family_history_diabetes?: boolean | null
+          fasting_glucose?: number | null
+          hba1c?: number | null
+          hdl?: number | null
+          heart_rate?: number | null
+          height_cm?: number | null
+          id?: string
+          ldl?: number | null
+          medications?: Json | null
+          patient_notes?: string | null
+          patient_user_id?: string
+          physical_activity_level?: string | null
+          physician_findings?: string | null
+          random_glucose?: number | null
+          smoking_status?: string | null
+          systolic_bp?: number | null
+          temperature_c?: number | null
+          total_cholesterol?: number | null
+          triglycerides?: number | null
+          updated_at?: string
+          waist_cm?: number | null
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
       patient_cohort_assignments: {
         Row: {
           cohort_id: number
