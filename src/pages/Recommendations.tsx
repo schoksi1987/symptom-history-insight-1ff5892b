@@ -365,8 +365,10 @@ const Recommendations = () => {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold">AI-Powered Clinical Recommendations</h1>
-              <p className="text-muted-foreground">Insights from physician findings, patient notes, and peer comparison data</p>
+              <h1 className="text-3xl font-bold">Clinical Decision Summary</h1>
+              <p className="text-muted-foreground">
+                Suggested actions with supporting evidence. Every item requires physician confirmation.
+              </p>
             </div>
           </div>
           <Button 
@@ -382,11 +384,70 @@ const Recommendations = () => {
             ) : (
               <>
                 <Brain className="h-4 w-4" />
-                Generate AI Insights
+                Refresh summary
               </>
             )}
           </Button>
         </div>
+
+        <PrototypeBanner className="mb-6" />
+
+        {clinicalSummary && (
+          <div className="mb-8 space-y-6">
+            <ClinicalStatusBanner classification={clinicalSummary.classification} />
+
+            <div className="grid gap-4 lg:grid-cols-3">
+              <div className="space-y-3 lg:col-span-2">
+                <h2 className="text-sm font-medium">Suggested actions</h2>
+                {suggestedActions.map((a) => (
+                  <SuggestedActionCard
+                    key={a.id}
+                    action={a}
+                    onDecision={async (decision, payload) => {
+                      await saveRecommendationDecision(a.id, decision, payload);
+                      setSuggestedActions((prev) =>
+                        prev.map((x) =>
+                          x.id === a.id
+                            ? {
+                                ...x,
+                                status:
+                                  decision === "Accept"
+                                    ? "Accepted"
+                                    : decision === "Modify"
+                                      ? "Modified"
+                                      : "Dismissed",
+                                title: payload?.modifiedTitle || x.title,
+                              }
+                            : x,
+                        ),
+                      );
+                      toast({ title: `Recommendation ${decision.toLowerCase()}ed`, description: a.title });
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="space-y-4">
+                <DataCompletenessMeter value={clinicalSummary.dataQuality.completeness} />
+                <AssessmentConfidence confidence={clinicalSummary.classification.confidence} />
+                <MissingDataPanel issues={clinicalSummary.dataQuality.issues} />
+                <AuditInformationDrawer audit={clinicalSummary.audit} />
+              </div>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-2">
+              {cohort && <CohortUnavailableState cohort={cohort} />}
+              {plan && (
+                <PatientPlanPreview
+                  plan={plan}
+                  onApprove={() => setPlan({ ...plan, approvalStatus: "Physician Approved" })}
+                  onShare={() => setPlan({ ...plan, approvalStatus: "Shared With Patient" })}
+                />
+              )}
+            </div>
+          </div>
+        )}
+
+
 
         {/* AI-Powered Similarity Analysis (Real Data) */}
         {analysis && (
