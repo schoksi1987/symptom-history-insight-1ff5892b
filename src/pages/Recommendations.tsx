@@ -34,6 +34,27 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { ClinicalStatusBanner } from "@/components/clinical/ClinicalStatusBanner";
+import { SuggestedActionCard } from "@/components/clinical/SuggestedActionCard";
+import { MissingDataPanel } from "@/components/clinical/MissingDataPanel";
+import { DataCompletenessMeter, AssessmentConfidence } from "@/components/clinical/DataCompletenessMeter";
+import { AuditInformationDrawer } from "@/components/clinical/AuditInformationDrawer";
+import { CohortUnavailableState } from "@/components/clinical/CohortUnavailableState";
+import { PatientPlanPreview } from "@/components/clinical/PatientPlanPreview";
+import { PrototypeBanner } from "@/components/clinical/PrototypeBanner";
+import {
+  getPatientClinicalSummary,
+  getSuggestedActions,
+  getCohortAnalysis,
+  generatePatientPlan,
+  saveRecommendationDecision as persistDecision,
+} from "@/services/clinicalService";
+import type {
+  PatientClinicalSummary,
+  SuggestedAction,
+  CohortAnalysis,
+  PatientPlan,
+} from "@/types/clinical";
 
 const Recommendations = () => {
   const navigate = useNavigate();
@@ -44,6 +65,25 @@ const Recommendations = () => {
   const [news, setNews] = useState<any[]>([]);
   const [peerFindings, setPeerFindings] = useState<any[]>([]);
   const [trends, setTrends] = useState<any[]>([]);
+  const [clinicalSummary, setClinicalSummary] = useState<PatientClinicalSummary | null>(null);
+  const [suggestedActions, setSuggestedActions] = useState<SuggestedAction[]>([]);
+  const [cohort, setCohort] = useState<CohortAnalysis | null>(null);
+  const [plan, setPlan] = useState<PatientPlan | null>(null);
+
+  useEffect(() => {
+    const patientId = id ?? "demo";
+    getPatientClinicalSummary(patientId).then(setClinicalSummary);
+    getSuggestedActions(patientId).then(setSuggestedActions);
+    getCohortAnalysis(patientId).then(setCohort);
+    generatePatientPlan(patientId).then(setPlan);
+  }, [id]);
+
+  const saveRecommendationDecision = async (
+    recommendationId: string,
+    decision: "Accept" | "Modify" | "Dismiss",
+    payload?: { rationale?: string; modifiedTitle?: string },
+  ) => persistDecision(recommendationId, { decision, ...payload });
+
 
   useEffect(() => {
     const fetchData = async () => {
