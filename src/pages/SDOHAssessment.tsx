@@ -435,14 +435,19 @@ const SDOHAssessment = () => {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold">SDOH Lifestyle Assessment</h1>
+              <h1 className="text-3xl font-bold">Lifestyle and Social Context</h1>
               <p className="text-muted-foreground">Patient: Pooja Shah • Female • Age: 35</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Sections: daily habits and routines · access and stability · support and understanding.
+                Responses are patient reported and are used as contributing context only, never as a diagnosis.
+              </p>
             </div>
           </div>
           <Badge variant="outline" className="text-sm">
-            Social Determinants of Health
+            Patient reported context
           </Badge>
         </div>
+
 
         {/* Risk Summary Cards */}
         <div className="grid grid-cols-6 gap-4 mb-8">
@@ -569,10 +574,15 @@ const SDOHAssessment = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
-              Overall SDOH Risk Assessment
+              Lifestyle and Social Context Summary
             </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Contributing context for physician review. Not a diagnostic score.
+            </p>
           </CardHeader>
           <CardContent>
+
+
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg">
                 <div>
