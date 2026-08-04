@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CopilotPanel } from "@/components/clinical/CopilotPanel";
+import { PrototypeBanner } from "@/components/clinical/PrototypeBanner";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -235,16 +238,27 @@ const PatientExamination = () => {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold">Patient Examination</h1>
+              <h1 className="text-3xl font-bold">Visit Workspace</h1>
               <p className="text-muted-foreground">Patient: Pooja Shah • Gender: Female • Age: 35 • Height: 157cm</p>
             </div>
           </div>
           <Badge variant="outline" className="text-sm">
-            Step {currentStep} of 3
+            {currentStep === 1
+              ? "Step 1 of 3 — Patient reported information"
+              : currentStep === 2
+                ? "Step 2 of 3 — Physician examination"
+                : "Step 3 of 3 — Review and decisions"}
           </Badge>
         </div>
 
+        <PrototypeBanner className="mb-6" />
+
+        <div className="mb-8">
+          <CopilotPanel patientId={id} />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
           {/* Left Column */}
           <div className="space-y-6">
             {/* Physician Findings - First Priority */}

@@ -17,6 +17,8 @@ import {
   Activity,
   AlertTriangle
 } from "lucide-react";
+import { PatientQueuePanel } from "@/components/clinical/PatientQueuePanel";
+
 
 const Dashboard = () => {
   // Patient examination data
@@ -180,7 +182,10 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
+        <PatientQueuePanel />
+
         {/* Patient Examination Stats */}
+
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Patient's Examined</CardTitle>
@@ -198,26 +203,27 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-muted-foreground">{examinationStats.total}</div>
-                <div className="text-sm text-muted-foreground">Total Examined</div>
+                <div className="text-sm text-muted-foreground">Total examined</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">{examinationStats.lowRisk}</div>
-                <div className="text-sm text-muted-foreground">Low Risk</div>
+                <div className="text-3xl font-bold text-muted-foreground">{examinationStats.lowRisk}</div>
+                <div className="text-sm text-muted-foreground">No elevated risk currently identified</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-yellow-600">{examinationStats.mediumRisk}</div>
-                <div className="text-sm text-muted-foreground">Medium Risk</div>
+                <div className="text-3xl font-bold text-muted-foreground">{examinationStats.mediumRisk}</div>
+                <div className="text-sm text-muted-foreground">Elevated screening priority</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-red-600">{examinationStats.highRisk}</div>
-                <div className="text-sm text-muted-foreground">High Risk</div>
+                <div className="text-3xl font-bold text-muted-foreground">{examinationStats.highRisk}</div>
+                <div className="text-sm text-muted-foreground">Physician review required</div>
               </div>
             </div>
           </CardContent>
         </Card>
+
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">

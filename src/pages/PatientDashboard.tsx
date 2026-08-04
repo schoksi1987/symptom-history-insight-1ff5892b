@@ -25,10 +25,25 @@ import {
   CheckCircle
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ClinicalStatusBanner } from "@/components/clinical/ClinicalStatusBanner";
+import { SupportingEvidenceCard } from "@/components/clinical/SupportingEvidenceCard";
+import { MissingDataPanel } from "@/components/clinical/MissingDataPanel";
+import { DataCompletenessMeter, AssessmentConfidence } from "@/components/clinical/DataCompletenessMeter";
+import { AuditInformationDrawer } from "@/components/clinical/AuditInformationDrawer";
+import { PrototypeBanner } from "@/components/clinical/PrototypeBanner";
+import { getPatientClinicalSummary } from "@/services/clinicalService";
+import type { PatientClinicalSummary } from "@/types/clinical";
 
 const PatientDashboard = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [summary, setSummary] = useState<PatientClinicalSummary | null>(null);
+
+  useEffect(() => {
+    getPatientClinicalSummary(id ?? "demo").then(setSummary);
+  }, [id]);
+
   // Patient Information - Anonymized Case Study Patient
   const patientInfo = {
     name: "Patient #A-2024-001",
@@ -235,38 +250,50 @@ const PatientDashboard = () => {
       </div>
 
       <div className="container mx-auto px-6 py-6">
-        {/* Risk Analysis Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {riskData.map((risk, index) => {
-            const IconComponent = risk.icon;
-            return (
-              <Card key={index} className="relative">
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center text-sm">
-                    <IconComponent className="h-4 w-4 mr-2" />
-                    {risk.category}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-                    {risk.description}
-                  </p>
-                  <div className="text-center mb-4">
-                    <div className="text-4xl font-bold text-muted-foreground mb-1">
-                      {risk.percentage}%
+        {/* Current clinical status */}
+        {summary && (
+          <div className="mb-8 space-y-6">
+            <ClinicalStatusBanner classification={summary.classification} />
+
+            <div className="grid gap-4 lg:grid-cols-3">
+              <div className="space-y-4 lg:col-span-2">
+                <h3 className="text-sm font-medium">Supporting evidence</h3>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {summary.evidence.map((e) => (
+                    <SupportingEvidenceCard key={e.id} evidence={e} />
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-4">
+                <DataCompletenessMeter value={summary.dataQuality.completeness} />
+                <AssessmentConfidence confidence={summary.classification.confidence} />
+                <MissingDataPanel issues={summary.dataQuality.issues} />
+                <AuditInformationDrawer audit={summary.audit} />
+              </div>
+            </div>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Current actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {summary.currentActions.length === 0 && (
+                  <p className="text-sm text-muted-foreground">No actions recorded yet.</p>
+                )}
+                {summary.currentActions.map((a) => (
+                  <div key={a.label} className="flex flex-wrap items-start justify-between gap-2 rounded-md border p-3">
+                    <div>
+                      <p className="text-sm font-medium">{a.label}</p>
+                      <p className="text-xs text-muted-foreground">{a.detail}</p>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {risk.contribution}
-                    </p>
+                    <span className="text-xs text-muted-foreground">{a.at}</span>
                   </div>
-                  <div className={`${risk.color} text-white text-center py-2 rounded text-sm font-medium`}>
-                    {risk.riskLevel}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
 
         {/* Goals, Recommendations, and Preventive Care */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -370,83 +397,35 @@ const PatientDashboard = () => {
           {/* Visit Comparison and Medication */}
           <Card className="lg:col-span-2">
             <CardContent className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                {/* Initial Assessment */}
-                <div className="text-center">
-                  <h3 className="font-semibold mb-2">Initial Assessment</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{visitData.initialAssessment.date}</p>
-                  <div className="relative w-32 h-32 mx-auto mb-4">
-                    <svg className="w-full h-full transform -rotate-90">
-                      <circle cx="64" cy="64" r="48" fill="none" stroke="#e5e7eb" strokeWidth="8" />
-                      <circle 
-                        cx="64" 
-                        cy="64" 
-                        r="48" 
-                        fill="none" 
-                        stroke="#ef4444" 
-                        strokeWidth="8"
-                        strokeDasharray={`${(visitData.initialAssessment.score / 100) * 301.6} 301.6`}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-2xl font-bold">{visitData.initialAssessment.score}</span>
-                    </div>
+              <div className="mb-8 space-y-4">
+                <h3 className="font-semibold">Status over time</h3>
+                <p className="text-sm text-muted-foreground">
+                  Screening status is shown as a clinical classification. No predicted probability is displayed.
+                </p>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div className="rounded-lg border p-4">
+                    <p className="text-sm font-medium">Initial assessment</p>
+                    <p className="text-xs text-muted-foreground">{visitData.initialAssessment.date}</p>
+                    <Badge variant="outline" className="mt-2 font-normal">
+                      {summary?.classification.status ?? "Insufficient Information"}
+                    </Badge>
                   </div>
-                  <p className="text-sm font-medium">Risk Score: {visitData.initialAssessment.score}%</p>
-                  <Badge variant="destructive" className="text-xs mt-1">{visitData.initialAssessment.status}</Badge>
+                  <div className="rounded-lg border p-4">
+                    <p className="text-sm font-medium">Current status</p>
+                    <p className="text-xs text-muted-foreground">{visitData.currentStatus.date}</p>
+                    <Badge variant="outline" className="mt-2 font-normal">
+                      {summary?.classification.status ?? "Insufficient Information"}
+                    </Badge>
+                  </div>
                 </div>
-
-                {/* Current Status */}
-                <div className="text-center">
-                  <h3 className="font-semibold mb-2">Current Status</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{visitData.currentStatus.date}</p>
-                  <div className="relative w-32 h-32 mx-auto mb-4">
-                    <svg className="w-full h-full transform -rotate-90">
-                      <circle cx="64" cy="64" r="48" fill="none" stroke="#e5e7eb" strokeWidth="8" />
-                      <circle 
-                        cx="64" 
-                        cy="64" 
-                        r="48" 
-                        fill="none" 
-                        stroke="#ef4444" 
-                        strokeWidth="8"
-                        strokeDasharray={`${(visitData.currentStatus.score / 100) * 301.6} 301.6`}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-2xl font-bold">{visitData.currentStatus.score}</span>
-                    </div>
-                  </div>
-                  <p className="text-sm font-medium">Risk Score: {visitData.currentStatus.score}%</p>
-                  <Badge variant="destructive" className="text-xs mt-1">{visitData.currentStatus.status}</Badge>
+                <div className="rounded-lg border p-4">
+                  <p className="text-sm font-medium">Next review</p>
+                  <p className="text-xs text-muted-foreground">
+                    Interval and outcome tracking are set once confirmatory laboratory results are recorded.
+                  </p>
                 </div>
               </div>
 
-              {/* Projected Outcome */}
-              <div className="mb-8 text-center">
-                <h3 className="font-semibold mb-2">Projected Outcome</h3>
-                <p className="text-sm text-muted-foreground mb-4">{visitData.projectedOutcome.date}</p>
-                <div className="relative w-32 h-32 mx-auto mb-4">
-                  <svg className="w-full h-full transform -rotate-90">
-                    <circle cx="64" cy="64" r="48" fill="none" stroke="#e5e7eb" strokeWidth="8" />
-                    <circle 
-                      cx="64" 
-                      cy="64" 
-                      r="48" 
-                      fill="none" 
-                      stroke="#22c55e" 
-                      strokeWidth="8"
-                      strokeDasharray={`${(visitData.projectedOutcome.projectedScore / 100) * 301.6} 301.6`}
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-2xl font-bold">{visitData.projectedOutcome.projectedScore}</span>
-                  </div>
-                </div>
-                <p className="text-sm font-medium">Projected Risk: {visitData.projectedOutcome.projectedScore}%</p>
-                <p className="text-sm text-muted-foreground">Expected change: {visitData.projectedOutcome.expectedChange}%</p>
-                <Badge variant="default" className="text-xs mt-1">{visitData.projectedOutcome.status}</Badge>
-              </div>
 
               {/* Next Steps and Medication */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

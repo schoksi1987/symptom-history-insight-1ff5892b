@@ -17,7 +17,9 @@ import OAuthConsent from "./pages/OAuthConsent";
 import Analytics from "./pages/Analytics";
 import Admin from "./pages/Admin";
 import MyInsights from "./pages/MyInsights";
+import ClinicalEvidence from "./pages/ClinicalEvidence";
 import NotFound from "./pages/NotFound";
+
 
 const queryClient = new QueryClient();
 
@@ -29,6 +31,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
         <Routes>
+
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/predict" element={<DiseasePrediction />} />
@@ -44,6 +47,8 @@ const App = () => (
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/my-insights" element={<MyInsights />} />
+          <Route path="/clinical-evidence" element={<ClinicalEvidence />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
