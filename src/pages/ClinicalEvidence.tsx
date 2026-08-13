@@ -4,6 +4,7 @@ import { EvidenceSourceCard } from "@/components/clinical/EvidenceSourceCard";
 import { PrototypeBanner } from "@/components/clinical/PrototypeBanner";
 import { useClinicalDataSource } from "@/hooks/useClinicalDataSource";
 import type { EvidenceSource } from "@/types/clinical";
+import { AppHeader } from "@/components/AppHeader";
 
 const ClinicalEvidence = () => {
   const clinical = useClinicalDataSource();
@@ -15,6 +16,7 @@ const ClinicalEvidence = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <AppHeader />
       <PrototypeBanner />
       <div className="container mx-auto max-w-4xl px-6 py-8 space-y-6">
         <header>

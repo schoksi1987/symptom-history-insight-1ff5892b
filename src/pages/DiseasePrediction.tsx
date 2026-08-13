@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { 
+import { AppHeader } from "@/components/AppHeader";
   Brain, 
   Heart, 
   Activity, 
@@ -69,6 +70,7 @@ const DiseasePrediction = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <AppHeader />
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

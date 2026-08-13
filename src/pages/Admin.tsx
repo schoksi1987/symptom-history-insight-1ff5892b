@@ -6,6 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { PendingApprovals } from "@/components/admin/PendingApprovals";
 import { AdminAuditLog, type AdminAuditLogHandle } from "@/components/admin/AdminAuditLog";
+import { AppHeader } from "@/components/AppHeader";
 
 
 const JOBS: { key: string; fn: string; label: string; description: string }[] = [
@@ -37,6 +38,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-background">
+      <AppHeader />
       <div className="border-b border-border">
         <div className="container mx-auto flex items-center justify-between p-4">
           <div>

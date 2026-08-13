@@ -8,6 +8,7 @@ import {
 } from "recharts";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { AppHeader } from "@/components/AppHeader";
 
 type Metric = { metric_key: string; data: any; snapshot_date: string };
 
@@ -53,6 +54,7 @@ export default function Analytics() {
 
   return (
     <div className="min-h-screen bg-background">
+      <AppHeader />
       <div className="border-b border-border">
         <div className="container mx-auto flex items-center justify-between p-4">
           <div>
