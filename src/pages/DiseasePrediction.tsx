@@ -10,7 +10,6 @@ import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { 
-import { AppHeader } from "@/components/AppHeader";
   Brain, 
   Heart, 
   Activity, 
@@ -21,6 +20,7 @@ import { AppHeader } from "@/components/AppHeader";
   BarChart,
   Target
 } from "lucide-react";
+import { AppHeader } from "@/components/AppHeader";
 
 const DiseasePrediction = () => {
   const navigate = useNavigate();
