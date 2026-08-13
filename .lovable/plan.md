@@ -1,42 +1,48 @@
-# Sign-up Approval, Demo Mode, and Admin Reset
+# Sign-up Approval, Demo Workspace, and Admin Approvals
 
-Gate access behind admin approval, separate demo data from real accounts, and reset the admin login.
+Gate access behind admin approval, capture professional context at sign-up, and cleanly separate demo data from real accounts.
 
-## 1. Approval workflow
+## 1. Sign-up
 
-- New accounts start in a **pending** state and cannot use the app.
-- Sign-up form collects: first/last name, email, password, **Role** (physician, nurse, care coordinator, researcher, administrator, other), **Organization**, **Purpose of use** (short free text), and **"Would you like a demo?"** (yes/no).
-- If the user answers **yes to a demo**, submitting also files a demo request through the existing demo request flow (same data captured by the Request Demo dialog), and the request is flagged as demo-interested for you to follow up.
-- After submit the user sees "Your request was sent for approval" instead of being routed to the dashboard.
-- Login: if the account is not approved, the session is immediately signed out and the user sees "Your account is awaiting admin approval."
-- Rejected accounts see "Your access request was declined."
+Sign-up collects: first/last name, email, password, **Role** (physician, nurse, care coordinator, researcher, administrator, other), **Organization**, **Purpose of use**, and **"Would you like a demo?"**.
 
-## 2. Admin approval queue
+The selected role is a *requested/professional* role only. It never grants any permission in the app — choosing "administrator" gives no admin access.
 
-- New **Pending Approvals** section on `/admin`, visible only to admin accounts.
-- Lists each request: name, email, role, organization, purpose, demo requested (yes/no), requested date, status.
-- Actions per row: **Approve**, **Reject**. Approving records who approved and when.
-- Existing accounts already in the system are marked approved so nothing breaks.
+After submit the user sees "Your request was sent for approval". No dashboard redirect.
 
+If demo is requested, the same demo lead record the Request Demo dialog creates is filed automatically.
 
-## 3. Demo vs. real accounts
+## 2. Access gate
 
-- A per-account **demo flag**. Accounts with the flag see the current sample patients, dashboards, analytics and copilot content exactly as today.
-- Accounts without the flag get an **empty workspace**: dashboard, patient queue, analytics and insights show clean "No patients yet / No data yet" empty states with a clear next action, no sample patients or sample metrics.
-- You can toggle the demo flag for any account from the admin queue list, so you can create a fresh demo login whenever you present.
+- **Pending** — signed out with "Your account is awaiting admin approval."
+- **Rejected** — signed out with "Your access request was declined."
+- **Approved** — normal access.
 
-## 4. Admin credentials
+## 3. Admin approvals
 
-- `schoksi@predictdisease.com` is set as the admin account, approved, and given the admin role.
-- Password will be set to the one you send me in chat. **Reply with the password you want** and I will apply it during the build (change it after your first sign-in).
+`/admin` keeps its existing data-science jobs and log, and gains a **Pending Approvals** section (admin-only, enforced server-side, not just hidden in the UI):
+
+- Columns: name, email, requested role, organization, purpose, demo requested, submitted date, status
+- Actions: **Approve**, **Reject**, and a **Demo access** toggle
+- Approvals and rejections record which admin acted and when
+
+## 4. Demo vs. real workspaces
+
+One central workspace provider decides what data a signed-in user sees — pages do not each check a demo flag.
+
+- **Demo accounts**: the existing synthetic/sample patients, dashboards and analytics, exactly as today
+- **Real approved accounts**: only their own persisted data; where none exists, clean empty states with a clear next action
+
+## 5. Admin account
+
+`schoksi@predictdisease.com` is ensured to be approved and holds the real admin role in the existing roles table. Its password is not set, changed, or stored anywhere by this work — you manage it through the auth system.
 
 ## Technical notes
 
-- New table `account_status` (user_id, status: pending/approved/rejected, is_demo, role_title, organization, purpose, demo_requested, approved_by, approved_at) with grants and RLS: a user reads only their own row; admins read and update all rows via the existing `has_role(auth.uid(), 'admin')` function. No client-side writes to `status` by non-admins.
-- Trigger on new user insert creates a `pending` row, copying role/organization/purpose/demo_requested from the sign-up metadata; backfill existing users as `approved`.
-- Demo-yes sign-ups reuse the existing `DemoRequestDialog` submission path so demo leads land in one place.
-
-- `useAuth` gains `status` and `isDemo`; `ProtectedRoute` blocks non-approved sessions and signs them out.
-- Page data sources (`clinicalService.ts` and dashboard mock arrays) become conditional on `isDemo`, returning empty collections otherwise — page structure and components are unchanged.
-- Admin password is applied via the auth admin API in an edge function invoked once, then removed; no credentials stored in the repo.
-- No email sending in this phase (approval queue only), so no sender-domain work is required.
+- New table `account_status`: `user_id`, `status` (pending/approved/rejected), `is_demo`, `requested_role`, `organization`, `purpose`, `demo_requested`, `approved_by`, `approved_at`, `rejected_by`, `rejected_at`, `created_at`, `updated_at`. Grants for `authenticated` and `service_role`; RLS lets a user read only their own row, blocks users from writing status/is_demo/approved_* /rejected_* (enforced by a trigger that rejects privileged-column changes from non-admins), and lets `has_role(auth.uid(), 'admin')` read and manage all rows.
+- Authorization stays entirely on `user_roles` + `has_role()`. `requested_role` is descriptive text and is never read for permissions.
+- Trigger on new user creation inserts a `pending` row from sign-up metadata; existing users backfilled as `approved`. `schoksi@predictdisease.com` backfilled as approved plus an `admin` row in `user_roles` if missing.
+- New `demo_requests` table plus a shared `submitDemoRequest()` service: `DemoRequestDialog` is rewired to call it (its form currently only shows a toast and persists nothing), and demo-flagged sign-ups call the same service — no duplicated logic, no component invocation.
+- New `useWorkspace()` hook / provider exposes `{ status, isDemo, isAdmin }` and a single data-source seam; pages read from it instead of importing sample arrays directly. `clinicalService.ts` is not rewritten — the provider chooses between the demo source and real queries.
+- `ProtectedRoute` consumes the same provider and handles the pending/rejected sign-out messaging.
+- No visual redesign or navigation changes beyond the sign-up fields, approval messaging, admin approvals section, and empty states.
