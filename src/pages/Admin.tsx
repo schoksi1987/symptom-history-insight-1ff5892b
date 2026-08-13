@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { PendingApprovals } from "@/components/admin/PendingApprovals";
+import { AdminAuditLog, type AdminAuditLogHandle } from "@/components/admin/AdminAuditLog";
 
 
 const JOBS: { key: string; fn: string; label: string; description: string }[] = [
@@ -49,7 +50,8 @@ export default function Admin() {
       </div>
 
       <div className="container mx-auto p-6">
-        <PendingApprovals />
+        <PendingApprovals onChange={() => void auditRef.current?.reload()} />
+        <AdminAuditLog ref={auditRef} />
       </div>
 
       <div className="container mx-auto grid grid-cols-1 gap-4 p-6 md:grid-cols-3">
