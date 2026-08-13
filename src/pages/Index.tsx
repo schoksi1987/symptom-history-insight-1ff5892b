@@ -245,8 +245,8 @@ const Index = () => {
                     <p className="text-muted-foreground italic mb-4">
                       "Predict Disease has transformed how we identify at-risk patients. The AI-powered insights help us intervene earlier and more effectively than ever before."
                     </p>
-                    <p className="font-semibold">Dr. Sarah Johnson</p>
                     <p className="text-sm text-muted-foreground">Primary Care Physician, Boston Medical Center</p>
+
                   </div>
                 </div>
               </Card>
@@ -260,8 +260,8 @@ const Index = () => {
                     <p className="text-muted-foreground italic mb-4">
                       "The platform's ability to integrate multiple data sources and provide personalized recommendations has been a game-changer for our preventive care programs."
                     </p>
-                    <p className="font-semibold">Dr. Michael Chen</p>
                     <p className="text-sm text-muted-foreground">Endocrinologist, Stanford Health Care</p>
+
                   </div>
                 </div>
               </Card>
