@@ -35,8 +35,14 @@ export default function Auth() {
     email: "",
     password: "",
     firstName: "",
-    lastName: ""
+    lastName: "",
+    requestedRole: "",
+    organization: "",
+    purpose: ""
   });
+  const [demoRequested, setDemoRequested] = useState(false);
+  const [signupSubmitted, setSignupSubmitted] = useState(false);
+
 
   useEffect(() => {
     // Check if user is already logged in
