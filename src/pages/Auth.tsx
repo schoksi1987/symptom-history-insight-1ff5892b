@@ -83,7 +83,7 @@ export default function Auth() {
         lastName: formData.lastName,
       });
 
-      const redirectUrl = `${window.location.origin}${postAuthTarget}`;
+      const redirectUrl = `${window.location.origin}/auth`;
 
       const { error } = await supabase.auth.signUp({
         email: validData.email,
@@ -93,6 +93,11 @@ export default function Auth() {
           data: {
             first_name: validData.firstName,
             last_name: validData.lastName,
+            // Descriptive only — never grants permissions.
+            requested_role: formData.requestedRole || null,
+            organization: formData.organization || null,
+            purpose: formData.purpose || null,
+            demo_requested: demoRequested,
           }
         }
       });
@@ -107,8 +112,26 @@ export default function Auth() {
         return;
       }
 
-      toast.success("Account created successfully! You can now sign in.");
-      setAuthMode("login");
+      if (demoRequested) {
+        try {
+          await submitDemoRequest({
+            name: `${formData.firstName} ${formData.lastName}`.trim() || validData.email,
+            email: validData.email,
+            organization: formData.organization || null,
+            requestedRole: formData.requestedRole || null,
+            message: formData.purpose || null,
+            source: "signup",
+          });
+        } catch {
+          // A failed demo lead must not block the access request.
+        }
+      }
+
+      // Access requires admin approval — never leave a live session behind.
+      await supabase.auth.signOut();
+      setSignupSubmitted(true);
+      toast.success("Your request was sent for approval.");
+
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
