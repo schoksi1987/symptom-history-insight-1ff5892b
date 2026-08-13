@@ -5,16 +5,19 @@ Gate access behind admin approval, separate demo data from real accounts, and re
 ## 1. Approval workflow
 
 - New accounts start in a **pending** state and cannot use the app.
-- Sign-up form still collects name, email, password. After submit the user sees "Your request was sent for approval" instead of being routed to the dashboard.
+- Sign-up form collects: first/last name, email, password, **Role** (physician, nurse, care coordinator, researcher, administrator, other), **Organization**, **Purpose of use** (short free text), and **"Would you like a demo?"** (yes/no).
+- If the user answers **yes to a demo**, submitting also files a demo request through the existing demo request flow (same data captured by the Request Demo dialog), and the request is flagged as demo-interested for you to follow up.
+- After submit the user sees "Your request was sent for approval" instead of being routed to the dashboard.
 - Login: if the account is not approved, the session is immediately signed out and the user sees "Your account is awaiting admin approval."
 - Rejected accounts see "Your access request was declined."
 
 ## 2. Admin approval queue
 
 - New **Pending Approvals** section on `/admin`, visible only to admin accounts.
-- Lists each request: name, email, requested date, status.
+- Lists each request: name, email, role, organization, purpose, demo requested (yes/no), requested date, status.
 - Actions per row: **Approve**, **Reject**. Approving records who approved and when.
 - Existing accounts already in the system are marked approved so nothing breaks.
+
 
 ## 3. Demo vs. real accounts
 
