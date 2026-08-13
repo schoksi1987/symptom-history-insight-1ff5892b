@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { PendingApprovals } from "@/components/admin/PendingApprovals";
+
 
 const JOBS: { key: string; fn: string; label: string; description: string }[] = [
   { key: "seed", fn: "seed-synthetic-cohort", label: "Seed synthetic cohort", description: "Insert ~300 synthetic patients with symptoms and notes (idempotent)." },
