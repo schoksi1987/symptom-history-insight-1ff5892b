@@ -19,6 +19,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { DemoRequestDialog } from "@/components/DemoRequestDialog";
+import { AppHeader } from "@/components/AppHeader";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -35,35 +36,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-background border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center gap-2">
-              <Brain className="h-7 w-7 text-primary" />
-              <span className="text-xl font-bold">Predict Disease</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button 
-                onClick={() => setDemoDialogOpen(true)} 
-                variant="outline"
-                size="lg"
-              >
-                Demo Request
-              </Button>
-              {user ? (
-                <Button onClick={() => navigate("/dashboard")} size="lg">
-                  Dashboard
-                </Button>
-              ) : (
-                <Button onClick={() => navigate("/auth")} size="lg">
-                  Sign In
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
+      <AppHeader showDemoRequest />
+
 
       <main>
         {/* Hero Section */}

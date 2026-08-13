@@ -30,7 +30,9 @@ export default function Auth() {
   const nextPath = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : null;
   const postAuthTarget = nextPath ?? "/dashboard";
   const [isLoading, setIsLoading] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [authMode, setAuthMode] = useState<"login" | "signup">(
+    searchParams.get("mode") === "signup" ? "signup" : "login"
+  );
   const [formData, setFormData] = useState({
     email: "",
     password: "",

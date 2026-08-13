@@ -18,6 +18,7 @@ import {
   AlertTriangle
 } from "lucide-react";
 import { PatientQueuePanel } from "@/components/clinical/PatientQueuePanel";
+import { AppHeader } from "@/components/AppHeader";
 
 
 const Dashboard = () => {
@@ -104,6 +105,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <AppHeader />
       {/* Header */}
       <header className="border-b bg-primary text-primary-foreground">
         <div className="container mx-auto px-6 py-4">

@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
+import { AppHeader } from "@/components/AppHeader";
 
 export default function MyInsights() {
   const { user } = useAuth();
@@ -64,6 +65,7 @@ export default function MyInsights() {
 
   return (
     <div className="min-h-screen bg-background">
+      <AppHeader />
       <div className="border-b border-border">
         <div className="container mx-auto flex items-center justify-between p-4">
           <div>
