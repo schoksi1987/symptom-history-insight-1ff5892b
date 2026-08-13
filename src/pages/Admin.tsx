@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { PendingApprovals } from "@/components/admin/PendingApprovals";
+import { AdminAuditLog, type AdminAuditLogHandle } from "@/components/admin/AdminAuditLog";
 
 
 const JOBS: { key: string; fn: string; label: string; description: string }[] = [
@@ -16,6 +17,7 @@ const JOBS: { key: string; fn: string; label: string; description: string }[] = 
 export default function Admin() {
   const [busy, setBusy] = useState<string | null>(null);
   const [log, setLog] = useState<string[]>([]);
+  const auditRef = useRef<AdminAuditLogHandle>(null);
 
   const run = async (fn: string, key: string) => {
     setBusy(key);
@@ -48,8 +50,9 @@ export default function Admin() {
         </div>
       </div>
 
-      <div className="container mx-auto p-6">
-        <PendingApprovals />
+      <div className="container mx-auto space-y-6 p-6">
+        <PendingApprovals onChange={() => void auditRef.current?.reload()} />
+        <AdminAuditLog ref={auditRef} />
       </div>
 
       <div className="container mx-auto grid grid-cols-1 gap-4 p-6 md:grid-cols-3">
