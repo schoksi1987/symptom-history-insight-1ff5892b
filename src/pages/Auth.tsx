@@ -45,7 +45,9 @@ export default function Auth() {
 
 
   useEffect(() => {
+    if (authMode === "signup") return;
     // Check if user is already logged in
+
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
