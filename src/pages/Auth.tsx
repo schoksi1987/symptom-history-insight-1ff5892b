@@ -264,19 +264,75 @@ export default function Auth() {
                   </div>
                 </div>
 
+                <div className="space-y-2">
+                  <Label htmlFor="requestedRole">Role</Label>
+                  <Select
+                    value={formData.requestedRole}
+                    onValueChange={(v) => handleInputChange("requestedRole", v)}
+                  >
+                    <SelectTrigger id="requestedRole">
+                      <SelectValue placeholder="Select your professional role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="physician">Physician</SelectItem>
+                      <SelectItem value="nurse">Nurse</SelectItem>
+                      <SelectItem value="care-coordinator">Care coordinator</SelectItem>
+                      <SelectItem value="researcher">Researcher</SelectItem>
+                      <SelectItem value="administrator">Administrator</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-500">
+                    Used for review only. It does not grant any permissions in the application.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="organization">Organization</Label>
+                  <Input
+                    id="organization"
+                    placeholder="Practice, clinic or institution"
+                    value={formData.organization}
+                    onChange={(e) => handleInputChange("organization", e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="purpose">Purpose of use</Label>
+                  <Textarea
+                    id="purpose"
+                    rows={3}
+                    placeholder="How do you plan to use Predict Disease?"
+                    value={formData.purpose}
+                    onChange={(e) => handleInputChange("purpose", e.target.value)}
+                  />
+                </div>
+
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="demoRequested"
+                    checked={demoRequested}
+                    onCheckedChange={(v) => setDemoRequested(v === true)}
+                  />
+                  <Label htmlFor="demoRequested" className="text-sm font-normal leading-snug">
+                    Would you like a demo? We will contact you to schedule one.
+                  </Label>
+                </div>
+
                 <Button
                   onClick={handleSignUp}
                   disabled={isLoading}
                   className="w-full"
                 >
-                  {isLoading ? "Creating account..." : "Create Account"}
+                  {isLoading ? "Sending request..." : "Create Account"}
                 </Button>
 
                 <Alert>
                   <AlertDescription className="text-sm">
-                    By creating an account, you agree to our terms of service and privacy policy.
+                    New accounts require administrator approval before sign-in is possible.
                   </AlertDescription>
                 </Alert>
+
               </TabsContent>
             </Tabs>
           </CardContent>
