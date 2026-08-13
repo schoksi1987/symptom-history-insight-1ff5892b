@@ -24,7 +24,7 @@ interface AccountRow {
 const statusVariant = (status: string) =>
   status === "approved" ? "default" : status === "rejected" ? "destructive" : "secondary";
 
-export function PendingApprovals() {
+export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
   const { user } = useAuth();
   const [rows, setRows] = useState<AccountRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +70,10 @@ export function PendingApprovals() {
 
     const { error } = await supabase.from("account_status").update(patch).eq("id", row.id);
     if (error) toast({ title: "Update failed", description: error.message, variant: "destructive" });
-    else await load();
+    else {
+      await load();
+      onChange?.();
+    }
     setBusy(null);
   };
 
@@ -78,7 +81,10 @@ export function PendingApprovals() {
     setBusy(row.id);
     const { error } = await supabase.from("account_status").update({ is_demo: value }).eq("id", row.id);
     if (error) toast({ title: "Update failed", description: error.message, variant: "destructive" });
-    else await load();
+    else {
+      await load();
+      onChange?.();
+    }
     setBusy(null);
   };
 
