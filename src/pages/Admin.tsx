@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { PendingApprovals } from "@/components/admin/PendingApprovals";
+
 
 const JOBS: { key: string; fn: string; label: string; description: string }[] = [
   { key: "seed", fn: "seed-synthetic-cohort", label: "Seed synthetic cohort", description: "Insert ~300 synthetic patients with symptoms and notes (idempotent)." },
@@ -46,7 +48,12 @@ export default function Admin() {
         </div>
       </div>
 
+      <div className="container mx-auto p-6">
+        <PendingApprovals />
+      </div>
+
       <div className="container mx-auto grid grid-cols-1 gap-4 p-6 md:grid-cols-3">
+
         {JOBS.map((j) => (
           <Card key={j.key}>
             <CardHeader>

@@ -5,11 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { submitDemoRequest } from "@/services/demoRequests";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Heart, Lock, Mail, User } from "lucide-react";
+
 
 const authSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -30,11 +35,19 @@ export default function Auth() {
     email: "",
     password: "",
     firstName: "",
-    lastName: ""
+    lastName: "",
+    requestedRole: "",
+    organization: "",
+    purpose: ""
   });
+  const [demoRequested, setDemoRequested] = useState(false);
+  const [signupSubmitted, setSignupSubmitted] = useState(false);
+
 
   useEffect(() => {
+    if (authMode === "signup") return;
     // Check if user is already logged in
+
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -54,7 +67,7 @@ export default function Auth() {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, nextPath, postAuthTarget]);
+  }, [navigate, nextPath, postAuthTarget, authMode]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -72,7 +85,7 @@ export default function Auth() {
         lastName: formData.lastName,
       });
 
-      const redirectUrl = `${window.location.origin}${postAuthTarget}`;
+      const redirectUrl = `${window.location.origin}/auth`;
 
       const { error } = await supabase.auth.signUp({
         email: validData.email,
@@ -82,6 +95,11 @@ export default function Auth() {
           data: {
             first_name: validData.firstName,
             last_name: validData.lastName,
+            // Descriptive only — never grants permissions.
+            requested_role: formData.requestedRole || null,
+            organization: formData.organization || null,
+            purpose: formData.purpose || null,
+            demo_requested: demoRequested,
           }
         }
       });
@@ -96,8 +114,26 @@ export default function Auth() {
         return;
       }
 
-      toast.success("Account created successfully! You can now sign in.");
-      setAuthMode("login");
+      if (demoRequested) {
+        try {
+          await submitDemoRequest({
+            name: `${formData.firstName} ${formData.lastName}`.trim() || validData.email,
+            email: validData.email,
+            organization: formData.organization || null,
+            requestedRole: formData.requestedRole || null,
+            message: formData.purpose || null,
+            source: "signup",
+          });
+        } catch {
+          // A failed demo lead must not block the access request.
+        }
+      }
+
+      // Access requires admin approval — never leave a live session behind.
+      await supabase.auth.signOut();
+      setSignupSubmitted(true);
+      toast.success("Your request was sent for approval.");
+
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
@@ -208,6 +244,15 @@ export default function Auth() {
               </TabsContent>
 
               <TabsContent value="signup" className="space-y-4">
+                {signupSubmitted && (
+                  <Alert>
+                    <AlertDescription className="text-sm">
+                      Your request was sent for approval. You will be able to sign in once an
+                      administrator approves your account.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
@@ -264,19 +309,75 @@ export default function Auth() {
                   </div>
                 </div>
 
+                <div className="space-y-2">
+                  <Label htmlFor="requestedRole">Role</Label>
+                  <Select
+                    value={formData.requestedRole}
+                    onValueChange={(v) => handleInputChange("requestedRole", v)}
+                  >
+                    <SelectTrigger id="requestedRole">
+                      <SelectValue placeholder="Select your professional role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="physician">Physician</SelectItem>
+                      <SelectItem value="nurse">Nurse</SelectItem>
+                      <SelectItem value="care-coordinator">Care coordinator</SelectItem>
+                      <SelectItem value="researcher">Researcher</SelectItem>
+                      <SelectItem value="administrator">Administrator</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-500">
+                    Used for review only. It does not grant any permissions in the application.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="organization">Organization</Label>
+                  <Input
+                    id="organization"
+                    placeholder="Practice, clinic or institution"
+                    value={formData.organization}
+                    onChange={(e) => handleInputChange("organization", e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="purpose">Purpose of use</Label>
+                  <Textarea
+                    id="purpose"
+                    rows={3}
+                    placeholder="How do you plan to use Predict Disease?"
+                    value={formData.purpose}
+                    onChange={(e) => handleInputChange("purpose", e.target.value)}
+                  />
+                </div>
+
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="demoRequested"
+                    checked={demoRequested}
+                    onCheckedChange={(v) => setDemoRequested(v === true)}
+                  />
+                  <Label htmlFor="demoRequested" className="text-sm font-normal leading-snug">
+                    Would you like a demo? We will contact you to schedule one.
+                  </Label>
+                </div>
+
                 <Button
                   onClick={handleSignUp}
                   disabled={isLoading}
                   className="w-full"
                 >
-                  {isLoading ? "Creating account..." : "Create Account"}
+                  {isLoading ? "Sending request..." : "Create Account"}
                 </Button>
 
                 <Alert>
                   <AlertDescription className="text-sm">
-                    By creating an account, you agree to our terms of service and privacy policy.
+                    New accounts require administrator approval before sign-in is possible.
                   </AlertDescription>
                 </Alert>
+
               </TabsContent>
             </Tabs>
           </CardContent>

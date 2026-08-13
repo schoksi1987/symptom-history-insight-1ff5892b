@@ -32,17 +32,18 @@ import { MissingDataPanel } from "@/components/clinical/MissingDataPanel";
 import { DataCompletenessMeter, AssessmentConfidence } from "@/components/clinical/DataCompletenessMeter";
 import { AuditInformationDrawer } from "@/components/clinical/AuditInformationDrawer";
 import { PrototypeBanner } from "@/components/clinical/PrototypeBanner";
-import { getPatientClinicalSummary } from "@/services/clinicalService";
+import { useClinicalDataSource } from "@/hooks/useClinicalDataSource";
 import type { PatientClinicalSummary } from "@/types/clinical";
 
 const PatientDashboard = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const clinical = useClinicalDataSource();
   const [summary, setSummary] = useState<PatientClinicalSummary | null>(null);
 
   useEffect(() => {
-    getPatientClinicalSummary(id ?? "demo").then(setSummary);
-  }, [id]);
+    clinical.getPatientClinicalSummary(id ?? "demo").then(setSummary);
+  }, [id, clinical]);
 
   // Patient Information - Anonymized Case Study Patient
   const patientInfo = {

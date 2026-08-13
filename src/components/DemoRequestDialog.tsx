@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { submitDemoRequest } from "@/services/demoRequests";
 
 interface DemoRequestDialogProps {
   open: boolean;
@@ -24,7 +25,9 @@ export const DemoRequestDialog = ({ open, onOpenChange }: DemoRequestDialogProps
     details: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -37,9 +40,30 @@ export const DemoRequestDialog = ({ open, onOpenChange }: DemoRequestDialogProps
       return;
     }
 
-    // Here you would typically send the data to your backend
-    console.log("Demo request submitted:", formData);
-    
+    try {
+      setSubmitting(true);
+      await submitDemoRequest({
+        name: formData.name,
+        email: formData.email,
+        organization: formData.companyPractice,
+        requestedRole: formData.primaryCare || null,
+        phone: formData.phone || null,
+        message: [formData.insuranceType ? `Insurance: ${formData.insuranceType}` : null, formData.details]
+          .filter(Boolean)
+          .join("\n") || null,
+        source: "website",
+      });
+    } catch (error) {
+      toast({
+        title: "Could not submit request",
+        description: "Please try again in a moment.",
+        variant: "destructive",
+      });
+      return;
+    } finally {
+      setSubmitting(false);
+    }
+
     toast({
       title: "Demo Request Submitted!",
       description: "We'll contact you shortly to schedule your personalized demo.",
@@ -181,8 +205,8 @@ export const DemoRequestDialog = ({ open, onOpenChange }: DemoRequestDialogProps
             >
               Cancel
             </Button>
-            <Button type="submit">
-              Submit Demo Request
+            <Button type="submit" disabled={submitting}>
+              {submitting ? "Submitting…" : "Submit Demo Request"}
             </Button>
           </div>
         </form>

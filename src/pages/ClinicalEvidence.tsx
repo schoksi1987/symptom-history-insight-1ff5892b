@@ -2,15 +2,16 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EvidenceSourceCard } from "@/components/clinical/EvidenceSourceCard";
 import { PrototypeBanner } from "@/components/clinical/PrototypeBanner";
-import { getEvidenceSources } from "@/services/clinicalService";
+import { useClinicalDataSource } from "@/hooks/useClinicalDataSource";
 import type { EvidenceSource } from "@/types/clinical";
 
 const ClinicalEvidence = () => {
+  const clinical = useClinicalDataSource();
   const [sources, setSources] = useState<EvidenceSource[]>([]);
 
   useEffect(() => {
-    getEvidenceSources().then(setSources);
-  }, []);
+    clinical.getEvidenceSources().then(setSources);
+  }, [clinical]);
 
   return (
     <div className="min-h-screen bg-background">
