@@ -19,9 +19,59 @@ import {
 } from "lucide-react";
 import { PatientQueuePanel } from "@/components/clinical/PatientQueuePanel";
 import { AppHeader } from "@/components/AppHeader";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 
 const Dashboard = () => {
+  const { isDemo, isAdmin } = useWorkspace();
+
+  if (!isDemo) {
+    return (
+      <div className="min-h-screen bg-background">
+        <AppHeader />
+        <div className="border-b bg-primary text-primary-foreground">
+          <div className="container mx-auto px-6 py-6">
+            <h1 className="text-2xl font-semibold">Physician Dashboard</h1>
+            <p className="mt-1 text-sm text-primary-foreground/80">Your clinical workspace</p>
+          </div>
+        </div>
+
+        <main className="container mx-auto px-6 py-10">
+          <section className="border-b pb-10">
+            <div className="grid gap-8 sm:grid-cols-3">
+              <div>
+                <p className="text-sm text-muted-foreground">Patients</p>
+                <p className="mt-2 text-4xl font-semibold">0</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Visits today</p>
+                <p className="mt-2 text-4xl font-semibold">0</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Needs attention</p>
+                <p className="mt-2 text-4xl font-semibold">0</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="py-16 text-center">
+            <Users className="mx-auto h-12 w-12 text-muted-foreground" aria-hidden />
+            <h2 className="mt-5 text-xl font-semibold">Your workspace is ready</h2>
+            <p className="mx-auto mt-2 max-w-lg text-sm text-muted-foreground">
+              No patients or clinical activity have been added to this account yet. Real patient
+              records will appear here after they are created.
+            </p>
+            {isAdmin && (
+              <Button className="mt-6" onClick={() => window.location.href = "/admin"}>
+                Manage account access
+              </Button>
+            )}
+          </section>
+        </main>
+      </div>
+    );
+  }
+
   // Patient examination data
   const examinationStats = {
     total: 7,
