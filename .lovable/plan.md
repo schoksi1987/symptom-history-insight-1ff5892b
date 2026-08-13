@@ -32,8 +32,10 @@ Gate access behind admin approval, separate demo data from real accounts, and re
 
 ## Technical notes
 
-- New table `account_status` (user_id, status: pending/approved/rejected, is_demo, approved_by, approved_at) with grants and RLS: a user reads only their own row; admins read and update all rows via the existing `has_role(auth.uid(), 'admin')` function. No client-side writes to `status` by non-admins.
-- Trigger on new user insert creates a `pending` row; backfill existing users as `approved`.
+- New table `account_status` (user_id, status: pending/approved/rejected, is_demo, role_title, organization, purpose, demo_requested, approved_by, approved_at) with grants and RLS: a user reads only their own row; admins read and update all rows via the existing `has_role(auth.uid(), 'admin')` function. No client-side writes to `status` by non-admins.
+- Trigger on new user insert creates a `pending` row, copying role/organization/purpose/demo_requested from the sign-up metadata; backfill existing users as `approved`.
+- Demo-yes sign-ups reuse the existing `DemoRequestDialog` submission path so demo leads land in one place.
+
 - `useAuth` gains `status` and `isDemo`; `ProtectedRoute` blocks non-approved sessions and signs them out.
 - Page data sources (`clinicalService.ts` and dashboard mock arrays) become conditional on `isDemo`, returning empty collections otherwise — page structure and components are unchanged.
 - Admin password is applied via the auth admin API in an edge function invoked once, then removed; no credentials stored in the repo.
