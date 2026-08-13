@@ -19,6 +19,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { DemoRequestDialog } from "@/components/DemoRequestDialog";
+import { AppHeader } from "@/components/AppHeader";
 
 const Index = () => {
   const navigate = useNavigate();
