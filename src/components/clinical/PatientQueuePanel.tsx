@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { AlertTriangle } from "lucide-react";
 import type { PatientQueueEntry } from "@/types/clinical";
-import { getPhysicianQueue } from "@/services/clinicalService";
+import { useClinicalDataSource } from "@/hooks/useClinicalDataSource";
 import { DemoDataNotice } from "./PrototypeBanner";
 
 const NEEDS_ATTENTION: PatientQueueEntry["status"][] = [
@@ -17,12 +17,13 @@ const NEEDS_ATTENTION: PatientQueueEntry["status"][] = [
 ];
 
 export const PatientQueuePanel = () => {
+  const clinical = useClinicalDataSource();
   const [queue, setQueue] = useState<PatientQueueEntry[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    getPhysicianQueue().then(setQueue);
-  }, []);
+    clinical.getPhysicianQueue().then(setQueue);
+  }, [clinical]);
 
   const needsAttention = queue.filter((q) => NEEDS_ATTENTION.includes(q.status));
 
