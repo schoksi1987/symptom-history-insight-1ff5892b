@@ -244,6 +244,15 @@ export default function Auth() {
               </TabsContent>
 
               <TabsContent value="signup" className="space-y-4">
+                {signupSubmitted && (
+                  <Alert>
+                    <AlertDescription className="text-sm">
+                      Your request was sent for approval. You will be able to sign in once an
+                      administrator approves your account.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
