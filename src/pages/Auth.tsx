@@ -67,7 +67,7 @@ export default function Auth() {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, nextPath, postAuthTarget]);
+  }, [navigate, nextPath, postAuthTarget, authMode]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
