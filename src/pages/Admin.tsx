@@ -48,7 +48,12 @@ export default function Admin() {
         </div>
       </div>
 
+      <div className="container mx-auto p-6">
+        <PendingApprovals />
+      </div>
+
       <div className="container mx-auto grid grid-cols-1 gap-4 p-6 md:grid-cols-3">
+
         {JOBS.map((j) => (
           <Card key={j.key}>
             <CardHeader>
