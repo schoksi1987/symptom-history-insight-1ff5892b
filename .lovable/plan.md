@@ -1,26 +1,25 @@
-# Establish the admin account
+# Admin access and account cleanup
 
 ## Where things stand
 
-- There is no admin user today. Three real accounts exist (`shailpoojachoksi@gmail.com`, `azradaei@gmail.com`, `shailchintan@gmail.com`), all approved, and none of them has any role assigned.
-- `schoksi@predictdisease.com` has never signed up, so the existing database trigger that auto-approves that address and grants it the admin role has never fired.
-- Passwords are stored only as hashes, so there is no existing admin password to look up. The admin credential is whatever password you set when you create the account.
-- The `/admin` route is already wrapped in an admin-only guard that shows "This area is restricted to administrators." to anyone without the admin role, so the requested guard is in place and needs no rework.
+- No account currently holds the `admin` role. Three real accounts exist: `shailpoojachoksi@gmail.com`, `azradaei@gmail.com`, `shailchintan@gmail.com` — all approved, none with a role row.
+- `schoksi@predictdisease.com` has never signed up, so the owner-admin triggers (which fire on both insert and email confirmation for that address) have never run.
+- Passwords are stored only as hashes, so there is no admin password to retrieve. The admin credential is whatever password is set when the account is created.
+- The `/admin` route is already guarded: users without the admin role see "This area is restricted to administrators." No rework needed there.
 
-## What will happen
+## What will change
 
-1. You sign up at `/auth` using `schoksi@predictdisease.com` and a password of your choosing.
-2. On email confirmation, the existing trigger sets that account to approved and inserts the `admin` role. Signing in then unlocks `/admin` (approvals queue, audit log, jobs console).
+1. **Grant admin to `shailpoojachoksi@gmail.com`.** Add the `admin` role row for that account and keep its status approved. It can then reach `/admin` — approvals queue, audit log, jobs console — with its existing password.
+2. **Remove `azradaei@gmail.com`.** Delete the account entirely. Its dependent rows (profile, account status, any clinical records keyed to it) cascade away with it, so nothing is left orphaned.
+3. **Owner account stays available.** `schoksi@predictdisease.com` can still sign up at any time and will be auto-approved and granted admin by the existing triggers.
 
-## Work to do
+## Notes
 
-- **Make the grant resilient.** Today the admin grant only fires on the confirmation transition. Add a companion path so the role is also granted at insert time if that email signs up while email confirmation is disabled, and a one-time backfill so an already-created `schoksi@predictdisease.com` account is promoted immediately. This removes the "signed up but still not admin" failure mode.
-- **Confirm the sign-up path accepts the address.** Verify the `/auth` sign-up form and its required professional-context fields (role, organization, purpose, demo) complete successfully for this account, and that the trigger keeps demo access off.
-- **Verify end to end.** After you create the account, check that the role row exists, the status is approved, and `/admin` renders the approvals queue rather than the restricted notice.
+- Deleting `azradaei@gmail.com` is permanent — the account cannot sign in again and would have to re-register and be re-approved.
+- Before deleting, the records tied to that account are checked so you know exactly what disappears with it.
 
 ## Technical notes
 
-- New migration: extend `grant_owner_admin_on_verified_email()` coverage with an insert-time equivalent on `auth.users`, plus an idempotent backfill (`INSERT ... ON CONFLICT DO NOTHING`) into `public.user_roles` and an upsert of `public.account_status` to `approved` for the owner email.
-- `is_demo` stays `false`: the `force_default_demo_on_insert` trigger is untouched, so demo access remains an explicit admin decision.
-- No change to `ProtectedRoute` or `/admin`; the `requireAdmin` guard already resolves through `has_role`.
-- Security memory: the owner email remains hardcoded in a security-definer trigger by design; no other account gains privileges from sign-up metadata.
+- Role grant: insert into `public.user_roles (user_id, 'admin')` for the matching `auth.users` row, `ON CONFLICT DO NOTHING`; ensure `public.account_status.status = 'approved'` for it.
+- Deletion: remove the `auth.users` row for `azradaei@gmail.com`; foreign keys to `auth.users` are `ON DELETE CASCADE`, so `profiles`, `account_status`, `examinations`, and audit references clear with it.
+- Both operations are data changes, not schema changes — no table or policy is altered, and no trigger or RLS rule is weakened.
