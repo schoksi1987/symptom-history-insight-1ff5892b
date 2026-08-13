@@ -41,8 +41,15 @@ One central workspace provider decides what data a signed-in user sees — pages
 
 - New table `account_status`: `user_id`, `status` (pending/approved/rejected), `is_demo`, `requested_role`, `organization`, `purpose`, `demo_requested`, `approved_by`, `approved_at`, `rejected_by`, `rejected_at`, `created_at`, `updated_at`. Grants for `authenticated` and `service_role`; RLS lets a user read only their own row, blocks users from writing status/is_demo/approved_* /rejected_* (enforced by a trigger that rejects privileged-column changes from non-admins), and lets `has_role(auth.uid(), 'admin')` read and manage all rows.
 - Authorization stays entirely on `user_roles` + `has_role()`. `requested_role` is descriptive text and is never read for permissions.
-- Trigger on new user creation inserts a `pending` row from sign-up metadata; existing users backfilled as `approved`. `schoksi@predictdisease.com` backfilled as approved plus an `admin` row in `user_roles` if missing.
-- New `demo_requests` table plus a shared `submitDemoRequest()` service: `DemoRequestDialog` is rewired to call it (its form currently only shows a toast and persists nothing), and demo-flagged sign-ups call the same service — no duplicated logic, no component invocation.
+- Trigger on new user creation always writes `status = 'pending'` server-side and copies only descriptive metadata (`requested_role`, `organization`, `purpose`, `demo_requested`). Status, `is_demo`, approval/rejection fields and authorization roles from sign-up metadata are ignored entirely. Existing users backfilled as `approved`; `schoksi@predictdisease.com` backfilled as approved plus an `admin` row in `user_roles` if missing.
+- New `demo_requests` table plus a shared `submitDemoRequest()` service routed through a secure backend path (edge function with validation) — no unrestricted anonymous insert on the table. `DemoRequestDialog` is rewired to call the same service (its form currently only shows a toast and persists nothing), and demo-flagged sign-ups reuse it — no duplicated logic, no component invocation.
 - New `useWorkspace()` hook / provider exposes `{ status, isDemo, isAdmin }` and a single data-source seam; pages read from it instead of importing sample arrays directly. `clinicalService.ts` is not rewritten — the provider chooses between the demo source and real queries.
-- `ProtectedRoute` consumes the same provider and handles the pending/rejected sign-out messaging.
+- `ProtectedRoute` stores the pending/rejected message before calling sign-out so it still renders after the session clears.
 - No visual redesign or navigation changes beyond the sign-up fields, approval messaging, admin approvals section, and empty states.
+
+## Data safety rules
+
+- Demo/sample content stays entirely outside the real clinical tables. Nothing is ever seeded, copied or written into patient, examination, symptom, note, risk, cohort or recommendation records because an account is flagged demo.
+- Toggling **Demo access** only switches which data source the workspace presents. It never copies, migrates, deletes or edits real patient data.
+- An admin can toggle demo access on a pending or approved account, but the account still cannot enter the app until `status = 'approved'`.
+
