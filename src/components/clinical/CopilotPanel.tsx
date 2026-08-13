@@ -97,7 +97,7 @@ export const CopilotPanel = ({ patientId, encounterId }: Props) => {
 
         <CollapsibleContent>
           <CardContent className="space-y-5">
-            <DemoDataNotice />
+            {clinical.isDemo && <DemoDataNotice />}
 
             {/* Controls */}
             <div className="flex flex-wrap gap-2">

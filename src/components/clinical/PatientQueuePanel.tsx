@@ -39,7 +39,7 @@ export const PatientQueuePanel = () => {
         </p>
       </CardHeader>
       <CardContent className="space-y-3">
-        <DemoDataNotice />
+        {clinical.isDemo && <DemoDataNotice />}
         {needsAttention.length === 0 && (
           <p className="text-sm text-muted-foreground">No patients currently require review.</p>
         )}
