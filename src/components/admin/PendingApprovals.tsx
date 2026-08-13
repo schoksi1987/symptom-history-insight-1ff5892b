@@ -7,6 +7,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface AccountRow {
   id: string;
@@ -29,6 +40,8 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
   const [rows, setRows] = useState<AccountRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
+  const [approving, setApproving] = useState<AccountRow | null>(null);
+  const [grantDemo, setGrantDemo] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -61,14 +74,50 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
     void load();
   }, [load]);
 
-  const decide = async (row: AccountRow, decision: "approved" | "rejected") => {
-    setBusy(row.id);
-    const patch =
-      decision === "approved"
-        ? { status: "approved", approved_by: user?.id ?? null, approved_at: new Date().toISOString() }
-        : { status: "rejected", rejected_by: user?.id ?? null, rejected_at: new Date().toISOString() };
+  const openApprove = (row: AccountRow) => {
+    // Demo access always starts off: a demo request never grants access on its own.
+    setGrantDemo(false);
+    setApproving(row);
+  };
 
-    const { error } = await supabase.from("account_status").update(patch).eq("id", row.id);
+  const confirmApprove = async () => {
+    const row = approving;
+    if (!row) return;
+    setApproving(null);
+    setBusy(row.id);
+
+    const { error } = await supabase
+      .from("account_status")
+      .update({ status: "approved", approved_by: user?.id ?? null, approved_at: new Date().toISOString() })
+      .eq("id", row.id);
+
+    if (error) {
+      toast({ title: "Update failed", description: error.message, variant: "destructive" });
+      setBusy(null);
+      return;
+    }
+
+    if (grantDemo !== row.is_demo) {
+      const { error: demoError } = await supabase
+        .from("account_status")
+        .update({ is_demo: grantDemo })
+        .eq("id", row.id);
+      if (demoError) {
+        toast({ title: "Demo access not changed", description: demoError.message, variant: "destructive" });
+      }
+    }
+
+    await load();
+    onChange?.();
+    setBusy(null);
+  };
+
+  const reject = async (row: AccountRow) => {
+    setBusy(row.id);
+    const { error } = await supabase
+      .from("account_status")
+      .update({ status: "rejected", rejected_by: user?.id ?? null, rejected_at: new Date().toISOString() })
+      .eq("id", row.id);
     if (error) toast({ title: "Update failed", description: error.message, variant: "destructive" });
     else {
       await load();
@@ -115,14 +164,14 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
           />
         </TableCell>
         <TableCell className="space-x-2 whitespace-nowrap">
-          <Button size="sm" disabled={busy === r.id || r.status === "approved"} onClick={() => decide(r, "approved")}>
+          <Button size="sm" disabled={busy === r.id || r.status === "approved"} onClick={() => openApprove(r)}>
             Approve
           </Button>
           <Button
             size="sm"
             variant="outline"
             disabled={busy === r.id || r.status === "rejected"}
-            onClick={() => decide(r, "rejected")}
+            onClick={() => reject(r)}
           >
             Reject
           </Button>
@@ -135,8 +184,9 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
       <CardHeader>
         <CardTitle>Pending Approvals</CardTitle>
         <CardDescription>
-          Approve or reject access requests. Demo access only changes which workspace data an
-          account sees; it never touches real patient records.
+          Approve or reject access requests. "Demo requested" is what the applicant asked for — it
+          never grants access on its own. "Demo access" is granted only by an admin, and only
+          changes which workspace data an account sees; it never touches real patient records.
         </CardDescription>
       </CardHeader>
       <CardContent className="overflow-x-auto">
@@ -166,6 +216,52 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
           </Table>
         )}
       </CardContent>
+
+      <AlertDialog open={approving !== null} onOpenChange={(open) => !open && setApproving(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Approve this account?</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-1 text-sm">
+                <div>
+                  <span className="font-medium text-foreground">
+                    {[approving?.profile?.first_name, approving?.profile?.last_name]
+                      .filter(Boolean)
+                      .join(" ") || approving?.profile?.email || "Unknown user"}
+                  </span>
+                </div>
+                <div>Organization: {approving?.organization ?? "—"}</div>
+                <div>Purpose: {approving?.purpose ?? "—"}</div>
+                <div>Demo requested: {approving?.demo_requested ? "Yes" : "No"}</div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="flex items-start justify-between gap-4 rounded-md border border-border p-3">
+            <div>
+              <Label htmlFor="grant-demo" className="text-sm font-medium">
+                Grant demo access
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                {approving?.demo_requested
+                  ? "This applicant requested a demo. Approving does not grant it — decide explicitly."
+                  : "Demo access is a separate decision from approval."}
+              </p>
+            </div>
+            <Switch
+              id="grant-demo"
+              checked={grantDemo}
+              onCheckedChange={setGrantDemo}
+              aria-label="Grant demo access"
+            />
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmApprove}>Approve</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 }
