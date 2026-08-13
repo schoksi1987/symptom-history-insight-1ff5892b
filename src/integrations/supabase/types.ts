@@ -65,6 +65,36 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_audit_log: {
+        Row: {
+          acting_admin: string
+          action: string
+          created_at: string
+          id: string
+          new_value: string | null
+          previous_value: string | null
+          target_user: string
+        }
+        Insert: {
+          acting_admin: string
+          action: string
+          created_at?: string
+          id?: string
+          new_value?: string | null
+          previous_value?: string | null
+          target_user: string
+        }
+        Update: {
+          acting_admin?: string
+          action?: string
+          created_at?: string
+          id?: string
+          new_value?: string | null
+          previous_value?: string | null
+          target_user?: string
+        }
+        Relationships: []
+      }
       clinical_news: {
         Row: {
           category: string | null
