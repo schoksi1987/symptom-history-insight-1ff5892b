@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_status: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          demo_requested: boolean
+          id: string
+          is_demo: boolean
+          organization: string | null
+          purpose: string | null
+          rejected_at: string | null
+          rejected_by: string | null
+          requested_role: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          demo_requested?: boolean
+          id?: string
+          is_demo?: boolean
+          organization?: string | null
+          purpose?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          requested_role?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          demo_requested?: boolean
+          id?: string
+          is_demo?: boolean
+          organization?: string | null
+          purpose?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          requested_role?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       clinical_news: {
         Row: {
           category: string | null
@@ -89,6 +140,48 @@ export type Database = {
           size?: number
           top_features?: Json
           updated_at?: string
+        }
+        Relationships: []
+      }
+      demo_requests: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          name: string
+          organization: string | null
+          phone: string | null
+          requested_role: string | null
+          source: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          organization?: string | null
+          phone?: string | null
+          requested_role?: string | null
+          source?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          organization?: string | null
+          phone?: string | null
+          requested_role?: string | null
+          source?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
