@@ -42,13 +42,7 @@ import { AuditInformationDrawer } from "@/components/clinical/AuditInformationDr
 import { CohortUnavailableState } from "@/components/clinical/CohortUnavailableState";
 import { PatientPlanPreview } from "@/components/clinical/PatientPlanPreview";
 import { PrototypeBanner } from "@/components/clinical/PrototypeBanner";
-import {
-  getPatientClinicalSummary,
-  getSuggestedActions,
-  getCohortAnalysis,
-  generatePatientPlan,
-  saveRecommendationDecision as persistDecision,
-} from "@/services/clinicalService";
+import { useClinicalDataSource } from "@/hooks/useClinicalDataSource";
 import type {
   PatientClinicalSummary,
   SuggestedAction,
@@ -69,20 +63,21 @@ const Recommendations = () => {
   const [suggestedActions, setSuggestedActions] = useState<SuggestedAction[]>([]);
   const [cohort, setCohort] = useState<CohortAnalysis | null>(null);
   const [plan, setPlan] = useState<PatientPlan | null>(null);
+  const clinical = useClinicalDataSource();
 
   useEffect(() => {
     const patientId = id ?? "demo";
-    getPatientClinicalSummary(patientId).then(setClinicalSummary);
-    getSuggestedActions(patientId).then(setSuggestedActions);
-    getCohortAnalysis(patientId).then(setCohort);
-    generatePatientPlan(patientId).then(setPlan);
-  }, [id]);
+    clinical.getPatientClinicalSummary(patientId).then(setClinicalSummary);
+    clinical.getSuggestedActions(patientId).then(setSuggestedActions);
+    clinical.getCohortAnalysis(patientId).then(setCohort);
+    clinical.generatePatientPlan(patientId).then(setPlan);
+  }, [id, clinical]);
 
   const saveRecommendationDecision = async (
     recommendationId: string,
     decision: "Accept" | "Modify" | "Dismiss",
     payload?: { rationale?: string; modifiedTitle?: string },
-  ) => persistDecision(recommendationId, { decision, ...payload });
+  ) => clinical.saveRecommendationDecision(recommendationId, { decision, ...payload });
 
 
   useEffect(() => {

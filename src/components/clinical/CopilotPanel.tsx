@@ -8,13 +8,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown, Mic, Pause, Play, Square, Bot, FileText } from "lucide-react";
 import { toast } from "sonner";
 import type { CopilotSuggestion, ExtractedClinicalFact, TranscriptSegment as Segment } from "@/types/clinical";
-import {
-  getCopilotSuggestions,
-  getExtractedFacts,
-  getTranscript,
-  saveExtractedFactDecision,
-  createFollowUpTask,
-} from "@/services/clinicalService";
+import { useClinicalDataSource } from "@/hooks/useClinicalDataSource";
 import { TranscriptSegment } from "./TranscriptSegment";
 import { SuggestedQuestionCard } from "./SuggestedQuestionCard";
 import { ExtractedFactCard } from "./ExtractedFactCard";
@@ -62,17 +56,18 @@ export const CopilotPanel = ({ patientId, encounterId }: Props) => {
   const [facts, setFacts] = useState<ExtractedClinicalFact[]>([]);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
+  const clinical = useClinicalDataSource();
 
   useEffect(() => {
-    getTranscript(encounterId).then(setTranscript);
-    getCopilotSuggestions(encounterId).then(setSuggestions);
-    getExtractedFacts(encounterId).then(setFacts);
-  }, [encounterId]);
+    clinical.getTranscript(encounterId).then(setTranscript);
+    clinical.getCopilotSuggestions(encounterId).then(setSuggestions);
+    clinical.getExtractedFacts(encounterId).then(setFacts);
+  }, [encounterId, clinical]);
 
   const visibleSuggestions = suggestions.filter((s) => s.status === "Open").slice(0, 2);
 
   const handleFact = async (id: string, decision: "Confirmed" | "Edited" | "Rejected", value?: string) => {
-    await saveExtractedFactDecision(id, decision, value);
+    await clinical.saveExtractedFactDecision(id, decision, value);
     setFacts((prev) => prev.map((f) => (f.id === id ? { ...f, status: decision, value: value ?? f.value } : f)));
   };
 
@@ -209,7 +204,7 @@ export const CopilotPanel = ({ patientId, encounterId }: Props) => {
                     variant="outline"
                     onClick={async () => {
                       if (a === "Create task" && patientId) {
-                        await createFollowUpTask(patientId, encounterId, { title: "Follow-up task" });
+                        await clinical.createFollowUpTask(patientId, encounterId, { title: "Follow-up task" });
                       }
                       toast.success(`${a} — confirmed by physician`);
                     }}
