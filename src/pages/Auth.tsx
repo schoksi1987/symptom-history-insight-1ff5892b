@@ -394,8 +394,10 @@ export default function Auth() {
                     New accounts require administrator approval before sign-in is possible.
                   </AlertDescription>
                 </Alert>
-
+                  </>
+                )}
               </TabsContent>
+
             </Tabs>
           </CardContent>
         </Card>
