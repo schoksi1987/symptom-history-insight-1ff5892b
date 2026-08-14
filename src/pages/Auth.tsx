@@ -256,6 +256,14 @@ export default function Auth() {
                 >
                   {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
+
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="w-full text-sm text-blue-700 underline underline-offset-4"
+                >
+                  Forgot password?
+                </button>
               </TabsContent>
 
               <TabsContent value="signup" className="space-y-4">
