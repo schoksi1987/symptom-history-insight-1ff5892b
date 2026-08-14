@@ -47,6 +47,8 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
   const [busy, setBusy] = useState<string | null>(null);
   const [bulkBusy, setBulkBusy] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [adminIds, setAdminIds] = useState<Set<string>>(new Set());
+
   const [approving, setApproving] = useState<AccountRow[] | null>(null);
   const [rejecting, setRejecting] = useState<AccountRow[] | null>(null);
   const [grantDemo, setGrantDemo] = useState(false);
@@ -65,17 +67,24 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
     }
 
     const ids = (data ?? []).map((r) => r.user_id);
-    const { data: profiles } = ids.length
-      ? await supabase.from("profiles").select("user_id, first_name, last_name, email").in("user_id", ids)
-      : { data: [] as any[] };
+    const [{ data: profiles }, { data: adminRoles }] = await Promise.all([
+      ids.length
+        ? supabase.from("profiles").select("user_id, first_name, last_name, email").in("user_id", ids)
+        : Promise.resolve({ data: [] as any[] }),
+      ids.length
+        ? supabase.from("user_roles").select("user_id").eq("role", "admin").in("user_id", ids)
+        : Promise.resolve({ data: [] as any[] }),
+    ]);
 
     const mapped = (data ?? []).map((r) => ({
       ...r,
       profile: profiles?.find((p) => p.user_id === r.user_id) ?? null,
     }));
 
+    setAdminIds(new Set((adminRoles ?? []).map((r: any) => r.user_id)));
     setRows(mapped.filter((r) => !isSynthetic(r)));
     setSelected(new Set());
+
     setLoading(false);
   }, []);
 
@@ -193,13 +202,17 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
           ) : null}
         </TableCell>
         <TableCell>
-          <div className="font-medium">
-            {[r.profile?.first_name, r.profile?.last_name].filter(Boolean).join(" ") ||
-              r.profile?.email ||
-              "Unnamed account"}
+          <div className="flex items-center gap-2 font-medium">
+            <span>
+              {[r.profile?.first_name, r.profile?.last_name].filter(Boolean).join(" ") ||
+                r.profile?.email ||
+                "Unnamed account"}
+            </span>
+            {adminIds.has(r.user_id) && <Badge variant="outline">Admin</Badge>}
           </div>
           <div className="text-xs text-muted-foreground">{r.profile?.email ?? "No email on file"}</div>
         </TableCell>
+
         <TableCell className="text-sm">{r.requested_role ?? "—"}</TableCell>
         <TableCell className="text-sm">{r.organization ?? "—"}</TableCell>
         <TableCell className="max-w-[240px] text-sm">{r.purpose ?? "—"}</TableCell>
@@ -222,14 +235,24 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
           >
             Approve
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            disabled={busy === r.id || bulkBusy || r.status === "rejected"}
-            onClick={() => setRejecting([r])}
+          <span
+            title={
+              adminIds.has(r.user_id)
+                ? "Administrators cannot be rejected — the system must always keep an admin."
+                : undefined
+            }
+            className="inline-block"
           >
-            Reject
-          </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={busy === r.id || bulkBusy || r.status === "rejected" || adminIds.has(r.user_id)}
+              onClick={() => setRejecting([r])}
+            >
+              Reject
+            </Button>
+          </span>
+
         </TableCell>
       </TableRow>
     ));
@@ -265,11 +288,12 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
               <Button
                 size="sm"
                 variant="outline"
-                disabled={selectedRows.length === 0 || bulkBusy}
-                onClick={() => setRejecting(selectedRows)}
+                disabled={selectedRows.filter((r) => !adminIds.has(r.user_id)).length === 0 || bulkBusy}
+                onClick={() => setRejecting(selectedRows.filter((r) => !adminIds.has(r.user_id)))}
               >
                 Reject selected
               </Button>
+
             </div>
           </div>
         )}
