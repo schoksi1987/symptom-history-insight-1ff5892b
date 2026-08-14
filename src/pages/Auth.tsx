@@ -424,7 +424,7 @@ export default function Auth() {
                   disabled={isLoading}
                   className="w-full"
                 >
-                  {isLoading ? "Sending request..." : "Create Account"}
+                  {isLoading ? "Sending request..." : "Request Access"}
                 </Button>
 
                 <Alert>
@@ -440,8 +440,13 @@ export default function Auth() {
           </CardContent>
         </Card>
 
-        <div className="text-center mt-6 text-sm text-gray-600">
-          <p>Healthcare Portal - Secure Patient Management System</p>
+        <div className="text-center mt-6 space-y-2 text-sm text-gray-600">
+          <p>Predict Disease — clinical decision-support prototype.</p>
+          <p className="space-x-3">
+            <Link to="/privacy" className="underline underline-offset-4">Privacy</Link>
+            <Link to="/terms" className="underline underline-offset-4">Terms of Use</Link>
+            <Link to="/" className="underline underline-offset-4">Back to home</Link>
+          </p>
         </div>
       </div>
     </div>
