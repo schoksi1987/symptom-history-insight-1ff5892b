@@ -194,6 +194,23 @@ export default function Auth() {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!formData.email) {
+      toast.error("Enter your email address first, then select Forgot password.");
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("If an account exists for that email, a reset link is on its way.");
+  };
+
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
