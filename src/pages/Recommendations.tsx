@@ -501,50 +501,52 @@ const Recommendations = () => {
         {/* AI-Powered Similarity Analysis (Real Data) */}
         {analysis && (
           <>
-            {/* Risk Score Card - Prominent Display */}
-            <Card className="mb-6 border-red-200 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-6 w-6 text-red-600" />
-                  Diabetes Risk Assessment
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center mb-4">
-                  <div className="inline-flex flex-col items-center justify-center w-32 h-32 rounded-full bg-white shadow-lg">
-                    <div className="text-5xl font-bold" style={{
-                      color: (analysis.risk_insights?.risk_score || 0) > 70 ? '#dc2626' :
-                             (analysis.risk_insights?.risk_score || 0) > 40 ? '#f59e0b' : '#22c55e'
-                    }}>
-                      {analysis.risk_insights?.risk_score || 0}
+            {/* Screening Priority Card — replaces the former risk gauge */}
+            {(() => {
+              const score = analysis.risk_insights?.risk_score || 0;
+              const priority =
+                score >= 60 ? "Prioritize Screening" : score >= 35 ? "Consider Screening" : "Routine";
+              const interpretation =
+                score >= 60
+                  ? "Based on the information available, this patient may benefit from prioritized clinical review for Type 2 diabetes screening."
+                  : score >= 35
+                    ? "Some available information may support Type 2 diabetes screening. Review alongside applicable screening guidelines."
+                    : "Available information does not indicate a need to prioritize screening ahead of the patient's normal preventive-care schedule.";
+              return (
+                <Card className="mb-6 border-2">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-primary" aria-hidden="true" />
+                      Type 2 Diabetes Screening Priority
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="rounded-lg border bg-accent/50 p-4">
+                      <p className="text-2xl font-bold text-primary">{priority}</p>
+                      <p className="mt-2 text-sm text-muted-foreground">{interpretation}</p>
                     </div>
-                    <div className="text-sm text-muted-foreground font-medium">Risk Score</div>
-                  </div>
-                </div>
-                <div className="flex justify-center gap-8 text-sm mb-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">
-                      {analysis.similarity_score?.toFixed(0) || 0}%
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="rounded-lg border p-3">
+                        <div className="text-sm text-muted-foreground">Cohort similarity</div>
+                        <div className="text-xl font-semibold text-foreground">
+                          {analysis.similarity_score?.toFixed(0) || 0}%
+                        </div>
+                      </div>
+                      <div className="rounded-lg border p-3">
+                        <div className="text-sm text-muted-foreground">Contributing factors</div>
+                        <div className="text-xl font-semibold text-foreground">
+                          {analysis.matching_factors?.length || 0}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-muted-foreground">Patient Match</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-600">
-                      {analysis.matching_factors?.length || 0}
-                    </div>
-                    <div className="text-muted-foreground">Key Factors</div>
-                  </div>
-                </div>
-                {(analysis.risk_insights?.risk_score || 0) > 50 && (
-                  <div className="mt-4 p-3 bg-white rounded-lg border-l-4 border-l-red-500">
-                    <p className="text-sm font-medium text-red-900">High Risk Detected</p>
-                    <p className="text-xs text-red-700 mt-1">
-                      Immediate lifestyle interventions and medical consultation recommended
+                    <p className="text-xs text-muted-foreground">
+                      Screening priority is a decision-support signal derived from the information
+                      entered for this patient. It is not a probability of developing diabetes.
                     </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              );
+            })()}
 
             {/* Targeted Patient Insights */}
             <Card className="mb-6 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
