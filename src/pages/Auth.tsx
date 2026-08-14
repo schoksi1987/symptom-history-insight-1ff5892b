@@ -246,14 +246,29 @@ export default function Auth() {
               </TabsContent>
 
               <TabsContent value="signup" className="space-y-4">
-                {signupSubmitted && (
-                  <Alert>
-                    <AlertDescription className="text-sm">
+                {signupSubmitted ? (
+                  <div className="space-y-4 py-4 text-center">
+                    <h2 className="text-lg font-semibold text-gray-900">Request submitted</h2>
+                    <p className="text-sm text-gray-600">
                       Your request was sent for approval. You will be able to sign in once an
                       administrator approves your account.
-                    </AlertDescription>
-                  </Alert>
-                )}
+                    </p>
+                    <div className="flex flex-col gap-2 pt-2">
+                      <Button onClick={() => navigate("/")}>Back to home</Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setSignupSubmitted(false);
+                          setAuthMode("login");
+                        }}
+                      >
+                        Go to sign in
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
