@@ -133,7 +133,18 @@ export default function Auth() {
 
       // Access requires admin approval — never leave a live session behind.
       await supabase.auth.signOut();
+      setFormData({
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+        requestedRole: "",
+        organization: "",
+        purpose: "",
+      });
+      setDemoRequested(false);
       setSignupSubmitted(true);
+
       toast.success("Your request was sent for approval.");
 
     } catch (error) {
