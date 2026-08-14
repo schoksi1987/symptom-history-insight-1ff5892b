@@ -202,13 +202,17 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
           ) : null}
         </TableCell>
         <TableCell>
-          <div className="font-medium">
-            {[r.profile?.first_name, r.profile?.last_name].filter(Boolean).join(" ") ||
-              r.profile?.email ||
-              "Unnamed account"}
+          <div className="flex items-center gap-2 font-medium">
+            <span>
+              {[r.profile?.first_name, r.profile?.last_name].filter(Boolean).join(" ") ||
+                r.profile?.email ||
+                "Unnamed account"}
+            </span>
+            {adminIds.has(r.user_id) && <Badge variant="outline">Admin</Badge>}
           </div>
           <div className="text-xs text-muted-foreground">{r.profile?.email ?? "No email on file"}</div>
         </TableCell>
+
         <TableCell className="text-sm">{r.requested_role ?? "—"}</TableCell>
         <TableCell className="text-sm">{r.organization ?? "—"}</TableCell>
         <TableCell className="max-w-[240px] text-sm">{r.purpose ?? "—"}</TableCell>
