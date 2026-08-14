@@ -65,17 +65,24 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
     }
 
     const ids = (data ?? []).map((r) => r.user_id);
-    const { data: profiles } = ids.length
-      ? await supabase.from("profiles").select("user_id, first_name, last_name, email").in("user_id", ids)
-      : { data: [] as any[] };
+    const [{ data: profiles }, { data: adminRoles }] = await Promise.all([
+      ids.length
+        ? supabase.from("profiles").select("user_id, first_name, last_name, email").in("user_id", ids)
+        : Promise.resolve({ data: [] as any[] }),
+      ids.length
+        ? supabase.from("user_roles").select("user_id").eq("role", "admin").in("user_id", ids)
+        : Promise.resolve({ data: [] as any[] }),
+    ]);
 
     const mapped = (data ?? []).map((r) => ({
       ...r,
       profile: profiles?.find((p) => p.user_id === r.user_id) ?? null,
     }));
 
+    setAdminIds(new Set((adminRoles ?? []).map((r: any) => r.user_id)));
     setRows(mapped.filter((r) => !isSynthetic(r)));
     setSelected(new Set());
+
     setLoading(false);
   }, []);
 
