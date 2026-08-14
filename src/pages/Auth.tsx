@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { submitDemoRequest } from "@/services/demoRequests";
 import { toast } from "sonner";
@@ -194,15 +194,34 @@ export default function Auth() {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!formData.email) {
+      toast.error("Enter your email address first, then select Forgot password.");
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("If an account exists for that email, a reset link is on its way.");
+  };
+
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Heart className="h-8 w-8 text-blue-600 mr-2" />
-            <h1 className="text-2xl font-bold text-gray-900">HealthCare Portal</h1>
+            <Link to="/" className="text-2xl font-bold text-gray-900">
+              Predict Disease
+            </Link>
           </div>
-          <p className="text-gray-600">Sign in to access your patient dashboard</p>
+          <p className="text-gray-600">Sign in to your Predict Disease workspace.</p>
         </div>
 
         <Card>
@@ -213,7 +232,7 @@ export default function Auth() {
             <Tabs value={authMode} onValueChange={(value) => setAuthMode(value as "login" | "signup")}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                <TabsTrigger value="signup">Request Access</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login" className="space-y-4">
@@ -254,6 +273,14 @@ export default function Auth() {
                 >
                   {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
+
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="w-full text-sm text-blue-700 underline underline-offset-4"
+                >
+                  Forgot password?
+                </button>
               </TabsContent>
 
               <TabsContent value="signup" className="space-y-4">
@@ -397,7 +424,7 @@ export default function Auth() {
                   disabled={isLoading}
                   className="w-full"
                 >
-                  {isLoading ? "Sending request..." : "Create Account"}
+                  {isLoading ? "Sending request..." : "Request Access"}
                 </Button>
 
                 <Alert>
@@ -413,8 +440,13 @@ export default function Auth() {
           </CardContent>
         </Card>
 
-        <div className="text-center mt-6 text-sm text-gray-600">
-          <p>Healthcare Portal - Secure Patient Management System</p>
+        <div className="text-center mt-6 space-y-2 text-sm text-gray-600">
+          <p>Predict Disease — clinical decision-support prototype.</p>
+          <p className="space-x-3">
+            <Link to="/privacy" className="underline underline-offset-4">Privacy</Link>
+            <Link to="/terms" className="underline underline-offset-4">Terms of Use</Link>
+            <Link to="/" className="underline underline-offset-4">Back to home</Link>
+          </p>
         </div>
       </div>
     </div>

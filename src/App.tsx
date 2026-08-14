@@ -20,12 +20,26 @@ import Analytics from "./pages/Analytics";
 import Admin from "./pages/Admin";
 import MyInsights from "./pages/MyInsights";
 import ClinicalEvidence from "./pages/ClinicalEvidence";
+import Platform from "./pages/public/Platform";
+import HowItWorks from "./pages/public/HowItWorks";
+import ClinicalApproach from "./pages/public/ClinicalApproach";
+import Implementation from "./pages/public/Implementation";
+import Support from "./pages/public/Support";
+import About from "./pages/public/About";
+import Partnerships from "./pages/public/Partnerships";
+import Privacy from "./pages/public/Privacy";
+import Terms from "./pages/public/Terms";
+import MedicalDisclaimer from "./pages/public/MedicalDisclaimer";
+import ResponsibleAI from "./pages/public/ResponsibleAI";
+import Security from "./pages/public/Security";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const guarded = (element: React.ReactNode, requireAdmin = false) => (
-  <ProtectedRoute requireAdmin={requireAdmin}>{element}</ProtectedRoute>
+const guarded = (element: React.ReactNode, requireAdmin = false, requireDemo = false) => (
+  <ProtectedRoute requireAdmin={requireAdmin} requireDemo={requireDemo}>
+    {element}
+  </ProtectedRoute>
 );
 
 const App = () => (
@@ -37,9 +51,26 @@ const App = () => (
             <Toaster />
             <Sonner />
             <Routes>
+              {/* Public */}
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/predict" element={guarded(<DiseasePrediction />)} />
+              <Route path="/platform" element={<Platform />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/clinical-approach" element={<ClinicalApproach />} />
+              <Route path="/clinical-evidence" element={<ClinicalEvidence />} />
+              <Route path="/implementation" element={<Implementation />} />
+              <Route path="/support" element={<Support />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/partnerships" element={<Partnerships />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/medical-disclaimer" element={<MedicalDisclaimer />} />
+              <Route path="/responsible-ai" element={<ResponsibleAI />} />
+              <Route path="/security" element={<Security />} />
+              <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
+
+              {/* Approved accounts only */}
+              <Route path="/predict" element={guarded(<DiseasePrediction />, false, true)} />
               <Route path="/recommendations" element={guarded(<Recommendations />)} />
               <Route path="/recommendations/:id" element={guarded(<Recommendations />)} />
               <Route path="/dashboard" element={guarded(<Dashboard />)} />
@@ -47,11 +78,11 @@ const App = () => (
               <Route path="/patient/:id/examination" element={guarded(<PatientExamination />)} />
               <Route path="/patient/:id/sdoh" element={guarded(<SDOHAssessment />)} />
               <Route path="/patient/:id/history" element={guarded(<PatientHistory />)} />
-              <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
               <Route path="/analytics" element={guarded(<Analytics />)} />
-              <Route path="/admin" element={guarded(<Admin />, true)} />
               <Route path="/my-insights" element={guarded(<MyInsights />)} />
-              <Route path="/clinical-evidence" element={guarded(<ClinicalEvidence />)} />
+
+              {/* Admin only */}
+              <Route path="/admin" element={guarded(<Admin />, true)} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
