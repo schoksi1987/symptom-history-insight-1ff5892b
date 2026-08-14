@@ -414,9 +414,10 @@ const Recommendations = () => {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold">Clinical Decision Summary</h1>
+              <h1 className="text-3xl font-bold">Type 2 Diabetes Screening Priority</h1>
               <p className="text-muted-foreground">
-                Suggested actions with supporting evidence. Every item requires physician confirmation.
+                Clinical decision summary with supporting evidence. Every item requires physician
+                confirmation.
               </p>
             </div>
           </div>
@@ -440,6 +441,11 @@ const Recommendations = () => {
         </div>
 
         <PrototypeBanner className="mb-6" />
+
+        <div className="mb-6 rounded-lg border bg-accent/40 p-4 text-sm text-muted-foreground">
+          This assessment provides clinical decision support and does not diagnose Type 2 diabetes or
+          replace professional medical judgment.
+        </div>
 
         {clinicalSummary && (
           <div className="mb-8 space-y-6">
@@ -790,8 +796,8 @@ const Recommendations = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-white rounded-lg">
-                <div className="text-2xl font-bold text-red-600">71%</div>
-                <div className="text-sm text-muted-foreground">Risk Score</div>
+                <div className="text-2xl font-bold text-primary">Consider Screening</div>
+                <div className="text-sm text-muted-foreground">Screening priority</div>
               </div>
               <div className="text-center p-4 bg-white rounded-lg">
                 <div className="text-2xl font-bold text-orange-600">89%</div>
@@ -943,7 +949,11 @@ const Recommendations = () => {
                           </div>
                         </div>
                         <Badge variant="outline" className={getRiskLevelColor(insight.riskScore > 50 ? 'high' : insight.riskScore > 30 ? 'medium' : 'low')}>
-                          {insight.riskScore}% Risk
+                          {insight.riskScore > 50
+                            ? 'Prioritize Screening'
+                            : insight.riskScore > 30
+                              ? 'Consider Screening'
+                              : 'Routine'}
                         </Badge>
                       </div>
                       
@@ -1052,49 +1062,26 @@ const Recommendations = () => {
 
           {/* Right Column */}
           <div className="space-y-6">
-            {/* Overall Risk Score */}
+            {/* Screening Priority Summary */}
             <Card>
               <CardHeader>
-                <CardTitle>Overall Risk Score</CardTitle>
+                <CardTitle>Screening Priority</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Composite risk based on all assessments
+                  Composite priority based on the assessments completed for this patient
                 </p>
               </CardHeader>
-              <CardContent>
-                <div className="text-center">
-                  <div className="relative inline-flex items-center justify-center w-32 h-32 mb-4">
-                    <svg className="w-32 h-32 transform -rotate-90">
-                      <circle
-                        cx="64"
-                        cy="64"
-                        r="56"
-                        stroke="currentColor"
-                        strokeWidth="8"
-                        fill="none"
-                        className="text-muted"
-                      />
-                      <circle
-                        cx="64"
-                        cy="64"
-                        r="56"
-                        stroke="currentColor"
-                        strokeWidth="8"
-                        fill="none"
-                        strokeDasharray={`${71 * 3.52} 351.86`}
-                        className="text-primary"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">71%</div>
-                        <div className="text-xs text-muted-foreground">HIGH RISK</div>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Probability of developing Type 2 diabetes within 12 months without intervention
+              <CardContent className="space-y-3">
+                <div className="rounded-lg border bg-accent/50 p-4 text-center">
+                  <div className="text-xl font-bold text-primary">Consider Screening</div>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Based on the information available, this patient may benefit from prioritized
+                    clinical review for Type 2 diabetes screening.
                   </p>
                 </div>
+                <p className="text-xs text-muted-foreground">
+                  Priority levels are Routine, Consider Screening, and Prioritize Screening. They are
+                  not a probability of developing diabetes.
+                </p>
               </CardContent>
             </Card>
 
