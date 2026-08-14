@@ -5,24 +5,24 @@ import { useDemoRequest } from "@/components/public/DemoRequestContext";
 
 const STEPS = [
   {
-    title: "Bring information together",
-    body: "Clinical information, laboratory results, family history, examination findings, and relevant lifestyle/social context can be organized into one view.",
+    title: "Bring Information Together",
+    body: "Clinical data, laboratory results, history and contextual information are organized around the patient.",
   },
   {
-    title: "Evaluate available evidence",
-    body: "The system evaluates applicable screening information and identifies missing or inconsistent data.",
+    title: "Evaluate Available Evidence",
+    body: "The system evaluates applicable screening rules and checks whether information is sufficiently complete and internally consistent.",
   },
   {
-    title: "Explain the result",
-    body: "Clinicians should be able to see why attention is being suggested rather than receiving an unexplained score.",
+    title: "Explain Why the Patient Was Flagged",
+    body: "Clinicians can see the information contributing to the current status.",
   },
   {
-    title: "Support the conversation",
-    body: "Visit-assistance capabilities can help surface information worth clarifying during the encounter.",
+    title: "Support the Visit",
+    body: "The Visit Copilot can assist with questions, conversation context and structured information review where enabled.",
   },
   {
-    title: "Review the next action",
-    body: "Suggested actions remain subject to clinician judgment.",
+    title: "Review the Next Action",
+    body: "Suggestions remain reviewable. The clinician decides whether to accept, modify or dismiss an action.",
   },
 ];
 
@@ -30,21 +30,23 @@ function Content() {
   const { openDemoRequest } = useDemoRequest();
   return (
     <>
-      <PageHero title="From patient information to clinician action" />
+      <PageHero title="From Screening Signal to Clinician Decision" />
       <PageBody>
-        <div className="space-y-4">
+        <ol className="space-y-4">
           {STEPS.map((s, i) => (
-            <Card key={s.title} className="flex gap-4 p-6">
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
-                {i + 1}
-              </div>
-              <div>
-                <h2 className="text-lg font-semibold">{s.title}</h2>
-                <p className="mt-1 text-muted-foreground">{s.body}</p>
-              </div>
-            </Card>
+            <li key={s.title}>
+              <Card className="flex items-start gap-4 p-5">
+                <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
+                  {i + 1}
+                </span>
+                <div>
+                  <h2 className="font-semibold">{s.title}</h2>
+                  <p className="mt-1 text-muted-foreground">{s.body}</p>
+                </div>
+              </Card>
+            </li>
           ))}
-        </div>
+        </ol>
         <Button size="lg" onClick={openDemoRequest}>
           Request a Demo
         </Button>
