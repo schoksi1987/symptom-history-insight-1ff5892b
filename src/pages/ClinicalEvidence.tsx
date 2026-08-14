@@ -1,46 +1,85 @@
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { EvidenceSourceCard } from "@/components/clinical/EvidenceSourceCard";
-import { PrototypeBanner } from "@/components/clinical/PrototypeBanner";
-import { useClinicalDataSource } from "@/hooks/useClinicalDataSource";
-import type { EvidenceSource } from "@/types/clinical";
-import { AppHeader } from "@/components/AppHeader";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { PublicLayout, PageHero, PageBody, Section, Bullets } from "@/components/public/PublicLayout";
 
-const ClinicalEvidence = () => {
-  const clinical = useClinicalDataSource();
-  const [sources, setSources] = useState<EvidenceSource[]>([]);
+const LABELS = [
+  ["Established Clinical Criteria", "Recognized clinical thresholds or rules."],
+  [
+    "Validated Screening Instruments",
+    "Published screening methods designed to identify individuals who may need testing or review.",
+  ],
+  ["Research Evidence", "Peer-reviewed findings providing relevant clinical context."],
+  ["AI-Generated Assistance", "Generated or summarized material requiring human review."],
+];
 
-  useEffect(() => {
-    clinical.getEvidenceSources().then(setSources);
-  }, [clinical]);
+const SOURCES = [
+  { name: "CDC — National Diabetes Statistics Report", url: "https://www.cdc.gov/diabetes/php/data-research/index.html" },
+  { name: "NIH / NIDDK — Diabetes Prevention Program", url: "https://www.niddk.nih.gov/about-niddk/research-areas/diabetes/diabetes-prevention-program-dpp" },
+  { name: "American Diabetes Association — Standards of Care", url: "https://diabetesjournals.org/care" },
+  { name: "FDA — Digital Health and Clinical Decision Support Software", url: "https://www.fda.gov/medical-devices/software-medical-device-samd/clinical-decision-support-software" },
+];
 
+export default function ClinicalEvidence() {
   return (
-    <div className="min-h-screen bg-background">
-      <AppHeader />
-      <PrototypeBanner />
-      <div className="container mx-auto max-w-4xl px-6 py-8 space-y-6">
-        <header>
-          <h1 className="text-2xl font-semibold">Clinical Evidence</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Guideline and literature sources referenced by screening logic. Sources are listed with study type,
-            population and evidence strength so clinical reasoning can be verified.
+    <PublicLayout>
+      <PageHero
+        title="Evidence should be visible, not implied."
+        intro={
+          <p>
+            Predict Disease is being designed around established clinical guidance, validated
+            screening approaches, peer-reviewed evidence, and transparent logic. Predict Disease
+            itself has not undergone clinical validation.
           </p>
-        </header>
+        }
+      />
+      <PageBody>
+        <Section heading="How evidence is recorded">
+          <p>Evidence records in the platform support fields such as:</p>
+          <Bullets
+            items={[
+              "Source organization or publication",
+              "Title",
+              "Publication date",
+              "Study or guideline type",
+              "Population",
+              "Sample size where applicable",
+              "Relevant finding",
+              "Link to source",
+              "Relevance to the product feature",
+            ]}
+          />
+        </Section>
 
-        <div className="grid gap-4">
-          {sources.map((s) => <EvidenceSourceCard key={s.id} source={s} />)}
-        </div>
+        <Section heading="Evidence labels">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {LABELS.map(([title, body]) => (
+              <Card key={title} className="p-5">
+                <Badge variant="secondary" className="mb-2">
+                  {title}
+                </Badge>
+                <p className="text-sm text-muted-foreground">{body}</p>
+              </Card>
+            ))}
+          </div>
+        </Section>
 
-        <Card>
-          <CardHeader><CardTitle className="text-base">Interpretation notes</CardTitle></CardHeader>
-          <CardContent className="text-sm text-muted-foreground space-y-2">
-            <p>Evidence listed here supports screening prioritisation only. It does not establish a diagnosis.</p>
-            <p>Any laboratory interpretation, treatment change or referral requires physician judgement.</p>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+        <Section heading="Sources">
+          <ul className="space-y-2">
+            {SOURCES.map((s) => (
+              <li key={s.url}>
+                <a
+                  href={s.url}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="text-primary underline underline-offset-4"
+                >
+                  {s.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      </PageBody>
+    </PublicLayout>
   );
-};
-
-export default ClinicalEvidence;
+}

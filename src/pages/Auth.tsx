@@ -200,9 +200,11 @@ export default function Auth() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Heart className="h-8 w-8 text-blue-600 mr-2" />
-            <h1 className="text-2xl font-bold text-gray-900">HealthCare Portal</h1>
+            <Link to="/" className="text-2xl font-bold text-gray-900">
+              Predict Disease
+            </Link>
           </div>
-          <p className="text-gray-600">Sign in to access your patient dashboard</p>
+          <p className="text-gray-600">Sign in to your Predict Disease workspace.</p>
         </div>
 
         <Card>
@@ -213,7 +215,7 @@ export default function Auth() {
             <Tabs value={authMode} onValueChange={(value) => setAuthMode(value as "login" | "signup")}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                <TabsTrigger value="signup">Request Access</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login" className="space-y-4">

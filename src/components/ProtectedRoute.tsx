@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requireAdmin?: boolean;
+  /** Legacy/demo-only screens: available inside the Demo Workspace (or to admins). */
+  requireDemo?: boolean;
 }
 
 const ACCESS_MESSAGES: Record<string, string> = {
@@ -32,9 +34,13 @@ function AccessNotice({ message }: { message: string }) {
   );
 }
 
-export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  children,
+  requireAdmin = false,
+  requireDemo = false,
+}: ProtectedRouteProps) {
   const { user, loading, signOut } = useAuth();
-  const { loading: workspaceLoading, status, isAdmin } = useWorkspace();
+  const { loading: workspaceLoading, status, isAdmin, isDemo } = useWorkspace();
   const navigate = useNavigate();
   // Held in component state so the message survives clearing the session.
   const [accessMessage, setAccessMessage] = useState<string | null>(null);
@@ -67,6 +73,12 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
 
   if (requireAdmin && !isAdmin) {
     return <AccessNotice message="This area is restricted to administrators." />;
+  }
+
+  if (requireDemo && !isDemo && !isAdmin) {
+    return (
+      <AccessNotice message="This is a legacy demonstration screen and is only available inside the Demo Workspace." />
+    );
   }
 
   return <>{children}</>;
