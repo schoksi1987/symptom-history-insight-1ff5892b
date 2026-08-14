@@ -354,7 +354,7 @@ export default function Auth() {
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="email"
                       type="email"
@@ -369,7 +369,7 @@ export default function Auth() {
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
@@ -401,7 +401,7 @@ export default function Auth() {
                 <button
                   type="button"
                   onClick={handleForgotPassword}
-                  className="w-full text-sm text-blue-700 underline underline-offset-4"
+                  className="w-full text-sm text-primary underline underline-offset-4"
                 >
                   Forgot password?
                 </button>
@@ -410,8 +410,8 @@ export default function Auth() {
               <TabsContent value="signup" className="space-y-4">
                 {signupSubmitted ? (
                   <div className="space-y-4 py-4 text-center">
-                    <h2 className="text-lg font-semibold text-gray-900">Request submitted</h2>
-                    <p className="text-sm text-gray-600">
+                    <h2 className="text-lg font-semibold text-foreground">Request submitted</h2>
+                    <p className="text-sm text-muted-foreground">
                       If the details you entered can be used to create an account, we have emailed a
                       verification link. Verify your email address, then wait for an administrator to
                       approve access before signing in.
@@ -437,7 +437,7 @@ export default function Auth() {
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
                     <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="firstName"
                         placeholder="First name"
@@ -462,7 +462,7 @@ export default function Auth() {
                 <div className="space-y-2">
                   <Label htmlFor="signupEmail">Email</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="signupEmail"
                       type="email"
@@ -477,7 +477,7 @@ export default function Auth() {
                 <div className="space-y-2">
                   <Label htmlFor="signupPassword">Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="signupPassword"
                       type={showPassword ? "text" : "password"}
@@ -517,7 +517,7 @@ export default function Auth() {
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     Used for review only. It does not grant any permissions in the application.
                   </p>
                 </div>
@@ -577,7 +577,7 @@ export default function Auth() {
         </Card>
         )}
 
-        <div className="text-center mt-6 space-y-2 text-sm text-gray-600">
+        <div className="text-center mt-6 space-y-2 text-sm text-muted-foreground">
           <p>Predict Disease by symptom.ai — clinical decision support, not a diagnosis.</p>
           <p className="space-x-3">
             <Link to="/privacy" className="underline underline-offset-4">Privacy Policy</Link>
