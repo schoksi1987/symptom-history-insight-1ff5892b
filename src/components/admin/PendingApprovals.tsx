@@ -231,14 +231,24 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
           >
             Approve
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            disabled={busy === r.id || bulkBusy || r.status === "rejected"}
-            onClick={() => setRejecting([r])}
+          <span
+            title={
+              adminIds.has(r.user_id)
+                ? "Administrators cannot be rejected — the system must always keep an admin."
+                : undefined
+            }
+            className="inline-block"
           >
-            Reject
-          </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={busy === r.id || bulkBusy || r.status === "rejected" || adminIds.has(r.user_id)}
+              onClick={() => setRejecting([r])}
+            >
+              Reject
+            </Button>
+          </span>
+
         </TableCell>
       </TableRow>
     ));
