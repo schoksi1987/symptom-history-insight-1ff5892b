@@ -259,21 +259,86 @@ export default function Auth() {
     toast.success("If an account exists for that email, a reset link is on its way.");
   };
 
+  const handleUpdatePassword = async () => {
+    const parsed = passwordField.safeParse(newPassword);
+    if (!parsed.success) {
+      toast.error(parsed.error.errors[0].message);
+      return;
+    }
+    setIsLoading(true);
+    const { error } = await supabase.auth.updateUser({ password: parsed.data });
+    setIsLoading(false);
+    if (error) {
+      toast.error("We could not update your password. Request a new reset link and try again.");
+      return;
+    }
+    toast.success("Your password has been updated. Please sign in.");
+    setNewPassword("");
+    setRecoveryMode(false);
+    window.location.hash = "";
+    await supabase.auth.signOut();
+    setAuthMode("login");
+  };
+
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-accent via-secondary to-background p-4">
+      <Seo
+        title="Sign In or Request Access"
+        description="Sign in to the Predict Disease by symptom.ai clinical workspace, or request access for your care team."
+        path="/auth"
+        noIndex
+      />
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Heart className="h-8 w-8 text-blue-600 mr-2" />
-            <Link to="/" className="text-2xl font-bold text-gray-900">
-              Predict Disease
+        <div className="mb-8 text-center">
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <Activity className="h-7 w-7 text-primary" aria-hidden="true" />
+            <Link to="/" className="flex items-baseline gap-1.5">
+              <span className="text-2xl font-bold text-foreground">Predict Disease</span>
+              <span className="text-sm text-muted-foreground">by symptom.ai</span>
             </Link>
           </div>
-          <p className="text-gray-600">Sign in to your Predict Disease workspace.</p>
+          <p className="text-muted-foreground">
+            Type 2 diabetes screening decision support for primary-care teams.
+          </p>
         </div>
 
+        {recoveryMode ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-center">Choose a new password</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="newPassword">New password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  <Input
+                    id="newPassword"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="pl-10 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute right-3 top-3 text-muted-foreground"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                <PasswordStrength value={newPassword} />
+              </div>
+              <Button onClick={handleUpdatePassword} disabled={isLoading} className="w-full">
+                {isLoading ? "Updating..." : "Update password"}
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
         <Card>
           <CardHeader>
             <CardTitle className="text-center">Authentication</CardTitle>
@@ -307,12 +372,21 @@ export default function Auth() {
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       id="password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
+                      autoComplete="current-password"
                       value={formData.password}
                       onChange={(e) => handleInputChange("password", e.target.value)}
-                      className="pl-10"
+                      className="pl-10 pr-10"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      className="absolute right-3 top-3 text-muted-foreground"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
                   </div>
                 </div>
 
@@ -338,8 +412,9 @@ export default function Auth() {
                   <div className="space-y-4 py-4 text-center">
                     <h2 className="text-lg font-semibold text-gray-900">Request submitted</h2>
                     <p className="text-sm text-gray-600">
-                      Your request was sent for approval. You will be able to sign in once an
-                      administrator approves your account.
+                      If the details you entered can be used to create an account, we have emailed a
+                      verification link. Verify your email address, then wait for an administrator to
+                      approve access before signing in.
                     </p>
                     <div className="flex flex-col gap-2 pt-2">
                       <Button onClick={() => navigate("/")}>Back to home</Button>
@@ -405,13 +480,23 @@ export default function Auth() {
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       id="signupPassword"
-                      type="password"
-                      placeholder="Create a password (min 6 characters)"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Create a password (at least 12 characters)"
+                      autoComplete="new-password"
                       value={formData.password}
                       onChange={(e) => handleInputChange("password", e.target.value)}
-                      className="pl-10"
+                      className="pl-10 pr-10"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      className="absolute right-3 top-3 text-muted-foreground"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
                   </div>
+                  <PasswordStrength value={formData.password} />
                 </div>
 
                 <div className="space-y-2">
@@ -479,7 +564,8 @@ export default function Auth() {
 
                 <Alert>
                   <AlertDescription className="text-sm">
-                    New accounts require administrator approval before sign-in is possible.
+                    Email verification is required, and new accounts also require administrator
+                    approval before sign-in is possible.
                   </AlertDescription>
                 </Alert>
                   </>
@@ -489,11 +575,12 @@ export default function Auth() {
             </Tabs>
           </CardContent>
         </Card>
+        )}
 
         <div className="text-center mt-6 space-y-2 text-sm text-gray-600">
-          <p>Predict Disease — clinical decision-support prototype.</p>
+          <p>Predict Disease by symptom.ai — clinical decision support, not a diagnosis.</p>
           <p className="space-x-3">
-            <Link to="/privacy" className="underline underline-offset-4">Privacy</Link>
+            <Link to="/privacy" className="underline underline-offset-4">Privacy Policy</Link>
             <Link to="/terms" className="underline underline-offset-4">Terms of Use</Link>
             <Link to="/" className="underline underline-offset-4">Back to home</Link>
           </p>
