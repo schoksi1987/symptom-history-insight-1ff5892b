@@ -3,34 +3,51 @@ import { PublicLayout, PageHero, PageBody, Section } from "@/components/public/P
 export default function ClinicalApproach() {
   return (
     <PublicLayout>
-      <PageHero title="Clinical intelligence should be explainable." />
+      <PageHero
+        title="Clinical Intelligence Should Be Explainable"
+        intro={
+          <p>
+            Predict Disease separates clinical rules, screening logic and AI assistance rather than
+            treating every function as a black-box AI prediction.
+          </p>
+        }
+      />
       <PageBody>
-        <Section heading="Established clinical criteria">
+        <Section heading="Established Clinical Criteria">
           <p>
-            Where established criteria exist, use explicit logic and thresholds rather than
-            generative AI to invent classifications.
+            Where recognized clinical thresholds exist, use explicit clinical logic rather than
+            asking a generative model to invent a classification.
           </p>
         </Section>
-        <Section heading="Screening tools">
+        <Section heading="Screening Priority">
           <p>
-            Validated screening instruments may be used to identify patients who warrant additional
-            evaluation. Screening does not equal diagnosis.
+            Risk factors and validated screening approaches can identify patients who may benefit
+            from additional evaluation. Screening priority is not a diagnosis.
           </p>
         </Section>
-        <Section heading="AI assistance">
+        <Section heading="AI Assistance">
           <p>
-            AI can assist with organizing information, transcription, summarization, extraction, and
-            question suggestions.
+            Generative AI may help summarize information, organize conversations, extract relevant
+            context and suggest questions. AI-generated content requires clinician review.
           </p>
-          <p>AI-generated information must remain clearly identifiable and reviewable.</p>
         </Section>
-        <Section heading="Data quality">
-          <p>Missing, stale, conflicting, or uncertain information should be visible.</p>
-        </Section>
-        <Section heading="Human decision-making">
+        <Section heading="Data Quality">
           <p>
-            The clinician remains responsible for interpreting the patient's circumstances and making
-            clinical decisions.
+            Missing, outdated or conflicting information can materially affect interpretation.
+            Predict Disease should surface uncertainty rather than hiding it.
+          </p>
+        </Section>
+        <Section heading="Professional Judgment">
+          <p>
+            The clinician remains responsible for understanding the complete patient context and
+            making clinical decisions.
+          </p>
+        </Section>
+        <Section heading="Current Product Status">
+          <p>
+            Predict Disease is currently a clinical decision-support prototype. Clinical
+            functionality must undergo appropriate review and validation before production
+            deployment.
           </p>
         </Section>
       </PageBody>

@@ -3,26 +3,26 @@ import { PublicLayout, PageHero, PageBody, Section } from "@/components/public/P
 export default function About() {
   return (
     <PublicLayout>
-      <PageHero title="Helping primary care act earlier." />
+      <PageHero title="Helping Primary Care Act Earlier" />
       <PageBody>
         <Section>
           <p>
-            Predict Disease began with a simple question: can we help clinicians recognize
-            diabetes-related signals earlier by making the information around the patient easier to
-            understand and act on?
+            Predict Disease started with a simple question: can we help clinicians recognize diabetes
+            risk earlier by making the information around the patient easier to understand and act
+            on?
           </p>
           <p>
-            Healthcare organizations already collect enormous amounts of information. The challenge
-            is often connecting the relevant information at the right time and translating it into a
+            Healthcare organizations already hold large amounts of patient information. The challenge
+            is often connecting the relevant signals at the right time and translating them into a
             reviewable clinical next step.
           </p>
           <p>
             Predict Disease is being developed as a diabetes screening and primary-care intelligence
-            platform combining structured clinical reasoning with carefully governed AI assistance.
+            platform combining transparent clinical logic with carefully governed AI assistance.
           </p>
           <p>
-            Our goal is to help clinicians spend less time searching for signals and more time
-            understanding the patient in front of them.
+            Our goal is to help care teams spend less time searching for signals and more time
+            understanding the patient who may need attention.
           </p>
         </Section>
       </PageBody>

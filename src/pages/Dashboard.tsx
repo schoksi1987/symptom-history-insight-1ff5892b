@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,8 +24,17 @@ import { AppHeader } from "@/components/AppHeader";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 
+const DEMO_PATIENTS = [
+  { id: "A-2024-001", name: "Pooja Shah" },
+  { id: "A-2024-002", name: "John Doe" },
+  { id: "A-2024-003", name: "Emily Chen" },
+  { id: "A-2024-004", name: "Robert Smith" },
+];
+
 const Dashboard = () => {
   const { isDemo, isAdmin } = useWorkspace();
+  const navigate = useNavigate();
+  const [selectedPatient, setSelectedPatient] = useState<string>("");
 
   if (!isDemo) {
     return (
@@ -212,18 +223,24 @@ const Dashboard = () => {
               <div className="flex-1">
                 <h3 className="font-semibold text-lg mb-2">Patient Search</h3>
                 <div className="flex items-center space-x-4">
-                  <Select>
+                  <Select value={selectedPatient} onValueChange={setSelectedPatient}>
                     <SelectTrigger className="w-64">
-                      <SelectValue placeholder="Select..." />
+                      <SelectValue placeholder="Select a patient..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="john-doe">John Doe</SelectItem>
-                      <SelectItem value="emily-chen">Emily Chen</SelectItem>
-                      <SelectItem value="robert-smith">Robert Smith</SelectItem>
-                      <SelectItem value="pooja-shah">Pooja Shah</SelectItem>
+                      {DEMO_PATIENTS.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>
+                          {p.name} ({p.id})
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
-                  <Button onClick={() => window.location.href = '/patient/22'}>Search</Button>
+                  <Button
+                    disabled={!selectedPatient}
+                    onClick={() => navigate(`/patient/${selectedPatient}`)}
+                  >
+                    Open Patient
+                  </Button>
                   <Button variant="outline">
                     <UserPlus className="h-4 w-4 mr-2" />
                     Add New Patient

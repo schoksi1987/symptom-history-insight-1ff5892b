@@ -32,6 +32,7 @@ import {
   Loader2
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { patientUserIdFromRoute } from "@/lib/patientContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ClinicalStatusBanner } from "@/components/clinical/ClinicalStatusBanner";
@@ -88,14 +89,17 @@ const Recommendations = () => {
 
         setLoading(true);
 
-        // Fetch existing analysis
-        const { data: existingAnalysis } = await supabase
+        // Existing analysis is keyed by the patient under review, not the clinician.
+        const patientUserId = patientUserIdFromRoute(id);
+        const { data: existingAnalysis } = patientUserId
+          ? await supabase
           .from('patient_similarity_analysis')
           .select('*')
-          .eq('patient_id', user.id)
+          .eq('patient_id', patientUserId)
           .order('created_at', { ascending: false })
           .limit(1)
-          .maybeSingle();
+          .maybeSingle()
+          : { data: null };
 
         if (existingAnalysis) {
           setAnalysis(existingAnalysis);
@@ -120,7 +124,7 @@ const Recommendations = () => {
     };
 
     fetchData();
-  }, []);
+  }, [id]);
 
   const generateInsights = async () => {
     try {
@@ -134,10 +138,20 @@ const Recommendations = () => {
         return;
       }
 
+      const patientUserId = patientUserIdFromRoute(id);
+      if (!patientUserId) {
+        toast({
+          title: "Demonstration patient",
+          description: "Insights can only be generated for real patient records.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       setLoading(true);
 
       const { data, error } = await supabase.functions.invoke('generate-patient-insights', {
-        body: { patientId: user.id }
+        body: { patientId: patientUserId }
       });
 
       if (error) throw error;

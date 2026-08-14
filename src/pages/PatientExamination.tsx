@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { ArrowLeft, MapPin, AlertTriangle, TrendingUp, Users, Edit, Trash2, Plus, Loader2, Save } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { patientUserIdFromRoute } from "@/lib/patientContext";
 import { toast } from "sonner";
 
 const PatientExamination = () => {
@@ -29,10 +30,15 @@ const PatientExamination = () => {
         toast.error("You must be signed in to save an examination.");
         return;
       }
+      const patientUserId = patientUserIdFromRoute(id);
+      if (!patientUserId) {
+        toast.error("This is a demonstration patient. Examinations can only be saved for real patient records.");
+        return;
+      }
       const height_cm = 157;
       const weight_kg = parseFloat(vitals.weight) || null;
       const payload: any = {
-        patient_user_id: user.id,
+        patient_user_id: patientUserId,
         examined_by: user.id,
         examined_at: new Date().toISOString(),
         height_cm,
@@ -58,7 +64,7 @@ const PatientExamination = () => {
       const { error } = await (supabase as any).from("examinations").insert(payload);
       if (error) throw error;
       // Trigger risk recompute
-      await supabase.functions.invoke("compute-risk-score", { body: { patientId: user.id } });
+      await supabase.functions.invoke("compute-risk-score", { body: { patientId: patientUserId } });
       toast.success("Examination saved. Risk score recomputed.");
     } catch (e: any) {
       toast.error(e.message ?? "Failed to save examination");
