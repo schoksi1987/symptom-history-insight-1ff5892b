@@ -2,7 +2,13 @@ import { PublicLayout, PageHero, PageBody, Section } from "@/components/public/P
 
 export default function Terms() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "Terms of Use",
+        description: "Terms of use for Predict Disease by symptom.ai clinical decision-support software.",
+        path: "/terms",
+      }}
+    >
       <PageHero
         title="Terms of Use"
         intro={

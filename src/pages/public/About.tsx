@@ -2,7 +2,13 @@ import { PublicLayout, PageHero, PageBody, Section } from "@/components/public/P
 
 export default function About() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "About",
+        description: "About Predict Disease by symptom.ai, a clinical decision-support product focused on Type 2 diabetes screening support.",
+        path: "/about",
+      }}
+    >
       <PageHero title="Helping Primary Care Act Earlier" />
       <PageBody>
         <Section>

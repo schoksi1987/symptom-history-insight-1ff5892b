@@ -51,7 +51,13 @@ function Content() {
 
 export default function Partnerships() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "Partnerships",
+        description: "Partnership and evaluation opportunities with Predict Disease by symptom.ai.",
+        path: "/partnerships",
+      }}
+    >
       <Content />
     </PublicLayout>
   );

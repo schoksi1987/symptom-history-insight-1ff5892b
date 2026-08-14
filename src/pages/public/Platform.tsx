@@ -111,7 +111,13 @@ function Content() {
 
 export default function Platform() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "Platform Overview",
+        description: "Explore the Predict Disease by symptom.ai workspace: patient risk review, visit copilot, lifestyle and social context, and clinical decision summaries.",
+        path: "/platform",
+      }}
+    >
       <Content />
     </PublicLayout>
   );

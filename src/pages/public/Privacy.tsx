@@ -2,7 +2,13 @@ import { PublicLayout, PageHero, PageBody, Section, Bullets } from "@/components
 
 export default function Privacy() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "Privacy Policy",
+        description: "How Predict Disease by symptom.ai handles account information, demo data, and clinical information.",
+        path: "/privacy",
+      }}
+    >
       <PageHero
         title="Privacy"
         intro={

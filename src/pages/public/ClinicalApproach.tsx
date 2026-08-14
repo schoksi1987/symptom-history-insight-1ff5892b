@@ -2,7 +2,13 @@ import { PublicLayout, PageHero, PageBody, Section } from "@/components/public/P
 
 export default function ClinicalApproach() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "Clinical Approach",
+        description: "How Predict Disease by symptom.ai applies recognized diabetes screening criteria, explainable factors, and data-quality awareness.",
+        path: "/clinical-approach",
+      }}
+    >
       <PageHero
         title="Clinical Intelligence Should Be Explainable"
         intro={
