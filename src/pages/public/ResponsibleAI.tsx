@@ -21,7 +21,13 @@ const PRINCIPLES = [
 
 export default function ResponsibleAI() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "Responsible AI",
+        description: "How Predict Disease by symptom.ai approaches transparency, data quality, and clinician oversight of AI-assisted features.",
+        path: "/responsible-ai",
+      }}
+    >
       <PageHero title="Responsible AI at Predict Disease" />
       <PageBody>
         {PRINCIPLES.map(([heading, body]) => (

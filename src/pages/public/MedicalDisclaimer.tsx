@@ -2,7 +2,13 @@ import { PublicLayout, PageHero, PageBody, Section } from "@/components/public/P
 
 export default function MedicalDisclaimer() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "Medical Disclaimer",
+        description: "Predict Disease by symptom.ai provides clinical decision support and does not diagnose Type 2 diabetes or replace professional medical judgment.",
+        path: "/medical-disclaimer",
+      }}
+    >
       <PageHero title="Medical Disclaimer" />
       <PageBody>
         <Section>

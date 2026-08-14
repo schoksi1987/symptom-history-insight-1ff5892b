@@ -14,7 +14,13 @@ const SECTIONS: [string, string][] = [
 
 export default function Security() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "Security",
+        description: "Security practices and considerations for evaluating Predict Disease by symptom.ai.",
+        path: "/security",
+      }}
+    >
       <PageHero
         title="Security by design"
         intro={<p>Our approach to protecting access and information. We do not claim security certifications that we have not obtained.</p>}

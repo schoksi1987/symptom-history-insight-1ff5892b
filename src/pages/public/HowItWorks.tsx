@@ -57,7 +57,13 @@ function Content() {
 
 export default function HowItWorks() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "How It Works",
+        description: "See the four-step Predict Disease workflow: review patient information, complete the clinical and SDOH assessment, evaluate screening priority, and review next steps.",
+        path: "/how-it-works",
+      }}
+    >
       <Content />
     </PublicLayout>
   );

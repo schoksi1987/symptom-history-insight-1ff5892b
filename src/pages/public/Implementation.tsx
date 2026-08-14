@@ -2,7 +2,13 @@ import { PublicLayout, PageHero, PageBody, Section, Bullets } from "@/components
 
 export default function Implementation() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "Implementation Steps",
+        description: "A step-by-step approach to evaluating Predict Disease by symptom.ai in a primary-care workflow.",
+        path: "/implementation",
+      }}
+    >
       <PageHero
         title="Implementing Predict Disease"
         intro={

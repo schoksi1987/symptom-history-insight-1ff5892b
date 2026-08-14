@@ -65,7 +65,13 @@ const FDA_PRINCIPLES = [
 
 export default function ClinicalEvidence() {
   return (
-    <PublicLayout>
+    <PublicLayout
+      seo={{
+        title: "Clinical Evidence",
+        description: "Authoritative sources behind the Type 2 diabetes screening guidance surfaced by Predict Disease by symptom.ai.",
+        path: "/clinical-evidence",
+      }}
+    >
       <PageHero
         title="Evidence should be visible, not implied."
         intro={

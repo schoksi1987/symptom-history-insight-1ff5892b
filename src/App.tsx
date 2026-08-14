@@ -24,6 +24,7 @@ import Platform from "./pages/public/Platform";
 import HowItWorks from "./pages/public/HowItWorks";
 import ClinicalApproach from "./pages/public/ClinicalApproach";
 import Implementation from "./pages/public/Implementation";
+import ImplementationGuide from "./pages/public/ImplementationGuide";
 import Support from "./pages/public/Support";
 import About from "./pages/public/About";
 import Partnerships from "./pages/public/Partnerships";
@@ -59,6 +60,7 @@ const App = () => (
               <Route path="/clinical-approach" element={<ClinicalApproach />} />
               <Route path="/clinical-evidence" element={<ClinicalEvidence />} />
               <Route path="/implementation" element={<Implementation />} />
+              <Route path="/implementation-guide" element={<ImplementationGuide />} />
               <Route path="/support" element={<Support />} />
               <Route path="/about" element={<About />} />
               <Route path="/partnerships" element={<Partnerships />} />
