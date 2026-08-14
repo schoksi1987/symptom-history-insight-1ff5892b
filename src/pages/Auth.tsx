@@ -13,12 +13,57 @@ import { supabase } from "@/integrations/supabase/client";
 import { submitDemoRequest } from "@/services/demoRequests";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Heart, Lock, Mail, User } from "lucide-react";
+import { Activity, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { Seo } from "@/components/Seo";
+
+const MIN_PASSWORD_LENGTH = 12;
+
+const passwordField = z
+  .string()
+  .min(MIN_PASSWORD_LENGTH, `Password must be at least ${MIN_PASSWORD_LENGTH} characters`)
+  .max(128, "Password must be under 128 characters")
+  .refine((v) => /[a-z]/.test(v) && /[A-Z]/.test(v), {
+    message: "Password must include both uppercase and lowercase letters",
+  })
+  .refine((v) => /[0-9]/.test(v), { message: "Password must include at least one number" });
+
+function scorePassword(v: string) {
+  let score = 0;
+  if (v.length >= MIN_PASSWORD_LENGTH) score++;
+  if (v.length >= 16) score++;
+  if (/[a-z]/.test(v) && /[A-Z]/.test(v)) score++;
+  if (/[0-9]/.test(v)) score++;
+  if (/[^A-Za-z0-9]/.test(v)) score++;
+  return Math.min(score, 4);
+}
+
+const STRENGTH_LABELS = ["Very weak", "Weak", "Fair", "Strong", "Very strong"];
+
+function PasswordStrength({ value }: { value: string }) {
+  if (!value) return null;
+  const score = scorePassword(value);
+  return (
+    <div aria-live="polite">
+      <div className="mt-1 flex gap-1" aria-hidden="true">
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className={`h-1.5 flex-1 rounded-full ${i < score ? "bg-primary" : "bg-muted"}`}
+          />
+        ))}
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Password strength: {STRENGTH_LABELS[score]} — minimum {MIN_PASSWORD_LENGTH} characters with
+        upper and lower case letters and a number.
+      </p>
+    </div>
+  );
+}
 
 
 const authSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: passwordField,
   firstName: z.string().min(1, "First name is required").optional(),
   lastName: z.string().min(1, "Last name is required").optional(),
 });
@@ -44,10 +89,15 @@ export default function Auth() {
   });
   const [demoRequested, setDemoRequested] = useState(false);
   const [signupSubmitted, setSignupSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [recoveryMode, setRecoveryMode] = useState(
+    typeof window !== "undefined" && window.location.hash.includes("type=recovery")
+  );
+  const [newPassword, setNewPassword] = useState("");
 
 
   useEffect(() => {
-    if (authMode === "signup") return;
+    if (authMode === "signup" || recoveryMode) return;
     // Check if user is already logged in
 
     const checkAuth = async () => {
@@ -69,7 +119,7 @@ export default function Auth() {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, nextPath, postAuthTarget, authMode]);
+  }, [navigate, nextPath, postAuthTarget, authMode, recoveryMode]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -107,12 +157,12 @@ export default function Auth() {
       });
 
       if (error) {
+        // Never reveal whether an address is already registered.
         if (error.message.includes("User already registered")) {
-          toast.error("An account with this email already exists. Please sign in instead.");
-          setAuthMode("login");
-        } else {
-          toast.error(error.message);
+          setSignupSubmitted(true);
+          return;
         }
+        toast.error("We could not process your request. Please check your details and try again.");
         return;
       }
 
@@ -174,10 +224,10 @@ export default function Auth() {
       });
 
       if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          toast.error("Invalid email or password. Please check your credentials.");
+        if (error.message.toLowerCase().includes("email not confirmed")) {
+          toast.error("Please verify your email address using the link we sent before signing in.");
         } else {
-          toast.error(error.message);
+          toast.error("Email or password is incorrect.");
         }
         return;
       }
@@ -202,8 +252,8 @@ export default function Auth() {
     const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
       redirectTo: `${window.location.origin}/auth`,
     });
-    if (error) {
-      toast.error(error.message);
+    if (error && !error.message.toLowerCase().includes("user")) {
+      toast.error("We could not send a reset link right now. Please try again shortly.");
       return;
     }
     toast.success("If an account exists for that email, a reset link is on its way.");
