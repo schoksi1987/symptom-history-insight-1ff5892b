@@ -288,11 +288,12 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
               <Button
                 size="sm"
                 variant="outline"
-                disabled={selectedRows.length === 0 || bulkBusy}
-                onClick={() => setRejecting(selectedRows)}
+                disabled={selectedRows.filter((r) => !adminIds.has(r.user_id)).length === 0 || bulkBusy}
+                onClick={() => setRejecting(selectedRows.filter((r) => !adminIds.has(r.user_id)))}
               >
                 Reject selected
               </Button>
+
             </div>
           </div>
         )}
