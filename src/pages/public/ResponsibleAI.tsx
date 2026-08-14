@@ -1,24 +1,30 @@
 import { PublicLayout, PageHero, PageBody, Section } from "@/components/public/PublicLayout";
 
-const SECTIONS = [
-  ["Transparency", "Clearly distinguish established clinical logic from AI-generated content."],
-  ["Explainability", "Important assessments should expose their contributing information."],
-  ["Human Oversight", "AI-generated suggestions require clinician review."],
-  ["Uncertainty", "Missing and conflicting information should be surfaced."],
+const PRINCIPLES = [
+  [
+    "Transparency",
+    "Users should be able to distinguish established clinical criteria from AI-generated content.",
+  ],
+  ["Explainability", "Important assessments should show information contributing to the result."],
+  ["Human Oversight", "AI suggestions require professional review."],
+  ["Uncertainty", "Missing, outdated and conflicting information should be surfaced."],
   [
     "Data Separation",
-    "Synthetic demonstration information remains separate from real patient information.",
+    "Synthetic demonstration data remains separate from real patient information.",
   ],
-  ["Traceability", "Important clinical and AI-assisted actions should be auditable."],
-  ["Evaluation", "Clinical and AI functions should be tested before expanded use."],
+  ["Traceability", "Important AI-assisted and clinician actions should be auditable."],
+  [
+    "Evaluation",
+    "Clinical and AI functionality should be tested and evaluated before expanded clinical use.",
+  ],
 ];
 
 export default function ResponsibleAI() {
   return (
     <PublicLayout>
-      <PageHero title="AI should assist clinical reasoning, not hide it." />
+      <PageHero title="Responsible AI at Predict Disease" />
       <PageBody>
-        {SECTIONS.map(([heading, body]) => (
+        {PRINCIPLES.map(([heading, body]) => (
           <Section key={heading} heading={heading}>
             <p>{body}</p>
           </Section>

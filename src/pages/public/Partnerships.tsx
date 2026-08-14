@@ -6,28 +6,37 @@ function Content() {
   const { openDemoRequest } = useDemoRequest();
   return (
     <>
-      <PageHero title="Build better diabetes screening workflows with us." />
+      <PageHero
+        title="Build Better Diabetes Screening Workflows With Us"
+        intro={
+          <p>
+            Predict Disease is interested in collaborating with organizations focused on earlier
+            diabetes identification, prevention and primary-care workflow improvement.
+          </p>
+        }
+      />
       <PageBody>
         <Section heading="Potential collaborators">
           <Bullets
             items={[
-              "Primary-care practices",
+              "Primary care practices",
               "Medical groups",
               "Health systems",
+              "Payers",
               "Diabetes prevention organizations",
               "Academic researchers",
               "Clinical informatics teams",
-              "Digital-health organizations",
             ]}
           />
         </Section>
-        <Section heading="Potential collaboration">
+        <Section heading="Potential collaboration areas">
           <Bullets
             items={[
               "Workflow pilots",
-              "Product evaluation",
-              "Research collaboration",
+              "Clinical evaluation",
+              "Research",
               "Data integration",
+              "Usability testing",
               "Outcome measurement",
             ]}
           />
