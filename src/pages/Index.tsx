@@ -1,122 +1,158 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   ArrowRight,
   ClipboardCheck,
   Eye,
+  HelpCircle,
   Layers,
   MessageSquare,
   Search,
-  ShieldCheck,
   Stethoscope,
   Users,
 } from "lucide-react";
 import { PublicLayout } from "@/components/public/PublicLayout";
 import { useDemoRequest } from "@/components/public/DemoRequestContext";
+import { useAuth } from "@/hooks/useAuth";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { SOURCES } from "@/content/sources";
 
 const CHALLENGE = [
-  { stat: "38M+", label: "People in the United States living with diabetes.", source: "CDC" },
-  { stat: "98M", label: "U.S. adults with prediabetes.", source: "CDC" },
   {
-    stat: "$412.9B",
-    label: "Estimated annual U.S. economic cost of diagnosed diabetes in 2022.",
-    source: "American Diabetes Association",
+    stat: "38M+",
+    label: "People in the United States living with diabetes.",
+    source: "CDC",
+    url: SOURCES.cdc,
+  },
+  {
+    stat: "98M",
+    label: "U.S. adults estimated to have prediabetes.",
+    source: "CDC",
+    url: SOURCES.cdc,
+  },
+  {
+    stat: "$413B",
+    label:
+      "Approximate annual U.S. medical costs and lost work and wages associated with diagnosed diabetes.",
+    source: "CDC",
+    url: SOURCES.cdc,
   },
   {
     stat: "58%",
     label:
-      "Reduction in development of type 2 diabetes observed in the NIH Diabetes Prevention Program intensive lifestyle intervention versus placebo.",
-    source: "NIH/NIDDK Diabetes Prevention Program",
-  },
-];
-
-const STAGES = [
-  { icon: Search, title: "Screen", body: "Bring together available clinical and contextual information." },
-  { icon: Layers, title: "Understand", body: "Identify relevant signals, missing information, and potential conflicts." },
-  { icon: Eye, title: "Review", body: "Show why the patient was flagged and what information contributed." },
-  { icon: ClipboardCheck, title: "Act", body: "Present potential next actions for clinician review." },
-];
-
-const CAPABILITIES = [
-  {
-    icon: Stethoscope,
-    title: "Patient Risk Review",
-    body: "Understand the information contributing to a patient's current screening or clinical-review status.",
-  },
-  {
-    icon: MessageSquare,
-    title: "Visit Copilot",
-    body: "Support the patient conversation with transcription, extracted information, and focused follow-up suggestions requiring clinician review.",
-  },
-  {
-    icon: Users,
-    title: "Lifestyle & Social Context",
-    body: "Capture relevant lifestyle, health-related social needs, and emotional/social context alongside clinical information.",
-  },
-  {
-    icon: ClipboardCheck,
-    title: "Clinical Decision Summary",
-    body: "Bring evidence, missing information, contextual factors, and suggested next actions into one reviewable workspace.",
-  },
-  {
-    icon: Layers,
-    title: "Population Prioritization",
-    body: "Help care teams identify which patients may require review, follow-up, or additional screening.",
+      "Reduction in progression to type 2 diabetes demonstrated in the Diabetes Prevention Program structured lifestyle intervention compared with placebo.",
+    source: "NIH / NIDDK Diabetes Prevention Program",
+    url: SOURCES.dpp,
   },
 ];
 
 const REASONING = [
   {
     title: "Evidence-informed screening",
-    body: "Uses recognized screening approaches and established clinical thresholds rather than unexplained AI-generated probabilities.",
+    body: "Established diabetes screening criteria and recognized clinical thresholds are used where applicable rather than unexplained AI-generated scores.",
   },
   {
     title: "Explainable factors",
-    body: "Shows the clinical, family, lifestyle, and social information contributing to an assessment.",
+    body: "Clinicians can see the clinical, family, lifestyle and social information contributing to an assessment.",
+  },
+  {
+    title: "Data quality awareness",
+    body: "Missing, stale or conflicting information should be surfaced rather than hidden.",
   },
   {
     title: "Clinician in control",
-    body: "Suggested actions are presented for professional review and can be accepted, modified, or dismissed.",
+    body: "Suggested actions require professional review and may be accepted, modified or dismissed.",
+  },
+];
+
+const WORKFLOW = [
+  {
+    icon: Search,
+    title: "Identify",
+    body: "Surface patients who may require diabetes screening, clinical review or follow-up.",
   },
   {
-    title: "Data-quality awareness",
-    body: "Surfaces missing, outdated, or conflicting information instead of hiding uncertainty.",
+    icon: Layers,
+    title: "Understand",
+    body: "Bring relevant clinical information, laboratory results, family history and contextual factors together.",
+  },
+  {
+    icon: HelpCircle,
+    title: "Clarify",
+    body: "Highlight missing, stale or conflicting information and support questions that may be useful during the visit.",
+  },
+  {
+    icon: Eye,
+    title: "Review",
+    body: "Present the evidence and reasoning contributing to the patient's current status.",
+  },
+  {
+    icon: ClipboardCheck,
+    title: "Act",
+    body: "Allow clinicians to review, modify or dismiss suggested next actions.",
   },
 ];
 
-const STEPS = [
-  "Bring relevant patient information together.",
-  "Evaluate available screening evidence and data quality.",
-  "Explain why attention may be required.",
-  "Support the clinician-patient conversation.",
-  "Present next actions for clinician review.",
-];
-
-const TRUST = [
-  "Transparent clinical logic",
-  "Evidence sources",
-  "Data-quality awareness",
-  "Human review",
-  "AI-content identification",
-  "Auditability",
+const CAPABILITIES = [
+  {
+    icon: Stethoscope,
+    title: "Patient Risk Review",
+    body: "Identify patients who may require screening or additional clinical review and understand the reason they were surfaced.",
+    to: "/platform#risk-review",
+  },
+  {
+    icon: MessageSquare,
+    title: "Visit Copilot",
+    body: "Support the clinical conversation with consent-based transcription, information extraction, relevant follow-up questions and physician review.",
+    to: "/platform#visit-copilot",
+    prototype: true,
+  },
+  {
+    icon: Users,
+    title: "Lifestyle & Social Context",
+    body: "Capture relevant lifestyle, health-related social needs and emotional or social context without automatically turning free-text information into diagnoses.",
+    to: "/platform#context",
+  },
+  {
+    icon: ClipboardCheck,
+    title: "Clinical Decision Summary",
+    body: "Bring clinical status, supporting evidence, data-quality concerns and suggested actions into one reviewable workspace.",
+    to: "/platform#decision-summary",
+  },
+  {
+    icon: Layers,
+    title: "Population Prioritization",
+    body: "Help care teams understand which patients may require attention rather than requiring manual review of every record.",
+    to: "/platform#population",
+  },
 ];
 
 const AUDIENCES = [
   {
     title: "Primary Care Physicians",
-    body: "Identify patients who may need screening or follow-up and understand why.",
+    body: "Quickly understand diabetes screening status, contributing information and potential next steps.",
   },
-  { title: "Care Teams", body: "Coordinate screening, patient outreach, and follow-up work." },
+  {
+    title: "Care Teams",
+    body: "Coordinate screening, follow-up and prevention activity across patients requiring attention.",
+  },
   {
     title: "Medical Groups & Health Systems",
-    body: "Prioritize populations and support consistent clinical workflows.",
+    body: "Support consistent diabetes screening and review workflows across a patient population.",
   },
 ];
 
 function Home() {
   const navigate = useNavigate();
   const { openDemoRequest } = useDemoRequest();
+  const { user } = useAuth();
+  const { status } = useWorkspace();
+  const approved = Boolean(user) && status === "approved";
+
+  const secondary = () => navigate(approved ? "/dashboard" : "/auth");
+  const secondaryLabel = approved ? "Open Workspace" : "Sign In";
 
   return (
     <>
@@ -132,12 +168,8 @@ function Home() {
               </h1>
               <p className="mt-8 text-xl text-muted-foreground">
                 Predict Disease brings screening, clinical information, family history, lifestyle and
-                social context, and AI-assisted visit intelligence together to help primary care teams
-                identify patients who may need attention and determine what to review next.
-              </p>
-              <p className="mt-4 text-lg text-muted-foreground">
-                Designed to make diabetes screening more explainable, actionable, and connected to the
-                patient conversation.
+                social context, and AI-assisted visit intelligence together to help care teams
+                identify patients who may need attention and decide what to do next.
               </p>
 
               <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -149,21 +181,15 @@ function Home() {
                   size="lg"
                   variant="outline"
                   className="h-auto px-8 py-6 text-lg"
-                  onClick={() => navigate("/auth")}
+                  onClick={secondary}
                 >
-                  Sign In
+                  {secondaryLabel}
                 </Button>
               </div>
-              <Link
-                to="/auth?mode=signup"
-                className="mt-4 inline-block text-sm font-medium text-primary underline underline-offset-4"
-              >
-                Create an Account
-              </Link>
 
               <p className="mt-6 text-sm text-muted-foreground">
                 Clinical decision-support prototype. Designed to support — not replace — professional
-                clinical judgment.
+                medical judgment.
               </p>
             </div>
 
@@ -185,49 +211,18 @@ function Home() {
           <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl">The Diabetes Challenge</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {CHALLENGE.map((c) => (
-              <Card key={c.stat} className="border-2 p-8 text-center">
+              <Card key={c.stat} className="flex flex-col border-2 p-8 text-center">
                 <div className="mb-3 text-4xl font-bold text-primary">{c.stat}</div>
-                <p className="text-sm text-muted-foreground">{c.label}</p>
-                <p className="mt-3 text-xs text-muted-foreground">Source: {c.source}</p>
-              </Card>
-            ))}
-          </div>
-          <p className="mt-8 text-center text-sm">
-            <Link to="/clinical-evidence" className="text-primary underline underline-offset-4">
-              Sources
-            </Link>
-          </p>
-        </div>
-      </section>
-
-      {/* What Predict Disease does */}
-      <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl">
-            From screening signals to a reviewable next step.
-          </h2>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {STAGES.map((s) => (
-              <Card key={s.title} className="border-2 p-6">
-                <s.icon className="mb-4 h-9 w-9 text-primary" />
-                <h3 className="mb-2 text-lg font-semibold">{s.title}</h3>
-                <p className="text-sm text-muted-foreground">{s.body}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Core capabilities */}
-      <section className="bg-muted/30 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl">Core Capabilities</h2>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {CAPABILITIES.map((c) => (
-              <Card key={c.title} className="border-2 p-6">
-                <c.icon className="mb-4 h-9 w-9 text-primary" />
-                <h3 className="mb-2 text-lg font-semibold">{c.title}</h3>
-                <p className="text-sm text-muted-foreground">{c.body}</p>
+                <p className="flex-1 text-sm text-muted-foreground">{c.label}</p>
+                <p className="mt-4 text-xs text-muted-foreground">Source: {c.source}</p>
+                <a
+                  href={c.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 text-xs text-primary underline underline-offset-4"
+                >
+                  View source
+                </a>
               </Card>
             ))}
           </div>
@@ -238,52 +233,13 @@ function Home() {
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl">
-            Built around transparent clinical reasoning
+            Built Around Transparent Clinical Reasoning
           </h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {REASONING.map((r) => (
               <Card key={r.title} className="border-2 p-8">
                 <h3 className="mb-2 text-xl font-semibold">{r.title}</h3>
                 <p className="text-muted-foreground">{r.body}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="bg-muted/30 py-20">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl">How It Works</h2>
-          <ol className="space-y-4">
-            {STEPS.map((s, i) => (
-              <li key={s} className="flex items-start gap-4 rounded-lg border bg-card p-5">
-                <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
-                  {i + 1}
-                </span>
-                <span className="pt-1.5">{s}</span>
-              </li>
-            ))}
-          </ol>
-          <div className="mt-10 text-center">
-            <Button size="lg" asChild>
-              <Link to="/how-it-works">See How It Works</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust */}
-      <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl">
-            Clinical intelligence should be understandable.
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {TRUST.map((t) => (
-              <Card key={t} className="flex items-center gap-3 border-2 p-6">
-                <ShieldCheck className="h-6 w-6 flex-shrink-0 text-primary" />
-                <span className="font-medium">{t}</span>
               </Card>
             ))}
           </div>
@@ -295,10 +251,68 @@ function Home() {
         </div>
       </section>
 
+      {/* Workflow */}
+      <section className="bg-muted/30 py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl">
+            From Patient Information to Clinical Action
+          </h2>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
+            {WORKFLOW.map((s, i) => (
+              <Card key={s.title} className="border-2 p-6">
+                <s.icon className="mb-4 h-8 w-8 text-primary" />
+                <h3 className="mb-2 text-lg font-semibold">
+                  {i + 1}. {s.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">{s.body}</p>
+              </Card>
+            ))}
+          </div>
+          <div className="mt-10 text-center">
+            <Button size="lg" asChild>
+              <Link to="/how-it-works">See How It Works</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Core capabilities */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl">
+            Core Platform Capabilities
+          </h2>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {CAPABILITIES.map((c) => (
+              <Card key={c.title} className="border-2 p-6">
+                <c.icon className="mb-4 h-9 w-9 text-primary" />
+                <h3 className="mb-2 flex flex-wrap items-center gap-2 text-lg font-semibold">
+                  {c.title}
+                  {c.prototype && (
+                    <Badge variant="secondary" className="font-normal">
+                      Prototype / planned
+                    </Badge>
+                  )}
+                </h3>
+                <p className="text-sm text-muted-foreground">{c.body}</p>
+                <Link
+                  to={c.to}
+                  className="mt-4 inline-block text-sm font-medium text-primary underline underline-offset-4"
+                >
+                  Learn more
+                </Link>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Who it is for */}
       <section className="bg-muted/30 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl">Who It Is For</h2>
+          <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl">
+            Who Predict Disease Is For
+          </h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {AUDIENCES.map((a) => (
               <Card key={a.title} className="border-2 p-8">
@@ -314,20 +328,24 @@ function Home() {
       <section className="py-20">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold lg:text-4xl">
-            See Predict Disease in a realistic primary-care workflow.
+            See Predict Disease in a realistic clinical workflow.
           </h2>
           <p className="mt-6 text-lg text-muted-foreground">
-            Explore the physician dashboard, patient risk review, lifestyle and social context, Visit
-            Copilot experience, and Clinical Decision Summary using synthetic patient information.
+            Explore how Predict Disease brings screening information, clinical context and
+            clinician-reviewed decision support into one workflow.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Button size="lg" onClick={openDemoRequest}>
               Request a Demo
             </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link to="/auth?mode=signup">Create an Account</Link>
+            <Button size="lg" variant="outline" onClick={secondary}>
+              {secondaryLabel}
             </Button>
           </div>
+          <p className="mt-6 text-sm text-muted-foreground">
+            Demo environments use synthetic patient information and remain separate from real
+            clinical workspaces.
+          </p>
         </div>
       </section>
     </>
