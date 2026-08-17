@@ -105,5 +105,8 @@ The illustration stays static and fictional; nothing about it changes real workf
   the shared password schema keeps its rules for signup and reset.
 - New homepage sections and the expanded preview live in `src/pages/Index.tsx` using the
   existing card, badge, and tabs components and the current navy/teal tokens.
+- The process graphic, domain grid, and cluster illustration are new presentational
+  components (`src/components/public/`) built with semantic tokens and inline SVG — no
+  charting library, no images, and accessible labels on every stage.
 - Jargon replacements are copy-and-icon changes only — no scoring logic, database
   structure, edge functions, or authentication behaviour changes.
