@@ -53,18 +53,35 @@ Add two new sections between "The problem" and the current "How it works" steps.
 - Community and geographic context: local access to primary care, pharmacy, and
   food resources
 
-**How the assessment is produced** — a four-stage flow diagram:
+**How the assessment is produced** — a built visual, not a bullet list. A responsive
+process graphic renders the four stages left to right on desktop and stacked on mobile,
+each stage a numbered card with an icon, a one-line description, and connecting arrows
+between them:
 
 ```text
-Collected information  ->  Checked against published screening criteria
-        ->  Compared with de-identified patients who have similar profiles
-        ->  Screening priority with the reasons behind it
+ [1] Information         [2] Screening          [3] Similar-patient      [4] Screening
+     collected      ->       criteria      ->       comparison      ->       priority
+ 6 input domains         Published adult        De-identified            Routine /
+ feed the record         screening criteria     patients with            Consider /
+                         are applied            similar profiles         Prioritize
+                                                                         + reasons
 ```
+
+Two supporting visuals in the same section:
+
+- **Input-domain wheel/grid**: the six domains (clinical, family history, lifestyle,
+  symptoms, SDOH, community context) shown as labelled tiles feeding into stage 1, with
+  a filled/empty state indicator to show that missing domains are visible, not hidden.
+- **Similar-patient comparison graphic**: a simple scatter-style cluster illustration
+  where one highlighted marker (the patient) sits inside a group of neutral markers,
+  captioned "grouped with de-identified patients who share similar clinical, lifestyle,
+  and social profiles." Static SVG built with design tokens — illustrative, no live data.
 
 With short explanations that: the comparison group is built from de-identified records
 grouped by similar clinical, lifestyle, and social profiles; similarity is used to
 surface patterns worth reviewing, never to make a diagnosis; and the criteria version
 and date are recorded with every assessment.
+
 
 ## 4. Rebuild the patient illustration into a complete view
 
@@ -88,5 +105,8 @@ The illustration stays static and fictional; nothing about it changes real workf
   the shared password schema keeps its rules for signup and reset.
 - New homepage sections and the expanded preview live in `src/pages/Index.tsx` using the
   existing card, badge, and tabs components and the current navy/teal tokens.
+- The process graphic, domain grid, and cluster illustration are new presentational
+  components (`src/components/public/`) built with semantic tokens and inline SVG — no
+  charting library, no images, and accessible labels on every stage.
 - Jargon replacements are copy-and-icon changes only — no scoring logic, database
   structure, edge functions, or authentication behaviour changes.
