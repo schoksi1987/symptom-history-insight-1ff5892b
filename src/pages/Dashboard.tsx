@@ -14,7 +14,7 @@ import {
   TrendingUp,
   Bell,
   Calendar,
-  Brain,
+  Stethoscope,
   UserPlus,
   Activity,
   AlertTriangle
@@ -173,7 +173,7 @@ const Dashboard = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-primary-foreground/20">
-                <Brain className="h-5 w-5" />
+                <Stethoscope className="h-5 w-5" />
               </Button>
               <div className="flex items-center space-x-2">
                 <h1 className="text-lg font-semibold">Predict Disease</h1>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Brain, LogOut, User } from "lucide-react";
+import { Stethoscope, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -34,7 +34,7 @@ export function AppHeader({ showDemoRequest = false }: AppHeaderProps) {
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2">
-          <Brain className="h-7 w-7 text-primary" />
+          <Stethoscope className="h-7 w-7 text-primary" />
           <span className="text-xl font-bold">Predict Disease</span>
         </Link>
 

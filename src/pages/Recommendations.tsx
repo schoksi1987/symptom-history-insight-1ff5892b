@@ -18,7 +18,7 @@ import {
   Trash2,
   Heart,
   Activity,
-  Brain,
+  ClipboardList,
   Home,
   Bed,
   Target,
@@ -160,7 +160,7 @@ const Recommendations = () => {
         setAnalysis(data.analysis);
         toast({
           title: "Success",
-          description: "AI-powered insights generated successfully"
+          description: "Assessment summary updated"
         });
       }
     } catch (error: any) {
@@ -175,7 +175,7 @@ const Recommendations = () => {
     }
   };
 
-  // AI-powered insights from physician and patient notes
+  // Summary of findings from physician and patient notes
   const aiInsights = {
     riskAnalysis: "Based on comprehensive analysis of physician findings and patient-reported symptoms, this case demonstrates classic pre-diabetic progression with strong familial correlation. The combination of elevated HbA1c (8.2%), metabolic syndrome markers, and SDOH stressors creates a 71% risk profile for T2DM development within 12 months without intervention.",
     peerComparisons: [
@@ -295,7 +295,7 @@ const Recommendations = () => {
     ]
   };
 
-  // Symptom analysis with NLP confidence scores
+  // Documented symptoms with confidence in how clearly each was recorded
   const symptomAnalysis = [
     {
       symptom: "Polyuria (Frequent Urination)",
@@ -433,7 +433,7 @@ const Recommendations = () => {
               </>
             ) : (
               <>
-                <Brain className="h-4 w-4" />
+                <Stethoscope className="h-4 w-4" />
                 Refresh summary
               </>
             )}
@@ -655,8 +655,8 @@ const Recommendations = () => {
                 {analysis.targeted_insights && (
                   <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
                     <h4 className="font-medium mb-3 flex items-center gap-2">
-                      <Brain className="h-4 w-4 text-purple-600" />
-                      AI-Generated Targeted Insights
+                      <ClipboardList className="h-4 w-4 text-purple-600" />
+                      Targeted findings for this patient
                     </h4>
                     
                     {analysis.targeted_insights.matching_research && (
@@ -785,12 +785,12 @@ const Recommendations = () => {
           </Card>
         )}
 
-        {/* AI Insights Summary */}
+        {/* Assessment summary */}
         <Card className="mb-6 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Brain className="h-6 w-6 text-blue-600" />
-              AI Clinical Analysis Summary
+              <ClipboardList className="h-6 w-6 text-blue-600" />
+              Assessment summary
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -817,12 +817,12 @@ const Recommendations = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column */}
           <div className="space-y-6">
-            {/* AI-Powered Clinical Insights */}
+            {/* Clinical findings summary */}
             <Card className="border-blue-200 bg-blue-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-blue-600" />
-                  AI-Powered Clinical Analysis
+                  <Stethoscope className="h-5 w-5 text-blue-600" />
+                  Clinical findings summary
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">
                   Insights generated from physician findings, patient notes, and similar patient data
@@ -1089,11 +1089,11 @@ const Recommendations = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5" />
-                  AI Symptom Analysis
+                  <Stethoscope className="h-5 w-5" />
+                  Documented symptoms
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  NLP-powered confidence scoring of reported symptoms
+                  How clearly each reported symptom was documented
                 </p>
               </CardHeader>
               <CardContent>

@@ -18,6 +18,12 @@ import { useDemoRequest } from "@/components/public/DemoRequestContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { SOURCES } from "@/content/sources";
+import {
+  AssessmentInputDomains,
+  AssessmentProcessGraphic,
+  SimilarPatientPanel,
+} from "@/components/public/AssessmentProcess";
+import { PatientPreview } from "@/components/public/PatientPreview";
 
 const STATS = [
   {
@@ -114,77 +120,6 @@ const AUDIENCES = [
   { title: "Healthcare organizations", body: "Evaluate preventive-care workflows before broader adoption." },
 ];
 
-/** Fictional patient used for the product preview. No real patient data. */
-const DEMO_PATIENT = {
-  name: "Jordan Lee",
-  age: 52,
-  priority: "Consider Screening",
-  increasing: ["BMI 31.2", "First-degree family history of type 2 diabetes", "Limited access to fresh food"],
-  moderating: ["Blood pressure within range", "Active 3 days per week"],
-  missing: ["No HbA1c on file in the last 12 months"],
-};
-
-function PreviewCard() {
-  return (
-    <Card className="border-2 p-6 shadow-lg" aria-label="Product preview using fictional demo data">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <div>
-          <p className="text-sm font-semibold text-foreground">Patient: {DEMO_PATIENT.name}</p>
-          <p className="text-xs text-muted-foreground">
-            Age {DEMO_PATIENT.age} · Fictional record · No identifiers
-          </p>
-        </div>
-        <Badge variant="secondary" className="shrink-0">
-          Demo Data
-        </Badge>
-      </div>
-
-      <div className="rounded-lg border bg-accent/60 p-4">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Type 2 Diabetes Screening Priority
-        </p>
-        <p className="mt-1 text-2xl font-bold text-primary">{DEMO_PATIENT.priority}</p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Based on the information available, this patient may benefit from prioritized clinical
-          review for Type 2 diabetes screening.
-        </p>
-      </div>
-
-      <dl className="mt-4 grid gap-4 sm:grid-cols-2">
-        <div>
-          <dt className="text-xs font-semibold text-foreground">Factors increasing priority</dt>
-          <dd>
-            <ul className="mt-1 space-y-1 text-sm text-muted-foreground">
-              {DEMO_PATIENT.increasing.map((f) => (
-                <li key={f}>· {f}</li>
-              ))}
-            </ul>
-          </dd>
-        </div>
-        <div>
-          <dt className="text-xs font-semibold text-foreground">Moderating factors</dt>
-          <dd>
-            <ul className="mt-1 space-y-1 text-sm text-muted-foreground">
-              {DEMO_PATIENT.moderating.map((f) => (
-                <li key={f}>· {f}</li>
-              ))}
-            </ul>
-          </dd>
-        </div>
-      </dl>
-
-      <div className="mt-4 rounded-md border border-dashed p-3 text-sm text-muted-foreground">
-        <span className="font-medium text-foreground">Missing information: </span>
-        {DEMO_PATIENT.missing.join("; ")}
-      </div>
-
-      <p className="mt-4 text-xs text-muted-foreground">
-        Illustrative preview with fictional data. Clinical decision support — not a diagnosis.
-      </p>
-    </Card>
-  );
-}
-
 function Home() {
   const navigate = useNavigate();
   const { openDemoRequest } = useDemoRequest();
@@ -240,7 +175,7 @@ function Home() {
               </p>
             </div>
 
-            <PreviewCard />
+            <PatientPreview />
           </div>
         </div>
       </section>
@@ -263,6 +198,49 @@ function Home() {
           <p className="mt-6 max-w-3xl text-sm text-muted-foreground">
             Predict Disease organizes this information for review. It does not diagnose diabetes.
           </p>
+        </div>
+      </section>
+
+      {/* What goes into an assessment */}
+      <section className="border-t bg-secondary/30 py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-foreground">What goes into an assessment</h2>
+          <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
+            Six domains of information are brought together for each patient. Each one is visible in
+            the result, including the domains where no information is available.
+          </p>
+          <div className="mt-8">
+            <AssessmentInputDomains />
+          </div>
+        </div>
+      </section>
+
+      {/* How the assessment is produced */}
+      <section className="py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-foreground">How the assessment is produced</h2>
+          <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
+            From collected information to a screening priority a clinician can review and question.
+          </p>
+          <div className="mt-8">
+            <AssessmentProcessGraphic />
+          </div>
+          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            <SimilarPatientPanel />
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold text-foreground">What is recorded each time</h3>
+              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                <li>· Which information contributed to the result</li>
+                <li>· Which information was missing or conflicting</li>
+                <li>· Which screening-criteria version was applied</li>
+                <li>· The date and time of the assessment</li>
+              </ul>
+              <p className="mt-4 text-sm text-muted-foreground">
+                Screening priority is expressed as Routine, Consider Screening, or Prioritize
+                Screening — never as a probability of developing diabetes.
+              </p>
+            </Card>
+          </div>
         </div>
       </section>
 

@@ -10,7 +10,6 @@ import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { 
-  Brain, 
   Heart, 
   Activity, 
   TrendingUp, 
@@ -76,8 +75,8 @@ const DiseasePrediction = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <Brain className="h-8 w-8 text-blue-600 mr-3" />
-              <h1 className="text-2xl font-bold text-gray-900">AI Disease Prediction</h1>
+              <Stethoscope className="h-8 w-8 text-blue-600 mr-3" />
+              <h1 className="text-2xl font-bold text-gray-900">Predict Disease</h1>
             </div>
             <div className="space-x-4">
               {user ? (
@@ -98,11 +97,11 @@ const DiseasePrediction = () => {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 sm:text-6xl mb-6">
-            Predict Disease Risk with AI
+            Understand your Type 2 diabetes screening priority
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Advanced machine learning algorithms analyze your health data to predict disease risk 
-            and provide personalized recommendations for preventive care.
+            Your responses are compared with established screening criteria and with de-identified
+            patients who have similar profiles, so you can discuss next steps with your clinician.
           </p>
         </div>
 
@@ -278,9 +277,9 @@ const DiseasePrediction = () => {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <Brain className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                  <Stethoscope className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                   <p className="text-gray-500">
-                    Complete the health assessment to get your AI-powered disease risk prediction
+                    Complete the health assessment to see your screening priority
                   </p>
                 </div>
               )}
@@ -291,10 +290,10 @@ const DiseasePrediction = () => {
         {/* Features Section */}
         <div className="mt-20 grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-            <Brain className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">AI Analysis</h3>
+            <Stethoscope className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">How this is assessed</h3>
             <p className="text-gray-600 text-sm">
-              Advanced machine learning algorithms analyze multiple health factors
+              Established screening criteria and similar-patient comparisons across multiple health factors
             </p>
           </div>
           

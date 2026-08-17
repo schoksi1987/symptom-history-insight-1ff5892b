@@ -61,6 +61,12 @@ function PasswordStrength({ value }: { value: string }) {
 }
 
 
+/** Sign-in must never apply new-password rules to existing passwords. */
+const signInSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Please enter your password"),
+});
+
 const authSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: passwordField,
@@ -213,7 +219,7 @@ export default function Auth() {
       setIsLoading(true);
 
       // Validate form data
-      const validData = authSchema.pick({ email: true, password: true }).parse({
+      const validData = signInSchema.parse({
         email: formData.email,
         password: formData.password,
       });

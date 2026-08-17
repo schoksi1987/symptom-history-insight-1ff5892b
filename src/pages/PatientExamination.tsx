@@ -685,7 +685,7 @@ const PatientExamination = () => {
               <CardHeader>
                 <CardTitle>Patient Notes</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Describe patient concerns, symptoms, and observations in detail for NLP analysis
+                  Describe patient concerns, symptoms, and observations in detail so they can be reviewed
                 </p>
               </CardHeader>
               <CardContent>
@@ -696,9 +696,9 @@ const PatientExamination = () => {
                   placeholder="Enter detailed patient notes, symptoms, and observations..."
                 />
                 
-                {/* NLP Analysis Results */}
+                {/* Documented symptoms */}
                 <div className="mt-4 p-4 bg-green-50 rounded-lg">
-                  <h4 className="font-medium text-green-800 mb-2">🤖 NLP Analysis - Identified Symptoms</h4>
+                  <h4 className="font-medium text-green-800 mb-2">Symptoms identified from these notes</h4>
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="outline" className="bg-green-100">Polyuria (Frequent Urination)</Badge>
                     <Badge variant="outline" className="bg-green-100">Polydipsia (Increased Thirst)</Badge>

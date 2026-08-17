@@ -531,11 +531,11 @@ const SDOHAssessment = () => {
               placeholder="Share your thoughts, concerns, feelings, or anything on your mind..."
             />
             
-            {/* NLP Analysis Results */}
+            {/* Mental health summary */}
             <div className="mt-4 p-4 bg-blue-50 rounded-lg">
               <h4 className="font-medium text-blue-800 mb-3 flex items-center gap-2">
                 <Brain className="h-4 w-4" />
-                AI Mental Health Risk Analysis
+                Mental health and stress summary
               </h4>
               
               <div className="grid grid-cols-3 gap-4">
