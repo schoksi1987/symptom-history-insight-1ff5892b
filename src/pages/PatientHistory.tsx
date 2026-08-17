@@ -45,7 +45,7 @@ const PatientHistory = () => {
       status: "completed",
       riskScore: 71,
       details: [
-        "Comprehensive AI-powered risk assessment completed",
+        "Comprehensive screening priority assessment completed",
         "Integrated clinical, behavioral, family history data",
         "Geographic and SDOH factors analyzed",
         "High-risk (71%) flagged despite normal glucose"

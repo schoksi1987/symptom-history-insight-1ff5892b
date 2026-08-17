@@ -142,7 +142,7 @@ export default function MyInsights() {
         <Card>
           <CardHeader>
             <CardTitle>Similar patients</CardTitle>
-            <CardDescription>Cohort from k-means clustering across the population.</CardDescription>
+            <CardDescription>Comparison group of de-identified patients with similar profiles.</CardDescription>
           </CardHeader>
           <CardContent>
             {!cohort ? (

@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Brain, AlertTriangle, CheckCircle, Activity, Loader2 } from "lucide-react";
+import { Stethoscope, AlertTriangle, CheckCircle, Activity, Loader2 } from "lucide-react";
 import type { Json } from "@/integrations/supabase/types";
 
 interface PatientNote {
@@ -143,8 +143,8 @@ export function PatientNotesAnalysis({ patientId }: PatientNotesAnalysisProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Brain className="h-5 w-5 mr-2" />
-            AI-Powered Note Analysis
+            <Stethoscope className="h-5 w-5 mr-2" />
+            Note review summary
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -244,7 +244,7 @@ export function PatientNotesAnalysis({ patientId }: PatientNotesAnalysisProps) {
                   {note.ai_summary && (
                     <div className="p-3 bg-blue-50 rounded-lg">
                       <h4 className="text-sm font-semibold mb-2 flex items-center">
-                        <Brain className="h-4 w-4 mr-1" />
+                        <Stethoscope className="h-4 w-4 mr-1" />
                         Physician Summary
                       </h4>
                       <p className="text-sm">{note.ai_summary}</p>
