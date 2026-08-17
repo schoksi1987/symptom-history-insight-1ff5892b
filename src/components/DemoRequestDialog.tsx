@@ -105,11 +105,33 @@ export const DemoRequestDialog = ({ open, onOpenChange }: DemoRequestDialogProps
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle className="text-2xl">Request a Demo</DialogTitle>
+              <DialogTitle className="text-2xl">Try the Clinical Demo</DialogTitle>
               <DialogDescription>
-                Tell us about your practice and we will follow up to schedule a walkthrough.
+                Tell us about your practice and we will follow up with access to a walkthrough of the
+                clinical demo.
               </DialogDescription>
             </DialogHeader>
+
+            <div className="mt-4 space-y-2 rounded-lg border bg-accent/40 p-4 text-sm text-muted-foreground">
+              <p className="font-medium text-foreground">Before you begin the demo</p>
+              <p>
+                This is a demonstration environment. It uses fictional patients only, and the details
+                you submit here are saved so our team can contact you.
+              </p>
+              <p>
+                Please do not enter real patient-identifying information anywhere in the demo. You can
+                exit or reset the demo at any time from the workspace.
+              </p>
+              <p>
+                <a href="/privacy" className="text-primary underline underline-offset-4">
+                  Privacy Policy
+                </a>{" "}
+                ·{" "}
+                <a href="/terms" className="text-primary underline underline-offset-4">
+                  Terms of Use
+                </a>
+              </p>
+            </div>
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-5">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

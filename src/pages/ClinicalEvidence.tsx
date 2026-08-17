@@ -199,7 +199,7 @@ export default function ClinicalEvidence() {
         <EvidenceCard
           org="U.S. Food and Drug Administration"
           title="Clinical Decision Support Software — guidance for industry"
-          year="2022"
+          year="Final guidance, September 2022"
           kind="Regulatory guidance"
           url={SOURCES.fda}
           linkLabel="View FDA CDS Guidance"

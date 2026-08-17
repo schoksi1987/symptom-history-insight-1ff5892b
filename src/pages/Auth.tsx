@@ -292,6 +292,7 @@ export default function Auth() {
       />
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
+          <h1 className="sr-only">Sign in to Predict Disease by symptom.ai or request access</h1>
           <div className="mb-4 flex items-center justify-center gap-2">
             <Activity className="h-7 w-7 text-primary" aria-hidden="true" />
             <Link to="/" className="flex items-baseline gap-1.5">
