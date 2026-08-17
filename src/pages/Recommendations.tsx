@@ -18,7 +18,6 @@ import {
   Trash2,
   Heart,
   Activity,
-  Stethoscope,
   ClipboardList,
   Home,
   Bed,

@@ -10,7 +10,6 @@ import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { 
-  Stethoscope, 
   Heart, 
   Activity, 
   TrendingUp, 
