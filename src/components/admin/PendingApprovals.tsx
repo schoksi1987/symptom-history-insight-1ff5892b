@@ -83,11 +83,19 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
     }));
 
     setAdminIds(new Set((adminRoles ?? []).map((r: any) => r.user_id)));
-    setRows(mapped.filter((r) => !isSynthetic(r)));
+    const visible = mapped.filter((r) => !isSynthetic(r));
+    setRows(visible);
     setSelected(new Set());
-
     setLoading(false);
+
+    if (visible.length) {
+      const { data: statusData } = await supabase.functions.invoke("admin-verify-email", {
+        body: { action: "status", userIds: visible.map((r) => r.user_id) },
+      });
+      if (statusData?.confirmed) setEmailConfirmed(statusData.confirmed);
+    }
   }, []);
+
 
   useEffect(() => {
     void load();
