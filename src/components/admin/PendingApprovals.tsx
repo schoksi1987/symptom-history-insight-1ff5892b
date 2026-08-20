@@ -250,6 +250,23 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
         <TableCell className="text-sm">{r.demo_requested ? "Yes" : "No"}</TableCell>
         <TableCell className="text-sm">{new Date(r.created_at).toLocaleDateString()}</TableCell>
         <TableCell><Badge variant={statusVariant(r.status)}>{r.status}</Badge></TableCell>
+        <TableCell className="whitespace-nowrap">
+          {emailConfirmed[r.user_id] ? (
+            <Badge variant="outline">Verified</Badge>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary">Unverified</Badge>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={busy === r.id || bulkBusy}
+                onClick={() => verifyEmail(r)}
+              >
+                Verify
+              </Button>
+            </div>
+          )}
+        </TableCell>
         <TableCell>
           <Switch
             checked={r.is_demo}
