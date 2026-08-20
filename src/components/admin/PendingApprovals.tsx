@@ -48,6 +48,7 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
   const [bulkBusy, setBulkBusy] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [adminIds, setAdminIds] = useState<Set<string>>(new Set());
+  const [emailConfirmed, setEmailConfirmed] = useState<Record<string, boolean>>({});
 
   const [approving, setApproving] = useState<AccountRow[] | null>(null);
   const [rejecting, setRejecting] = useState<AccountRow[] | null>(null);
@@ -82,11 +83,19 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
     }));
 
     setAdminIds(new Set((adminRoles ?? []).map((r: any) => r.user_id)));
-    setRows(mapped.filter((r) => !isSynthetic(r)));
+    const visible = mapped.filter((r) => !isSynthetic(r));
+    setRows(visible);
     setSelected(new Set());
-
     setLoading(false);
+
+    if (visible.length) {
+      const { data: statusData } = await supabase.functions.invoke("admin-verify-email", {
+        body: { action: "status", userIds: visible.map((r) => r.user_id) },
+      });
+      if (statusData?.confirmed) setEmailConfirmed(statusData.confirmed);
+    }
   }, []);
+
 
   useEffect(() => {
     void load();
@@ -189,6 +198,28 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
     setBusy(null);
   };
 
+  // Manual email verification for applicants who never click the confirmation link.
+  const verifyEmail = async (row: AccountRow) => {
+    setBusy(row.id);
+    const { data, error } = await supabase.functions.invoke("admin-verify-email", {
+      body: { action: "confirm", userId: row.user_id },
+    });
+    if (error || data?.error) {
+      toast({
+        title: "Could not verify email",
+        description: error?.message ?? data?.error,
+        variant: "destructive",
+      });
+    } else {
+      setEmailConfirmed((prev) => ({ ...prev, [row.user_id]: true }));
+      toast({ title: "Email verified", description: row.profile?.email ?? undefined });
+      onChange?.();
+    }
+    setBusy(null);
+  };
+
+
+
   const renderRows = (list: AccountRow[], selectable: boolean) =>
     list.map((r) => (
       <TableRow key={r.id}>
@@ -219,6 +250,23 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
         <TableCell className="text-sm">{r.demo_requested ? "Yes" : "No"}</TableCell>
         <TableCell className="text-sm">{new Date(r.created_at).toLocaleDateString()}</TableCell>
         <TableCell><Badge variant={statusVariant(r.status)}>{r.status}</Badge></TableCell>
+        <TableCell className="whitespace-nowrap">
+          {emailConfirmed[r.user_id] ? (
+            <Badge variant="outline">Verified</Badge>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary">Unverified</Badge>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={busy === r.id || bulkBusy}
+                onClick={() => verifyEmail(r)}
+              >
+                Verify
+              </Button>
+            </div>
+          )}
+        </TableCell>
         <TableCell>
           <Switch
             checked={r.is_demo}
@@ -321,6 +369,7 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
                 <TableHead>Demo requested</TableHead>
                 <TableHead>Submitted</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>Demo access</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
