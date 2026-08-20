@@ -48,6 +48,7 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
   const [bulkBusy, setBulkBusy] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [adminIds, setAdminIds] = useState<Set<string>>(new Set());
+  const [emailConfirmed, setEmailConfirmed] = useState<Record<string, boolean>>({});
 
   const [approving, setApproving] = useState<AccountRow[] | null>(null);
   const [rejecting, setRejecting] = useState<AccountRow[] | null>(null);
