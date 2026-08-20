@@ -369,6 +369,7 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
                 <TableHead>Demo requested</TableHead>
                 <TableHead>Submitted</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>Demo access</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
