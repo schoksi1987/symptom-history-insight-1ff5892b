@@ -198,6 +198,28 @@ export function PendingApprovals({ onChange }: { onChange?: () => void } = {}) {
     setBusy(null);
   };
 
+  // Manual email verification for applicants who never click the confirmation link.
+  const verifyEmail = async (row: AccountRow) => {
+    setBusy(row.id);
+    const { data, error } = await supabase.functions.invoke("admin-verify-email", {
+      body: { action: "confirm", userId: row.user_id },
+    });
+    if (error || data?.error) {
+      toast({
+        title: "Could not verify email",
+        description: error?.message ?? data?.error,
+        variant: "destructive",
+      });
+    } else {
+      setEmailConfirmed((prev) => ({ ...prev, [row.user_id]: true }));
+      toast({ title: "Email verified", description: row.profile?.email ?? undefined });
+      onChange?.();
+    }
+    setBusy(null);
+  };
+
+
+
   const renderRows = (list: AccountRow[], selectable: boolean) =>
     list.map((r) => (
       <TableRow key={r.id}>
